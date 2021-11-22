@@ -1,26 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>home</title>
-</head>
-<body>
-<header>
-    <div class="container">
+{% extends "base.html" %}
+{% block content %}
 
-<!--        <img src="ourpichere.png" alt="logo" class="logo">-->
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('home') }}">home</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
-                <li><a href="{{ url_for('login') }}">login</a></li>
-                <li><a href="{{ url_for('browsegames') }}">Browse Games</a></li>
-            </ul>
-        </nav>
+<title>Home</title>
 
-    </div>
-
-    <h1>Here is the home page</h1>
-</header>
-</body>
-</html>
+{% endblock content %}

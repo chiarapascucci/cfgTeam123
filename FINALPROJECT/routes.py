@@ -41,8 +41,6 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
-app = Flask(__name__)
-
 """
 https://hackersandslackers.com/configure-flask-applications/
 above is link with info about app.config for when you want to encrypt information i think
@@ -50,11 +48,16 @@ above is link with info about app.config for when you want to encrypt informatio
 
 get_all_records()
 
+app = Flask(__name__)
+
 
 @app.route('/')
 def home():
     return render_template('home.html', title='home')
 
+@app.route('/tester')
+def tester():
+    return render_template('tester.html', title='tester')
 
 @app.route('/register')
 def register():
