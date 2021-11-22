@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>browsegames</title>
+</head>
+<body>
+<header>
+    <div class="container">
+
+<!--        <img src="ourpichere.png" alt="logo" class="logo">-->
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">home</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+                <li><a href="{{ url_for('login') }}">login</a></li>
+                <li><a href="{{ url_for('browsegames') }}">Browse Games</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <h1>Here you can browse games</h1>
+</header>
+</body>
+</html>
