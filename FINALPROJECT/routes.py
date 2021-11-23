@@ -1,8 +1,11 @@
 from typing import List
-from flask import Flask, jsonify, request, render_template, url_for
-from config import USER, PASSWORD, HOST
 import mysql.connector
+from flask import Flask, render_template, url_for, flash, redirect
 
+# from all_forms.regform import RegistrationForm, LoginForm
+from FINALPROJECT import app
+from FINALPROJECT.config import USER, PASSWORD, HOST
+from FINALPROJECT.forms import RegistrationForm, LoginForm
 
 class DBConnectionError(Exception):
     pass
@@ -48,31 +51,32 @@ above is link with info about app.config for when you want to encrypt informatio
 
 get_all_records()
 
-app = Flask(__name__)
-
 
 @app.route('/')
 def home():
     return render_template('home.html', title='home')
 
+
 @app.route('/tester')
 def tester():
     return render_template('tester.html', title='tester')
 
-@app.route('/register')
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html', title='Register')
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'Success')
+        return redirect(url_for('home'))
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route('/login')
 def login():
-    return render_template('login.html', title='login')
+    form = LoginForm()
+    return render_template('login.html', title='login', form=form)
 
 
 @app.route('/browsegames')
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
