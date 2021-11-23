@@ -36,4 +36,22 @@ EndTime datetime,
 FOREIGN KEY (UserID) references user_info(UserID),
 foreign key (GameID) references game_table(GameID),
 foreign key (SessionID) references sessions(SessionID));
- 
+
+DELIMITER //
+CREATE PROCEDURE `register_user`(user_name varchar(20),
+ first_name varchar(50), last_name varchar(50), raw_pass varchar(40))
+BEGIN
+DECLARE salt char(10) default CONVERT(UNIX_TIMESTAMP(), char);
+DECLARE hashed_pass char(64) default sha2(concat(raw_pass, salt), 224);
+INSERT INTO user_info (UserName, FirstName, LastName, PasswordSalt, PasswordHash) 
+VALUES
+(user_name, first_name, last_name, salt, hashed_pass);
+END//
+
+CREATE PROCEDURE `validate_user`(user_name varchar(20), raw_pass varchar(40))
+BEGIN
+DECLARE salt char(10) default (SELECT PasswordSalt FROM user_info WHERE UserName=user_name);
+DECLARE hashed_pass char(64) default sha2(concat(raw_pass, salt), 224);
+SELECT UserId FROM user_info WHERE UserName=user_name AND PasswordHash=hashed_pass;
+END//
+DELIMITER ;
