@@ -2,6 +2,7 @@ from typing import List
 from flask import Flask, jsonify, request, render_template, url_for
 from config import USER, PASSWORD, HOST
 import mysql.connector
+import json
 
 
 class DBConnectionError(Exception):
@@ -65,13 +66,47 @@ def register():
 def login():
     return render_template('login.html', title='login')
 
+
 @app.route('/start-timer')
 def starttimer():
     return render_template('select_break_time.html', title='starttimer')
 
+
 @app.route('/browsegames')
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
+
+@app.route('/log-session-start', methods=['GET', 'POST'])
+def logsessionstart():
+    """will need some way of retrieving user ID"""
+    try:
+        connection = _connect_to_db("test")
+        if request.method == 'POST':
+            print("post request received")
+            print("trying to print json data from request \n", request.get_json())
+            print("post request received")
+            print("print type of return", type(request.get_json()))
+            data_dict = request.get_json()
+            user_id = data_dict['user_id']
+            start_time = data_dict['start_time']
+            req_len = str(data_dict['requested_duration'])
+            query = f"INSERT INTO test.sessions (UserID, StartTimer, RequestedDuration) VALUES ('{user_id}', '{start_time}', '{req_len}');"
+            print(query)
+            my_cur = connection.cursor()
+            my_cur.execute(query)
+            result = my_cur.fetchall()
+            print(result)
+            my_cur.close()
+            connection.close()
+            print("connection closed")
+
+    except DBConnectionError:
+        print("db connection failed")
+
+
+@app.route('/log-session-end', methods=['GET', 'POST'])
+def logsessionend():
+    pass
 
 
 if __name__ == '__main__':
