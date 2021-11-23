@@ -14,7 +14,7 @@ LastLogin datetime
 CREATE TABLE game_table (
 GameID int primary key AUTO_INCREMENT,
 GameName varchar(20),
-GameURL varchar(150)
+GameURL varchar(150) UNIQUE
 );
 
 CREATE TABLE sessions (
