@@ -65,6 +65,9 @@ def register():
 def login():
     return render_template('login.html', title='login')
 
+@app.route('/start-timer')
+def starttimer():
+    return render_template('select_break_time.html', title='starttimer')
 
 @app.route('/browsegames')
 def browsegames():

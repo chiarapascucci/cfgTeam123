@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title_block %}Time{% endblock %}
+
+{% block body_block %}
+    <div class="mb-3">
+          <select id="timer-select-len" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+            <option selected="">Choose how long you want to break for</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+          </select>
+        <button id="set-timer-btn" type="button" disabled>Take a break!</button>
+    </div>
+{% endblock %}
