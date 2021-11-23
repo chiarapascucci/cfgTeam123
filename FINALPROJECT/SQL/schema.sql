@@ -3,6 +3,7 @@ USE productivity_app;
 
 CREATE TABLE user_info (
 UserID int primary key AUTO_INCREMENT,
+UserName varchar(20) UNIQUE NOT NULL,
 FirstName varchar(50) NOT NULL,
 LastName varchar(50) NOT NULL,
 PasswordSalt char(20) NOT NULL,
