@@ -39,32 +39,33 @@ def play_game():
 def hit_or_stand(blackjack, blackjack_cards):
     hit = input('Would you like to Hit or Stand? [H / S]\n')
     if hit.upper() == "H":
-        blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
-        blackjack.calculate_value_of_hand(blackjack_cards[0])
-        blackjack.dealer_card_if_less_than_17(blackjack_cards)
+        blackjack_cards = player_chose_hit(blackjack, blackjack_cards)
         if blackjack.calculate_value_of_hand(blackjack_cards[0]) < 21:
             blackjack.display_value_of_players_hand(blackjack_cards)
             hit_or_stand(blackjack, blackjack_cards)
         else:
-            if blackjack.is_player_winner(blackjack_cards):
-                blackjack.display_value_of_hands(blackjack_cards)
-                print('Player Wins')
-            elif blackjack.is_draw(blackjack_cards):
-                blackjack.display_value_of_hands(blackjack_cards)
-                print('Draw')
-            else:
-                blackjack.display_value_of_hands(blackjack_cards)
-                print('Dealer Wins')
+            decide_winner(blackjack, blackjack_cards)
     else:
-        if blackjack.is_player_winner(blackjack_cards):
-            blackjack.display_value_of_hands(blackjack_cards)
-            print('Player Wins')
-        elif blackjack.is_draw(blackjack_cards):
-            blackjack.display_value_of_hands(blackjack_cards)
-            print('Draw')
-        else:
-            blackjack.display_value_of_hands(blackjack_cards)
-            print('Dealer Wins')
+        decide_winner(blackjack, blackjack_cards)
+
+
+def player_chose_hit(blackjack, blackjack_cards):
+    blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
+    blackjack.calculate_value_of_hand(blackjack_cards[0])
+    blackjack.dealer_card_if_less_than_17(blackjack_cards)
+    return blackjack_cards
+
+
+def decide_winner(blackjack, blackjack_cards):
+    if blackjack.is_player_winner(blackjack_cards):
+        blackjack.display_value_of_hands(blackjack_cards)
+        print('Player Wins')
+    elif blackjack.is_draw(blackjack_cards):
+        blackjack.display_value_of_hands(blackjack_cards)
+        print('Draw')
+    else:
+        blackjack.display_value_of_hands(blackjack_cards)
+        print('Dealer Wins')
 
 
 # create a deck [CLASS]
@@ -82,6 +83,7 @@ class Card:
     def __init__(self, card):
         self.card = card
 
+    # set card representation to readable format
     def __repr__(self):
         return f'{self.card["value"]} of {self.card["suit"]}'
 
@@ -105,44 +107,36 @@ class Blackjack:
 
     # place starting game cards
     def begin_game(self):
-        player_card_1 = Card(self.deal())
-        player_card_2 = Card(self.deal())
-        dealer_card_1 = Card(self.deal())
-        dealer_card_2 = Card(self.deal())
-        players_cards = [player_card_1, player_card_2]
-        dealers_cards = [dealer_card_1, dealer_card_2]
+        players_cards = [Card(self.deal()), Card(self.deal())]
+        dealers_cards = [Card(self.deal()), Card(self.deal())]
         return players_cards, dealers_cards
 
-    # calculate if dealer hand less than 17
+    # deal cards to dealers hand if hand total is less than 17
     def dealer_card_if_less_than_17(self, playing_cards):
         while self.calculate_value_of_hand(playing_cards[1]) < 17:
             self.deal_card_to_dealer(playing_cards)
         return playing_cards
 
-    # deal another card to player
+    # deal one card to player's hand
     def deal_card_to_player(self, playing_cards):
         player_card = Card(self.deal())
         players_cards = playing_cards[0]
         players_cards.append(player_card)
         return players_cards, playing_cards[1]
 
-    # deal another card to dealer
+    # deal one card to dealer's hand
     def deal_card_to_dealer(self, playing_cards):
         dealer_card = Card(self.deal())
         dealers_cards = playing_cards[1]
         dealers_cards.append(dealer_card)
         return playing_cards[0], dealers_cards
 
-    # deal method
+    # deal one card
     def deal(self):
         deal_card = self.blackjack_deck.cards.pop()
         return deal_card
 
-    # deck length method
-    def deck_length(self):
-        return len(self.blackjack_deck.cards)
-
-    # is blackjack method
+    # return True if player starting cards are blackjack
     def is_blackjack(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
         if players_hand == 21:
@@ -178,25 +172,23 @@ class Blackjack:
         print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
         print(f'Dealer\'s cards are: {playing_cards[1]}, Hand value is: {dealers_hand}')
 
-    # calculate is draw
+    # return True if game is a draw
     def is_draw(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
         dealers_hand = self.calculate_value_of_hand(playing_cards[1])
         if players_hand == dealers_hand:
             return True
 
-    # calculate if player winner
+    # return True if player is the winner
     def is_player_winner(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
         dealers_hand = self.calculate_value_of_hand(playing_cards[1])
         if players_hand <= 21 and dealers_hand <= 21:
             return players_hand > dealers_hand
-        elif players_hand > 21:
-            return False
-        elif dealers_hand > 21:
+        elif dealers_hand > 21 and players_hand <= 21:
             return True
 
-    # shuffle method
+    # shuffle the deck
     def shuffle(self):
         deck_length = len(self.blackjack_deck.cards)
         for index_a in range(deck_length):
@@ -205,6 +197,10 @@ class Blackjack:
             self.blackjack_deck.cards[index_a] = self.blackjack_deck.cards[index_b]
             self.blackjack_deck.cards[index_b] = card_a
         return self.blackjack_deck.cards
+
+    # calculate deck length
+    def deck_length(self):
+        return len(self.blackjack_deck.cards)
 
 
 if __name__ == '__main__':
