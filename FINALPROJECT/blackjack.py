@@ -1,10 +1,11 @@
-# A card is dealt to the player facing upwards (visible to everyone).
-# The dealer deals a card to himself visible to everyone.
-# Another card is given to the player facing upwards.
-# The dealer deals a card facing downwards for himself.
+# THE GOAL IS TO GET TO AS CLOSE TO 21 BUT NOT ABOVE 21
+# IF YOU GET 21 WITH YOUR FIRST TWO CARDS THAT IS BLACKJACK
+# AN ACE CAN BE EITHER HIGH OR LOW [1 OR 11]
+# Two cards are dealt to the player facing upwards (visible to everyone).
+# The dealer deals himself two cards one visible to everyone, and one facing downwards.
 # The player has to decide whether to stand with the current set of cards or get another card.
-# If the player decides to hit, another card is dealt.
-# If the player decides to stand, then the dealer reveals his hidden card.
+# If the player decides to hit, another card is dealt to the player.
+# When the player decides to stand, then the dealer reveals his hidden card/s.
 # The dealer does not have the authority to decide whether to hit or stand.
 # The general rule is that the dealer needs to keep hitting more cards if the sum of dealer’s cards is less than 17.
 # As soon as the sum of dealer’s cards is either 17 or more, the dealer is obliged to stand.
@@ -12,6 +13,59 @@
 
 from random import randint
 from math import floor
+
+
+def main():
+    print('Welcome to Blackjack')
+    start_game = input('Would you like to play? [Y / N]\n')
+    if start_game.upper() == "Y":
+        blackjack, blackjack_cards, is_blackjack_true = play_game()
+        if not is_blackjack_true:
+            hit_or_stand(blackjack, blackjack_cards)
+        else:
+            print('You Won!\n Goodbye')
+    else:
+        print('Goodbye')
+
+
+def play_game():
+    blackjack = Blackjack()
+    blackjack.shuffle()
+    blackjack_cards = blackjack.begin_game()
+    is_blackjack_true = blackjack.is_blackjack(blackjack_cards)
+    return blackjack, blackjack_cards, is_blackjack_true
+
+
+def hit_or_stand(blackjack, blackjack_cards):
+    hit = input('Would you like to Hit or Stand? [H / S]\n')
+    if hit.upper() == "H":
+        blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
+        blackjack.calculate_value_of_hand(blackjack_cards[0])
+        blackjack.dealer_card_if_less_than_17(blackjack_cards)
+        if blackjack.calculate_value_of_hand(blackjack_cards[0]) < 21:
+            blackjack.display_value_of_players_hand(blackjack_cards)
+            hit_or_stand(blackjack, blackjack_cards)
+        else:
+            if blackjack.is_player_winner(blackjack_cards):
+                blackjack.display_value_of_hands(blackjack_cards)
+                print('Player Wins')
+            elif blackjack.is_draw(blackjack_cards):
+                blackjack.display_value_of_hands(blackjack_cards)
+                print('Draw')
+            else:
+                blackjack.display_value_of_hands(blackjack_cards)
+                print('Dealer Wins')
+    else:
+        if blackjack.is_player_winner(blackjack_cards):
+            blackjack.display_value_of_hands(blackjack_cards)
+            print('Player Wins')
+        elif blackjack.is_draw(blackjack_cards):
+            blackjack.display_value_of_hands(blackjack_cards)
+            print('Draw')
+        else:
+            blackjack.display_value_of_hands(blackjack_cards)
+            print('Dealer Wins')
+
 
 # create a deck [CLASS]
 class Deck:
@@ -21,6 +75,7 @@ class Deck:
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         self.cards = [{'value': value, 'suit': suit} for value in values for suit in suits] * number_of_decks
 
+
 # create a card [CLASS]
 class Card:
 
@@ -29,6 +84,7 @@ class Card:
 
     def __repr__(self):
         return f'{self.card["value"]} of {self.card["suit"]}'
+
 
 # play game [CLASS]
 class Blackjack:
@@ -57,21 +113,25 @@ class Blackjack:
         dealers_cards = [dealer_card_1, dealer_card_2]
         return players_cards, dealers_cards
 
-    # stand [reveal dealer card, and deal another card to dealer if less than 17]
+    # calculate if dealer hand less than 17
+    def dealer_card_if_less_than_17(self, playing_cards):
+        while self.calculate_value_of_hand(playing_cards[1]) < 17:
+            self.deal_card_to_dealer(playing_cards)
+        return playing_cards
 
     # deal another card to player
-    def deal_card_to_player(self, starting_cards):
+    def deal_card_to_player(self, playing_cards):
         player_card = Card(self.deal())
-        players_cards = starting_cards[0]
+        players_cards = playing_cards[0]
         players_cards.append(player_card)
-        return players_cards, starting_cards[1]
+        return players_cards, playing_cards[1]
 
     # deal another card to dealer
-    def deal_card_to_dealer(self, starting_cards):
+    def deal_card_to_dealer(self, playing_cards):
         dealer_card = Card(self.deal())
-        dealers_cards = starting_cards[1]
+        dealers_cards = playing_cards[1]
         dealers_cards.append(dealer_card)
-        return starting_cards[0], dealers_cards
+        return playing_cards[0], dealers_cards
 
     # deal method
     def deal(self):
@@ -83,13 +143,14 @@ class Blackjack:
         return len(self.blackjack_deck.cards)
 
     # is blackjack method
-    def is_blackjack(self, starting_cards):
-        players_hand = self.calculate_value_of_hand(starting_cards[0])
+    def is_blackjack(self, playing_cards):
+        players_hand = self.calculate_value_of_hand(playing_cards[0])
         if players_hand == 21:
-            print(f'Blackjack\nPlayer\'s cards are: {starting_cards[0]}, Hand value is: {players_hand}')
+            print(f'Blackjack\nPlayer\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
             return True
         else:
-            print(f'Player\'s cards are: {starting_cards[0]}, Hand value is: {players_hand} \nDealer\'s first card is: {starting_cards[1][0]}')
+            print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
+            print(f'Dealer\'s first card is: {playing_cards[1][0]}')
             return False
 
     # calculate hand value
@@ -104,6 +165,37 @@ class Blackjack:
         else:
             return sum(hand_as_list_of_integers)
 
+    # display value of hand to player
+    def display_value_of_players_hand(self, playing_cards):
+        players_hand = self.calculate_value_of_hand(playing_cards[0])
+        print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
+        print(f'Dealer\'s first card is: {playing_cards[1][0]}')
+
+    # display value of both hands
+    def display_value_of_hands(self, playing_cards):
+        players_hand = self.calculate_value_of_hand(playing_cards[0])
+        dealers_hand = self.calculate_value_of_hand(playing_cards[1])
+        print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
+        print(f'Dealer\'s cards are: {playing_cards[1]}, Hand value is: {dealers_hand}')
+
+    # calculate is draw
+    def is_draw(self, playing_cards):
+        players_hand = self.calculate_value_of_hand(playing_cards[0])
+        dealers_hand = self.calculate_value_of_hand(playing_cards[1])
+        if players_hand == dealers_hand:
+            return True
+
+    # calculate if player winner
+    def is_player_winner(self, playing_cards):
+        players_hand = self.calculate_value_of_hand(playing_cards[0])
+        dealers_hand = self.calculate_value_of_hand(playing_cards[1])
+        if players_hand <= 21 and dealers_hand <= 21:
+            return players_hand > dealers_hand
+        elif players_hand > 21:
+            return False
+        elif dealers_hand > 21:
+            return True
+
     # shuffle method
     def shuffle(self):
         deck_length = len(self.blackjack_deck.cards)
@@ -114,25 +206,6 @@ class Blackjack:
             self.blackjack_deck.cards[index_b] = card_a
         return self.blackjack_deck.cards
 
+
 if __name__ == '__main__':
-    print('Welcome to Blackjack')
-    play_game = input('Would you like to play? [Y / N]\n')
-    if play_game.upper() == "Y":
-        new_game = Blackjack()
-        new_game.shuffle()
-        starting_blackjack_cards = new_game.begin_game()
-        new_game.is_blackjack(starting_blackjack_cards)
-        if not new_game.is_blackjack(starting_blackjack_cards):
-            deal_another_player_card = input('Would you like to Hit or Stand? [Hit / Stand]\n')
-            if deal_another_player_card.upper() == "HIT":
-                card_dealt_to_player = new_game.deal_card_to_player(starting_blackjack_cards)
-                new_game.calculate_value_of_hand(starting_blackjack_cards[0])
-                new_game.deal_card_to_dealer(card_dealt_to_player)
-        else:
-            print('You Won! Goodbye')
-    else:
-        print('Goodbye')
-
-
-
-
+    main()
