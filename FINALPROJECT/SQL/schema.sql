@@ -47,7 +47,9 @@ INSERT INTO user_info (UserName, FirstName, LastName, PasswordSalt, PasswordHash
 VALUES
 (user_name, first_name, last_name, salt, hashed_pass);
 END//
+DELIMTER ;
 
+DELIMITER //
 CREATE PROCEDURE `validate_user`(user_name varchar(20), raw_pass varchar(40))
 BEGIN
 DECLARE salt char(10) default (SELECT PasswordSalt FROM user_info WHERE UserName=user_name);
