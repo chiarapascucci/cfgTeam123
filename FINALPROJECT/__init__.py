@@ -1,6 +1,20 @@
 from flask import Flask
+import mysql.connector
+from typing import List
+from FINALPROJECT.config import USER, PASSWORD, HOST
+from flask_bcrypt import Bcrypt
+
 
 app = Flask(__name__)
+
+
+# bcrypt = Bcrypt(app)
+
+
+"""
+https://hackersandslackers.com/configure-flask-applications/
+above is link with info about app.config for when you want to encrypt information i think
+"""
 
 app.config['SECRET_KEY'] = '1851c6857d5faef882b989422f9d3165'
 
