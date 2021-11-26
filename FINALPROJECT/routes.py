@@ -130,7 +130,7 @@ def logsessionend():
             my_cur = connection.cursor()
             my_cur.execute(query)
             result = my_cur.fetchall()
-           
+
             my_cur.close()
             connection.close()
             print("connection closed")
