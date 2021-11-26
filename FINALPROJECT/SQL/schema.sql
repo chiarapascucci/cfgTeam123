@@ -6,7 +6,7 @@ CREATE TABLE user_info (
 UserID int primary key AUTO_INCREMENT,
 UserName varchar(20) UNIQUE NOT NULL,
 FirstName varchar(50) NOT NULL,
-SecondName varchar(50) NOT NULL,
+LastName varchar(50) NOT NULL,
 PasswordHash varchar(256) NOT NULL,
 LastLogin datetime
 );
