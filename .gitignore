@@ -1,3 +1,10 @@
 .DS_Store
 .DS_Store?
 .idea/
+config.py
+.idea
+__pycache__
+/__pycache__/
+bootstrap.*
+FINALPROJECT/static/jquery-3.3.1.min.js
+

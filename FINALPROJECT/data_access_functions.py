@@ -1,4 +1,8 @@
+from typing import List
+
 import mysql.connector
+
+from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
 
 db = mysql.connector.connect(host="34.89.124.173",
                              user="root",
@@ -6,6 +10,43 @@ db = mysql.connector.connect(host="34.89.124.173",
                              database="productivity_app")
 
 mycursor = db.cursor()
+
+class DBConnectionError(Exception):
+    pass
+
+
+def _connect_to_db(db_name: str):
+    cnx = mysql.connector.connect(host=HOST,
+                                  user=USER,
+                                  password=PASSWORD,
+                                  auth_plugin='mysql_native_password',
+                                  database='productivity_app')
+    return cnx
+
+
+def get_all_records() -> List:
+    db_connection = None
+    try:
+        db_name = DB_NAME
+        db_connection = _connect_to_db(db_name)
+        cursor = db_connection.cursor()
+        query = ""
+        cursor.execute(query)
+        result = cursor.fetchall()
+        for i in result:
+            print(i)
+        cursor.close()
+
+        return result
+
+    except Exception:
+        raise DBConnectionError('Failed to read the data from DB')
+
+    finally:
+        if db_connection:
+            db_connection.close()
+            print('DB Connection is now closed.')
+
 
 
 def create_user_in_db(user_name, first_name, last_name, password):

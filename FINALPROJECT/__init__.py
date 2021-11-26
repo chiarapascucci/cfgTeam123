@@ -2,13 +2,13 @@ from flask import Flask
 import mysql.connector
 from typing import List
 from FINALPROJECT.config import USER, PASSWORD, HOST
-from flask_bcrypt import Bcrypt
+
 
 
 app = Flask(__name__)
 
 
-# bcrypt = Bcrypt(app)
+
 
 
 """
