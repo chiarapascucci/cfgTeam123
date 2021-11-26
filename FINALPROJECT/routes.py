@@ -2,12 +2,12 @@ from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
-from wtforms import validators
-from typing import List
+
+
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-from config import USER, PASSWORD, HOST, DB_NAME
-import mysql.connector
-import json
+
+from FINALPROJECT.config import DB_NAME
+
 
 
 
@@ -27,9 +27,9 @@ def home():
     return render_template('home.html', title='home')
 
 
-@app.route('/tester')
-def tester():
-    return render_template('tester.html', title='tester')
+# @app.route('/tester')
+# def tester():
+#     return render_template('tester.html', title='tester')
 
 
 @app.route('/register', methods=['GET', 'POST'])
