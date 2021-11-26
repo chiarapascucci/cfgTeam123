@@ -93,6 +93,8 @@ class Blackjack:
 
     def __init__(self):
         self.blackjack_deck = Deck(1)
+        self.record_win = 0
+        self.record_loss = 0
 
     # convert card values to integer
     @staticmethod
