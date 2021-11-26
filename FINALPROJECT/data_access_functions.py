@@ -1,5 +1,5 @@
 from typing import List
-from flask_bcrypt import Bcrypt
+
 import mysql.connector
 
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
@@ -10,7 +10,6 @@ db = mysql.connector.connect(host="34.89.124.173",
                              database="productivity_app")
 
 mycursor = db.cursor()
-
 
 class DBConnectionError(Exception):
     pass
@@ -49,29 +48,20 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
+
 def create_user_in_db(user_name, first_name, last_name, password):
     mycursor.execute("""
-    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash) 
-    VALUES ('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
+    CALL register_user('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
     db.commit()
     return True
 
 
-def validate_user(user_name, hashed_password):
+def validate_user(user_name, password):
     mycursor.execute("""
-    SELECT UserID
-    FROM user_info
-    WHERE PasswordHash = '{}'
-    and UserName = '{}'
-    """.format(hashed_password, user_name))
-    user_id = mycursor.fetchone()[0]
-    if user_id is None:
-        raise UserNotFoundException()
+    CALL validate_user('{}','{}')
+    """.format(user_name, password))
+    user_id = mycursor.fetchall()
     return user_id
-
-
-class UserNotFoundException(Exception):
-    pass
 
 
 def get_user_first_last_name(user_id):
@@ -130,16 +120,3 @@ def display_total_game_history(user_id):
     WHERE s.UserID = {}""".format(user_id))
     user_game_history = mycursor.fetchall()
     return user_game_history
-
-
-"""Testing to check create_user_in_db and validate_user functions work with DB"""
-
-if __name__ == '__main__':
-    bcrypt = Bcrypt()
-    hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
-    create_user_in_db('Danya5', 'Daniella', 'Tobit', hashed_pass)
-    try:
-        print(validate_user('aa', 'bb'))
-    except:
-        pass
-    print(validate_user('Danya5', hashed_pass))
