@@ -4,10 +4,10 @@ import mysql.connector
 
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
 
-db = mysql.connector.connect(host="34.89.124.173",
-                             user="root",
-                             password="cfgteam123",
-                             database="productivity_app")
+db = mysql.connector.connect(host=HOST,
+                             user=USER,
+                             password=PASSWORD,
+                             database=DB_NAME)
 
 mycursor = db.cursor()
 
@@ -16,20 +16,20 @@ class DBConnectionError(Exception):
     pass
 
 
-def _connect_to_db(db_name: str):
+def _connect_to_db():
     cnx = mysql.connector.connect(host=HOST,
                                   user=USER,
                                   password=PASSWORD,
                                   auth_plugin='mysql_native_password',
-                                  database='productivity_app')
+                                  database=DB_NAME)
     return cnx
 
 
 def get_all_records() -> List:
     db_connection = None
     try:
-        db_name = DB_NAME
-        db_connection = _connect_to_db(db_name)
+
+        db_connection = _connect_to_db()
         cursor = db_connection.cursor()
         query = ""
         cursor.execute(query)
@@ -131,6 +131,18 @@ def display_total_game_history(user_id):
     user_game_history = mycursor.fetchall()
     return user_game_history
 
+def test_db_connection():
+    try:
+        cnx = _connect_to_db()
+        cur = cnx.cursor()
+        query = "show TABLES"
+        cur.execute(query)
+        result = cur.fetchall()
+        print(result)
+        cur.close()
+        cnx.close()
+    except Exception:
+        raise DBConnectionError
 
 """Testing to check create_user_in_db and validate_user functions work with DB"""
 
