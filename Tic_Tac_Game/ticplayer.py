@@ -59,21 +59,13 @@ class Player(Board):
             return move
 
         # check if any of the possible movers are corners
-        open_corners = []
-        for i in possible_moves:
-            if i in [1, 3, 7, 9]:
-                open_corners.append(i)
-
+        open_corners = [i for i in possible_moves if i in [1, 3, 7, 9]]
         if len(open_corners) > 0:
             move = self.random_move(open_corners)
             return move
 
-        open_edge = []
         # if any edges open
-        for i in possible_moves:
-            if i in [2, 4, 6, 8]:
-                open_edge.append(i)
-
+        open_edge = [i for i in possible_moves if i in [2, 4, 6, 8]]
         if len(open_edge) > 0:
             move = self.random_move(open_edge)
 
