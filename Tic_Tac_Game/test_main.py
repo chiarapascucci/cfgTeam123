@@ -1,5 +1,5 @@
 import unittest
-from main import tic_tac_play, create_game
+from main import tic_tac_play, pick_letter
 
 
 # how to mock ??

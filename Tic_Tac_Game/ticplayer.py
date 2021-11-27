@@ -13,14 +13,14 @@ class Player(Board):
         return move_answer
 
     def human_move(self):
-        run = True
-        while run:
+        flag = True
+        while flag:
             move = self.get_move()
             try:
                 move = int(move)
                 if (move > 0) and (move < 10):
                     if self.space_available(move):
-                        run = False
+                        flag = False
                         self.make_move(self.letter, move)
                     else:
                         print("Sorry, this space is not available to play i")
@@ -35,6 +35,7 @@ class Player(Board):
 
     def computer_move(self):
         possible_moves = []
+
         # collects all the position that aren't yet filled
         for index, x_or_o in enumerate(Board.board):
             if x_or_o == " " and index != 0:
