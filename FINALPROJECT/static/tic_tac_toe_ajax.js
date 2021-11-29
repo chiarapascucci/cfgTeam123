@@ -63,19 +63,20 @@ function play_comp_turn(){
                 cell.text('o');
                 cell.attr('disabled', true);
                 msg.text("it's a tie!");
-                clear_table();
+                setTimeout(function (){clear_table()}, 1500)
+
             }
             else if (data['comp_win'] === '0'){
                 console.log("comp win");
                 cell.text('o');
                 cell.attr('disabled', true);
                 msg.text("I win!");
-                clear_table();
+                setTimeout(function (){clear_table()}, 1500)
             }
             else if (data['hum_win'] === '0'){
                 console.log("human win");
                 msg.text("You win!");
-                clear_table();
+                setTimeout(function (){clear_table()}, 1500)
             }
             else {
                 let comp_move = data['comp_move'];
@@ -95,6 +96,8 @@ function clear_table(){
         let cell = $(id_str)
         cell.attr("disabled", false);
         cell.text("");
+        let msg = $('#end-msg')
+        msg.text("let's go again")
 
     }
 }

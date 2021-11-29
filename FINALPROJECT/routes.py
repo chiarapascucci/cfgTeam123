@@ -52,9 +52,11 @@ def login():
 def tic_tac():
     return render_template('tic_tac.html', title='Tic Tac Toe!')
 
+
 @app.route('/tic-tac-toe-ajax')
 def process_tic_tac_toe():
     pass
+
 
 @app.route('/start-timer')
 def starttimer():
@@ -64,6 +66,7 @@ def starttimer():
 @app.route('/browsegames')
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
+
 
 @app.route('/log-session-start', methods=['GET', 'POST'])
 def logsessionstart():
@@ -132,6 +135,7 @@ def logsessionend():
 @app.route('/play-tic-tac-toe')
 def tic_tac_toe():
     return render_template('tic_tac.html', title="tictactoe")
+
 
 @app.route('/tic-tac-ajax', methods=['GET', 'POST'])
 def process_tic_tac():
