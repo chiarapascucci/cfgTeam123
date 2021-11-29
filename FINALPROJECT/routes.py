@@ -1,3 +1,5 @@
+import json
+
 from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
     create_new_session
@@ -5,7 +7,7 @@ from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
 
 from FINALPROJECT.config import DB_NAME
-
+from FINALPROJECT.tic_tac_toe import receive_move
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -126,5 +128,28 @@ def logsessionend():
     except DBConnectionError:
         print("db connection failed")
 
+
+@app.route('/play-tic-tac-toe')
+def tic_tac_toe():
+    return render_template('tic_tac.html', title="tictactoe")
+
+@app.route('/tic-tac-ajax', methods=['GET', 'POST'])
+def process_tic_tac():
+    if request.method == 'POST':
+
+        data = request.get_json()
+
+        print(data)
+        state = {}
+        x_list = [int(c) for c in data['x']]
+        o_list = [int(c) for c in data['o']]
+        print(x_list)
+        print(o_list)
+
+        state['x'] = set(x_list)
+        state['o'] = set(o_list)
+
+        result = receive_move(state)
+        return jsonify(result)
 
 

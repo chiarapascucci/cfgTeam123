@@ -14,26 +14,29 @@
 
 <div class="container">
     <div class="col-lg-3">
-        <table class="table table-bordered">
+        <table id="tic-tac-table" class="table table-bordered">
 
         <tbody>
-        <tr>
-            <td id="1" onclick="cell_clicked(1)"> </td>
-            <td id="2" onclick="cell_clicked(2)"> </td>
-            <td id="3" onclick="cell_clicked(3)"> </td>
+        <tr id="row-1">
+            <td id="c1" onclick="cell_clicked(1)" ></td>
+            <td id="c2" onclick="cell_clicked(2)" ></td>
+            <td id="c3" onclick="cell_clicked(3)"></td>
         </tr>
-        <tr>
-            <td id="4" onclick="cell_clicked(4)"> </td>
-            <td id="5" onclick="cell_clicked(5)"> </td>
-            <td id="6" onclick="cell_clicked(6)"> </td>
+        <tr id="row-2">
+            <td id="c4" onclick="cell_clicked(4)"></td>
+            <td id="c5" onclick="cell_clicked(5)"></td>
+            <td id="c6" onclick="cell_clicked(6)"></td>
         </tr>
-        <tr>
-            <td id="7" onclick="cell_clicked(7)"> </td>
-            <td id="8" onclick="cell_clicked(8)"> </td>
-            <td id="9" onclick="cell_clicked(9)"> </td>
+        <tr id="row-3">
+            <td id="c7" onclick="cell_clicked(7)"></td>
+            <td id="c8" onclick="cell_clicked(8)"></td>
+            <td id="c9" onclick="cell_clicked(9)" ></td>
         </tr>
         </tbody>
     </table>
+    </div>
+    <div class="col-lg-3">
+        <p id="end-msg"></p>
     </div>
 
 </div>
