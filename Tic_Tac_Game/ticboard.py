@@ -7,7 +7,7 @@ class Board:
 
     @classmethod
     def clear_board(cls):
-        return cls.board.clear()
+        cls.board = [" " for x in range(10)]
 
     def display_board(self):
         print("      |      |")
@@ -46,3 +46,6 @@ class Board:
     def make_move(self, x_or_o, position):
         self.board[position] = x_or_o
 
+
+# board1 = Board
+# board1.display_board()

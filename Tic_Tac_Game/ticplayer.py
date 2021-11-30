@@ -3,10 +3,11 @@ from ticboard import Board
 
 
 class Player(Board):
-    def __init__(self, name = "Anonymous", computer_player = False):
+    def __init__(self, name="Anonymous", computer_player = False):
         self.name = name
         self.computer_player = computer_player
         self.letter = "X"
+        self.score = 0
 
     def get_move(self):
         move_answer = input("Enter the position you would like to play(1-9): ")
@@ -23,7 +24,7 @@ class Player(Board):
                         flag = False
                         self.make_move(self.letter, move)
                     else:
-                        print("Sorry, this space is not available to play i")
+                        print(f"Sorry, this space is not available to play {move}")
                 else:
                     print("Please enter a position within the range (1-9)")
             except ValueError:
@@ -43,8 +44,7 @@ class Player(Board):
 
         move = 0
 
-        # if move we can make that will result in a win and if opponent's move can result in win
-        # make the move
+        # make move if move we can make or opponent's move there that will result in a win
         for let in ["O", "X"]:
             for i in possible_moves:
                 board_copy = self.board.copy()

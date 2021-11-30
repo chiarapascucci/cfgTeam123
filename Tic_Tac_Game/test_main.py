@@ -1,11 +1,11 @@
 import unittest
-from main import tic_tac_play, pick_letter
+from ticplayer import Player
 
 
 # how to mock ??
-class TicTacPlayTest(unittest.TestCase):
+class TestPlayer(unittest.TestCase):
     # This is a test to test if the function works on something we expect it to work on
-    def test_tic_tac_play(self):
+    def test_(self):
         pass
 
     def test_create_game(self):

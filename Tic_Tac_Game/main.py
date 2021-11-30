@@ -16,7 +16,7 @@ def pick_letter():
     flag = True
     while flag:
         try:
-            is_x_or_o = input("X goes first, \nWould you like to be \"X\" or \"O\": ")
+            is_x_or_o = input("\nX goes first, Would you like to be \"X\" or \"O\": ")
             is_x_or_o = is_x_or_o.upper()
 
             if is_x_or_o == "X" or is_x_or_o == "O":
@@ -52,12 +52,14 @@ def computer_turn(board1, computer1):
 
 def human_play_first(person1, computer1, board1):
     # While there is space to play
+
     while not(board1.no_space_on_board()):
         # if the winner is not computer then you play next
         if not (board1.is_a_win(Board.board_board(), computer1.letter)):
             human_turn(board1, person1)
         else:
             print("You lose, O won")
+            computer1.score += 1
             break
 
         if not (board1.is_a_win(Board.board_board(), person1.letter)):
@@ -65,6 +67,7 @@ def human_play_first(person1, computer1, board1):
 
         else:
             print("You WIN!, Congratulations")
+            person1.score = +1
             break
 
     a_draw(board1)
@@ -78,6 +81,7 @@ def computer_play_first(board1, person1, computer1):
             computer_turn(board1, computer1)
         else:
             print("You WIN!, Congratulations")
+            person1.score += 1
             break
 
         # if the winner is not computer then you play next
@@ -85,27 +89,50 @@ def computer_play_first(board1, person1, computer1):
             human_turn(board1, person1)
         else:
             print("You lose, O won")
+            computer1.score += 1
             break
 
     a_draw(board1)
 
 
-# if no more spaces to make a move then  no winner yet it's a tie
+# if no more spaces to move & no winner yet - it's a tie
 def a_draw(board1):
     if board1.no_space_on_board():
         print("It's a Draw!")
 
 
 # "X" goes first
+def go_first(board1, person1, computer1):
+    if person1.letter == "X":
+        human_play_first(person1, computer1, board1)
+        print_score(person1, computer1)
+    else:
+        computer_play_first(board1, person1, computer1)
+        print_score(person1, computer1)
+
+
+def play_again(board1, person1, computer1):
+    while True:
+        again = input("Would you like to play again? Y/N ")
+        again = again.upper()
+        if again == "Y":
+            board1.clear_board()
+            go_first(board1, person1, computer1)
+        else:
+            print_score(person1, computer1)
+            break
+
+
 def tic_tac_play():
     board1 = start_game()
     game = pick_letter()
     (person1, computer1) = game
+    go_first(board1, person1, computer1)
+    play_again(board1, person1, computer1)
 
-    if person1.letter == "X":
-        human_play_first(person1, computer1, board1)
-    else:
-        computer_play_first(board1, person1, computer1)
+
+def print_score(person1, computer1):
+    print(f"Your score is {person1.score}, your opponent's score is {computer1.score}")
 
 
 if __name__ == '__main__':
