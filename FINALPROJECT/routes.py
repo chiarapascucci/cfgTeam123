@@ -1,5 +1,7 @@
 import json
 
+import bcrypt
+from FINALPROJECT.ayeshamodels import User
 from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
     create_new_session
@@ -8,12 +10,16 @@ from flask import Flask, jsonify, request, render_template, url_for, redirect, f
 
 from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.tic_tac_toe import receive_move
+# from flask_bcrypt import Bcrypt
+
+
 
 """
 https://hackersandslackers.com/configure-flask-applications/
 above is link with info about app.config for when you want / encrypt information i think
 """
 
+# bcrypt = Bcrypt(app)
 
 @app.route('/')
 def home():
@@ -30,7 +36,9 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         # hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        create_user_in_db(form.user_name.data, form.first_name.data, form.last_name.data, form.password.data)
+        # create_user_in_db(form.user_name.data, form.first_name.data, form.last_name.data, form.password.data)
+        user = User(form.user_name.data, form.first_name.data, form.last_name.data, form.email.data, form.password.data)
+        user.create_user_in_db()
         flash(f'Account created for {form.user_name.data}!', 'Success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
