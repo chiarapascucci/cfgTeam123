@@ -47,8 +47,11 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('home'))
     if form.validate_on_submit():
-        validate_user(form.user_name.data, form.password.data)
+        # user.validate_user()
+        # validate_user(form.user_name.data, form.password.data)
         flash('You have been logged in', 'success')
         return redirect(url_for('home'))
     else:
