@@ -1,5 +1,5 @@
 from typing import List
-
+from flask_bcrypt import Bcrypt
 import mysql.connector
 
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
@@ -49,20 +49,29 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
-
-def create_user_in_db(user_name, first_name, last_name, password):
+def create_user_in_db(user_name, first_name, last_name, password, email=None):
     mycursor.execute("""
-    CALL register_user('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
+    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
+    VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
     db.commit()
     return True
 
 
-def validate_user(user_name, password):
+def validate_user(user_name, hashed_password):
     mycursor.execute("""
-    CALL validate_user('{}','{}')
-    """.format(user_name, password))
-    user_id = mycursor.fetchall()
+    SELECT UserID
+    FROM user_info
+    WHERE PasswordHash = '{}'
+    and UserName = '{}'
+    """.format(hashed_password, user_name))
+    user_id = mycursor.fetchone()[0]
+    if user_id is None:
+        raise UserNotFoundException()
     return user_id
+
+
+class UserNotFoundException(Exception):
+    pass
 
 
 def get_user_first_last_name(user_id):
@@ -135,3 +144,15 @@ def test_db_connection():
     except Exception:
         raise DBConnectionError
 
+
+"""Test to check create_user_in_db and validate_user functions work with DB"""
+
+if __name__ == '__main__':
+    bcrypt = Bcrypt()
+    hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
+    create_user_in_db('Danya5', 'Daniella', 'Tobit', hashed_pass)
+    try:
+        print(validate_user('aa', 'bb'))
+    except:
+        pass
+    print(validate_user('Danya5', hashed_pass))

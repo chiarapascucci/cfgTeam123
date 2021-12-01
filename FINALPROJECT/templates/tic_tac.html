@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        table td {
+            width: 90px;
+            height: 90px;
+            overflow: hidden;
+            display: inline-block;
+            border: double black;
+
+        }
+    </style>
+
+<div class="container">
+    <div class="col-lg-3">
+        <table id="tic-tac-table" class="table table-bordered">
+
+        <tbody>
+        <tr id="row-1">
+            <td id="c1" onclick="cell_clicked(1)" ></td>
+            <td id="c2" onclick="cell_clicked(2)" ></td>
+            <td id="c3" onclick="cell_clicked(3)"></td>
+        </tr>
+        <tr id="row-2">
+            <td id="c4" onclick="cell_clicked(4)"></td>
+            <td id="c5" onclick="cell_clicked(5)"></td>
+            <td id="c6" onclick="cell_clicked(6)"></td>
+        </tr>
+        <tr id="row-3">
+            <td id="c7" onclick="cell_clicked(7)"></td>
+            <td id="c8" onclick="cell_clicked(8)"></td>
+            <td id="c9" onclick="cell_clicked(9)" ></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="col-lg-3">
+        <p id="end-msg"></p>
+    </div>
+
+</div>
+    <script src="../static/tic_tac_toe_ajax.js"></script>
+{% endblock %}
