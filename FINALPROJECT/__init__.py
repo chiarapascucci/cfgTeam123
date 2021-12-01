@@ -1,15 +1,6 @@
 from flask import Flask
-import mysql.connector
-from typing import List
-from FINALPROJECT.config import USER, PASSWORD, HOST
-
-
 
 app = Flask(__name__)
-
-
-
-
 
 """
 https://hackersandslackers.com/configure-flask-applications/

@@ -33,7 +33,8 @@ def play_game():
     blackjack.shuffle()
     blackjack_cards = blackjack.begin_game()
     is_blackjack_true = blackjack.is_blackjack(blackjack_cards)
-    return blackjack, blackjack_cards, is_blackjack_true
+    value_of_starting_hands = blackjack.display_value_of_players_hand(blackjack_cards)
+    return blackjack, blackjack_cards, is_blackjack_true, value_of_starting_hands
 
 
 def hit_or_stand(blackjack, blackjack_cards):
@@ -164,8 +165,7 @@ class Blackjack:
     # display value of hand to player
     def display_value_of_players_hand(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
-        print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
-        print(f'Dealer\'s first card is: {playing_cards[1][0]}')
+        return [f'Player\'s cards are: {playing_cards[0]}. Hand value is: {players_hand}', f'Dealer\'s first card is: {playing_cards[1][0]}']
 
     # display value of both hands
     def display_value_of_hands(self, playing_cards):

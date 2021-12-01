@@ -1,13 +1,9 @@
 import json
 
 from FINALPROJECT import app
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
-    create_new_session
-from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-
-from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.tic_tac_toe import receive_move
+from FINALPROJECT.blackjack import play_game
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -48,14 +44,14 @@ def login():
     return render_template('login.html', title='login', form=form)
 
 
-@app.route('/tic-tac-toe')
-def tic_tac():
-    return render_template('tic_tac.html', title='Tic Tac Toe!')
-
-
-@app.route('/tic-tac-toe-ajax')
-def process_tic_tac_toe():
-    pass
+# @app.route('/tic-tac-toe')
+# def tic_tac():
+#     return render_template('tic_tac.html', title='Tic Tac Toe!')
+#
+#
+# @app.route('/tic-tac-toe-ajax')
+# def process_tic_tac_toe():
+#     pass
 
 
 @app.route('/start-timer')
@@ -74,7 +70,6 @@ def logsessionstart():
     try:
         connection = _connect_to_db()
         if request.method == 'POST':
-
             print("post request received")
 
             data_dict = request.get_json()
@@ -140,7 +135,6 @@ def tic_tac_toe():
 @app.route('/tic-tac-ajax', methods=['GET', 'POST'])
 def process_tic_tac():
     if request.method == 'POST':
-
         data = request.get_json()
 
         print(data)
@@ -157,3 +151,27 @@ def process_tic_tac():
         return jsonify(result)
 
 
+# blackjack routes
+
+@app.route('/blackjack')
+def blackjack():
+    return render_template('blackjack.html', title='Blackjack')
+
+
+@app.route('/blackjack-start-ajax', methods=['GET'])
+def start_blackjack_game():
+    blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
+    players_cards = blackjack_cards[0][0].card, blackjack_cards[0][1].card
+    dealers_cards = blackjack_cards[1][0].card, blackjack_cards[1][1].card
+    blackjack_cards = blackjack_object.blackjack_deck.cards
+    return jsonify(players_cards, dealers_cards, is_blackjack_true, blackjack_cards, value_of_starting_hands)
+
+
+@app.route('/blackjack-player-stand', methods=['POST'])
+def player_stand_blackjack():
+    data = request.get_json()
+    blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
+    players_cards = blackjack_cards[0][0].card, blackjack_cards[0][1].card
+    dealers_cards = blackjack_cards[1][0].card, blackjack_cards[1][1].card
+    blackjack_cards = blackjack_object.blackjack_deck.cards
+    return jsonify(players_cards, dealers_cards, is_blackjack_true, blackjack_cards, value_of_starting_hands)

@@ -47,6 +47,7 @@ def check_if_win(state: dict):
 
     return False
 
+
 # for testing
 if __name__ == '__main__':
     state = {
@@ -54,5 +55,5 @@ if __name__ == '__main__':
         'o': ['5', '8', '2']
     }
 
-    result= receive_move(state)
+    result = receive_move(state)
     print(result)
