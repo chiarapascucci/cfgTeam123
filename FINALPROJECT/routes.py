@@ -5,9 +5,8 @@ from FINALPROJECT.data_access_functions import create_user_in_db, validate_user,
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-
 from FINALPROJECT.config import DB_NAME
-from FINALPROJECT.tic_tac_toe import receive_move
+from Tic_Tac_Game.ticboard import Board
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -144,16 +143,37 @@ def process_tic_tac():
         data = request.get_json()
 
         print(data)
-        state = {}
+        # state = {}
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
         print(x_list)
         print(o_list)
 
-        state['x'] = set(x_list)
-        state['o'] = set(o_list)
+        board1 = Board(x_list, o_list)
+        game_end = 0
+        comp_win = 0
+        hum_win = 0
 
-        result = receive_move(state)
-        return jsonify(result)
+        comp_move = board1.computer_move()
+        computer_win = board1.is_a_win("o")
+        human_win = board1.is_a_win("x")
+        if human_win:
+            hum_win = 1
+            comp_move = 0
+            comp_win = 0
+            game_end = 1
+        elif computer_win:
+            comp_win = 1
+            hum_win = 0
+            game_end = 1
 
+        return {'comp_move': str(comp_move), 'comp_win': str(comp_win), 'hum_win': str(hum_win), 'game_end': str(game_end)}
+
+
+        # state['x'] = set(x_list)
+        # state['o'] = set(o_list)
+        #
+        # result = receive_move(state)
+        # return jsonify(result)
+        #
 
