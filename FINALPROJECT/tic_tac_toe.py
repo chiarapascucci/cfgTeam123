@@ -100,5 +100,5 @@ if __name__ == '__main__':
         'o': ['5', '8', '2']
     }
 
-    result= receive_move(state)
+    result = receive_move(state)
     print(result)

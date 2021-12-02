@@ -1,4 +1,5 @@
 import json
+import random
 
 from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
@@ -7,6 +8,7 @@ from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
 
 from FINALPROJECT.config import DB_NAME
+from FINALPROJECT.guess_my_num import play
 from FINALPROJECT.tic_tac_toe import receive_move
 
 """
@@ -48,14 +50,6 @@ def login():
     return render_template('login.html', title='login', form=form)
 
 
-@app.route('/tic-tac-toe')
-def tic_tac():
-    return render_template('tic_tac.html', title='Tic Tac Toe!')
-
-
-@app.route('/tic-tac-toe-ajax')
-def process_tic_tac_toe():
-    pass
 
 
 @app.route('/start-timer')
@@ -132,7 +126,7 @@ def logsessionend():
         print("db connection failed")
 
 
-@app.route('/play-tic-tac-toe')
+@app.route('/tic-tac-toe')
 def tic_tac_toe():
     return render_template('tic_tac.html', title="tictactoe")
 
@@ -157,3 +151,25 @@ def process_tic_tac():
         return jsonify(result)
 
 
+@app.route('/guess-my-number')
+def guess_my_num_game():
+    comp_num = random.randint(1, 200)
+    print(comp_num)
+
+    return render_template('guess_number.html', title="guess_my_number", number = comp_num)
+
+
+@app.route('/number-ajax', methods=['GET', 'POST'])
+def guess_my_num_game_process():
+    if request.method == 'POST':
+
+        data = request.get_json()
+        print(data)
+
+        comp_num = int(data['comp_num'])
+        human_num = int(data['human_num'])
+        guess_num = int(data['no_of_guesses'])
+
+        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num )
+        print(result)
+        return jsonify(result)
