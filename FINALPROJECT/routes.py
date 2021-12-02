@@ -161,8 +161,8 @@ def blackjack():
 @app.route('/blackjack-start-ajax', methods=['GET'])
 def start_blackjack_game():
     blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
-    players_cards = [json.dumps(blackjack_cards[0][0].card), json.dumps(blackjack_cards[0][1].card)]
-    dealers_cards = [json.dumps(blackjack_cards[1][0].card), json.dumps(blackjack_cards[1][1].card)]
+    players_cards = json.dumps((blackjack_cards[0][0].card, blackjack_cards[0][1].card))
+    dealers_cards = json.dumps((blackjack_cards[1][0].card, blackjack_cards[1][1].card))
     remaining_cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
     game_state = {'players_cards': players_cards,
                   'dealers_cards': dealers_cards,
@@ -174,10 +174,15 @@ def start_blackjack_game():
 
 @app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
-    game_state = request.get_json()
-    players_cards = game_state['players_cards']
-    dealers_cards = game_state['dealers_cards']
-    remaining_cards_in_deck = game_state['cards_in_deck']
-    blackjack, blackjack_cards = player_stand(players_cards, dealers_cards, remaining_cards_in_deck)
-    decide_winner(blackjack, blackjack_cards)
-    return jsonify(blackjack)
+    winner = "NOOONE"
+    if request.method == 'POST':
+        game_state = request.get_json()
+        players_cards = json.loads(game_state['players_cards'])
+        dealers_cards = json.loads(game_state['dealers_cards'])
+        remaining_cards_in_deck = json.loads(game_state['cards_in_deck'])
+        blackjack, blackjack_cards = player_stand(players_cards, dealers_cards, remaining_cards_in_deck)
+        print(blackjack)
+        print(blackjack_cards)
+        winner = decide_winner(blackjack, blackjack_cards)
+        print(winner)
+    return jsonify(winner)

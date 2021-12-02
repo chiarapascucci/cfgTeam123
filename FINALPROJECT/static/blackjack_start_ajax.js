@@ -25,10 +25,20 @@ function startGame() {
 
 function playerStand() {
     let gameState = gameStateStorage.innerHTML
-//    let jsonGameState = JSON.stringify(gameState)
     console.log(gameState)
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-player-stand", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
-}
+    xhr.open('GET', "http://127.0.0.1:5000/blackjack-player-stand", true)
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            let gameState = JSON.parse(this.response)
+            console.log(gameState)
+            playerScore.innerHTML = gameState
+            dealerScore.innerHTML = ""
+            }
+        }
+        xhr.send()
+    }
+

@@ -11,7 +11,7 @@
 # As soon as the sum of dealer’s cards is either 17 or more, the dealer is obliged to stand.
 # According to the final sum of the cards, the winner is decided.
 
-from random import randint
+from random import randint, shuffle
 from math import floor
 
 
@@ -58,22 +58,22 @@ def player_chose_hit(blackjack, blackjack_cards):
 
 
 def player_stand(players_cards, dealers_cards, remaining_cards):
-    blackjack = BlackjackStand(players_cards, dealers_cards, remaining_cards)
+    blackjack = BlackjackHitOrStand(players_cards, dealers_cards, remaining_cards)
     blackjack.shuffle()
-    blackjack_cards = players_cards, dealers_cards
+    blackjack_cards = blackjack.players_cards, blackjack.dealers_cards
     return blackjack, blackjack_cards
 
 
 def decide_winner(blackjack, blackjack_cards):
     if blackjack.is_player_winner(blackjack_cards):
         blackjack.display_value_of_hands(blackjack_cards)
-        print('Player Wins')
+        return 'Player Wins'
     elif blackjack.is_draw(blackjack_cards):
         blackjack.display_value_of_hands(blackjack_cards)
-        print('Draw')
+        return 'Draw'
     else:
         blackjack.display_value_of_hands(blackjack_cards)
-        print('Dealer Wins')
+        return 'Dealer Wins'
 
 
 # create a deck [CLASS]
@@ -211,12 +211,20 @@ class Blackjack:
         return len(self.blackjack_deck.cards)
 
 
-class BlackjackStand(Blackjack):
+class DeckHitOrStand(Deck):
+
+    def __init__(self, remaining_cards):
+        self.cards = remaining_cards
+
+
+class BlackjackHitOrStand(Blackjack):
 
     def __init__(self, players_cards, dealers_cards, remaining_cards):
-        self.players_cards = players_cards
-        self.dealers_cards = dealers_cards
-        self.blackjack_deck = remaining_cards
+        self.players_cards = [Card(player_card) for player_card in players_cards]
+        self.dealers_cards = [Card(dealer_card) for dealer_card in dealers_cards]
+        self.blackjack_deck = DeckHitOrStand(remaining_cards)
+
+
 
 
 if __name__ == '__main__':
