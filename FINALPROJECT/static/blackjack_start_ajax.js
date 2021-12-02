@@ -9,27 +9,26 @@ function startGame() {
     xhr.open('GET', "http://127.0.0.1:5000/blackjack-start-ajax", true)
     xhr.onload = function() {
         if (xhr.status == 200) {
-            console.log('success')
-            let blackjack_cards = JSON.parse(this.response)
-            console.log(blackjack_cards)
-            playerScore.innerHTML = blackjack_cards[4][0]
-            dealerScore.innerHTML = blackjack_cards[4][1]
-            gameStateStorage.innerHTML = blackjack_cards
+            let gameState = JSON.parse(this.response)
+            console.log(gameState)
+            if (gameState['is_blackjack_true']) {
+                playerScore.innerHTML = "Blackjack, Player Wins"
+            } else {
+                playerScore.innerHTML = gameState['value_of_starting_hands'][0]
+                dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
+                gameStateStorage.innerHTML = JSON.stringify(gameState)
+            }
         }
     }
     xhr.send()
 }
 
 function playerStand() {
-    const gameState = {
-        name: 'Daisy',
-        age: 35
-    }
-
-    const jsonString = JSON.stringify(gameState)
-    console.log(jsonString)
+    let gameState = gameStateStorage.innerHTML
+//    let jsonGameState = JSON.stringify(gameState)
+    console.log(gameState)
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-player-stand", true)
     xhr.setRequestHeader("Content-Type", "application/json")
-    xhr.send(jsonString)
+    xhr.send(gameState)
 }

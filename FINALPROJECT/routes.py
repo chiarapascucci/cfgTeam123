@@ -3,7 +3,7 @@ import json
 from FINALPROJECT import app
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
 from FINALPROJECT.tic_tac_toe import receive_move
-from FINALPROJECT.blackjack import play_game
+from FINALPROJECT.blackjack import play_game, player_stand, decide_winner
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -161,17 +161,23 @@ def blackjack():
 @app.route('/blackjack-start-ajax', methods=['GET'])
 def start_blackjack_game():
     blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
-    players_cards = blackjack_cards[0][0].card, blackjack_cards[0][1].card
-    dealers_cards = blackjack_cards[1][0].card, blackjack_cards[1][1].card
-    blackjack_cards = blackjack_object.blackjack_deck.cards
-    return jsonify(players_cards, dealers_cards, is_blackjack_true, blackjack_cards, value_of_starting_hands)
+    players_cards = [json.dumps(blackjack_cards[0][0].card), json.dumps(blackjack_cards[0][1].card)]
+    dealers_cards = [json.dumps(blackjack_cards[1][0].card), json.dumps(blackjack_cards[1][1].card)]
+    remaining_cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    game_state = {'players_cards': players_cards,
+                  'dealers_cards': dealers_cards,
+                  'cards_in_deck': remaining_cards_in_deck,
+                  'is_blackjack_true': is_blackjack_true,
+                  'value_of_starting_hands': value_of_starting_hands}
+    return jsonify(game_state)
 
 
-@app.route('/blackjack-player-stand', methods=['POST'])
+@app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
-    data = request.get_json()
-    blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
-    players_cards = blackjack_cards[0][0].card, blackjack_cards[0][1].card
-    dealers_cards = blackjack_cards[1][0].card, blackjack_cards[1][1].card
-    blackjack_cards = blackjack_object.blackjack_deck.cards
-    return jsonify(players_cards, dealers_cards, is_blackjack_true, blackjack_cards, value_of_starting_hands)
+    game_state = request.get_json()
+    players_cards = game_state['players_cards']
+    dealers_cards = game_state['dealers_cards']
+    remaining_cards_in_deck = game_state['cards_in_deck']
+    blackjack, blackjack_cards = player_stand(players_cards, dealers_cards, remaining_cards_in_deck)
+    decide_winner(blackjack, blackjack_cards)
+    return jsonify(blackjack)

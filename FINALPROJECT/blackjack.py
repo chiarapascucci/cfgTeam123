@@ -19,7 +19,7 @@ def main():
     print('Welcome to Blackjack')
     start_game = input('Would you like to play? [Y / N]\n')
     if start_game.upper() == "Y":
-        blackjack, blackjack_cards, is_blackjack_true = play_game()
+        blackjack, blackjack_cards, is_blackjack_true, value_of_starting_cards = play_game()
         if not is_blackjack_true:
             hit_or_stand(blackjack, blackjack_cards)
         else:
@@ -55,6 +55,13 @@ def player_chose_hit(blackjack, blackjack_cards):
     blackjack.calculate_value_of_hand(blackjack_cards[0])
     blackjack.dealer_card_if_less_than_17(blackjack_cards)
     return blackjack_cards
+
+
+def player_stand(players_cards, dealers_cards, remaining_cards):
+    blackjack = BlackjackStand(players_cards, dealers_cards, remaining_cards)
+    blackjack.shuffle()
+    blackjack_cards = players_cards, dealers_cards
+    return blackjack, blackjack_cards
 
 
 def decide_winner(blackjack, blackjack_cards):
@@ -94,8 +101,6 @@ class Blackjack:
 
     def __init__(self):
         self.blackjack_deck = Deck(1)
-        self.record_win = 0
-        self.record_loss = 0
 
     # convert card values to integer
     @staticmethod
@@ -165,7 +170,8 @@ class Blackjack:
     # display value of hand to player
     def display_value_of_players_hand(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
-        return [f'Player\'s cards are: {playing_cards[0]}. Hand value is: {players_hand}', f'Dealer\'s first card is: {playing_cards[1][0]}']
+        return [f'Player\'s cards are: {playing_cards[0]}. Hand value is: {players_hand}',
+                f'Dealer\'s first card is: {playing_cards[1][0]}']
 
     # display value of both hands
     def display_value_of_hands(self, playing_cards):
@@ -203,6 +209,14 @@ class Blackjack:
     # calculate deck length
     def deck_length(self):
         return len(self.blackjack_deck.cards)
+
+
+class BlackjackStand(Blackjack):
+
+    def __init__(self, players_cards, dealers_cards, remaining_cards):
+        self.players_cards = players_cards
+        self.dealers_cards = dealers_cards
+        self.blackjack_deck = remaining_cards
 
 
 if __name__ == '__main__':
