@@ -49,10 +49,17 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
+
 def create_user_in_db(user_name, first_name, last_name, password):
     mycursor.execute("""
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash) 
     VALUES ('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
+
+def create_user_in_db(user_name, first_name, last_name, password, email=None):
+    mycursor.execute("""
+    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
+    VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
+
     db.commit()
     return True
 
@@ -144,7 +151,9 @@ def test_db_connection():
     except Exception:
         raise DBConnectionError
 
+
 """Testing to check create_user_in_db and validate_user functions work with DB"""
+
 
 if __name__ == '__main__':
     bcrypt = Bcrypt()

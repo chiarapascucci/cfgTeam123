@@ -6,10 +6,10 @@ from FINALPROJECT.data_access_functions import create_user_in_db, validate_user,
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-
 from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.guess_my_num import play
 from FINALPROJECT.tic_tac_toe import receive_move
+from Tic_Tac_Game.ticboard import Board
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -50,8 +50,6 @@ def login():
     return render_template('login.html', title='login', form=form)
 
 
-
-
 @app.route('/start-timer')
 def starttimer():
     return render_template('select_break_time.html', title='Start the Timer')
@@ -68,7 +66,6 @@ def logsessionstart():
     try:
         connection = _connect_to_db()
         if request.method == 'POST':
-
             print("post request received")
 
             data_dict = request.get_json()
@@ -134,42 +131,26 @@ def tic_tac_toe():
 @app.route('/tic-tac-ajax', methods=['GET', 'POST'])
 def process_tic_tac():
     if request.method == 'POST':
-
         data = request.get_json()
-
         print(data)
-        state = {}
+        # state = {}
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
         print(x_list)
         print(o_list)
 
-        state['x'] = set(x_list)
-        state['o'] = set(o_list)
+        board1 = Board(x_list, o_list)
 
-        result = receive_move(state)
-        return jsonify(result)
+        comp_move = board1.computer_move()
+        computer_win = board1.is_a_win("o")
+        human_win = board1.is_a_win("x")
 
+        if computer_win:
+            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
 
-@app.route('/guess-my-number')
-def guess_my_num_game():
-    comp_num = random.randint(1, 200)
-    print(comp_num)
-
-    return render_template('guess_number.html', title="guess_my_number", number = comp_num)
-
-
-@app.route('/number-ajax', methods=['GET', 'POST'])
-def guess_my_num_game_process():
-    if request.method == 'POST':
-
-        data = request.get_json()
-        print(data)
-
-        comp_num = int(data['comp_num'])
-        human_num = int(data['human_num'])
-        guess_num = int(data['no_of_guesses'])
-
-        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num )
-        print(result)
-        return jsonify(result)
+        elif human_win:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
+        elif comp_move == -1:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': False, 'game_end': True})
+        else:
+            return jsonify({'comp_move': comp_move, 'comp_win': False, 'hum_win': False, 'game_end': False})
