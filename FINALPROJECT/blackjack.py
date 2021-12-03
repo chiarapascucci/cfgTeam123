@@ -1,4 +1,3 @@
-
 from random import randint, shuffle
 from math import floor
 
@@ -116,11 +115,8 @@ class Blackjack:
     def is_blackjack(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
         if players_hand == 21:
-            print(f'Blackjack\nPlayer\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
             return True
         else:
-            print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
-            print(f'Dealer\'s first card is: {playing_cards[1][0]}')
             return False
 
     # calculate hand value
@@ -175,18 +171,18 @@ class Blackjack:
         return self.blackjack_deck.cards
 
 
-
+# create a deck object from existing cards [CLASS]
 class DeckHitOrStand(Deck):
 
     def __init__(self, remaining_cards):
         self.cards = remaining_cards
 
 
+# create a blackjack game object from existing game state [CLASS]
 class BlackjackHitOrStand(Blackjack):
 
     def __init__(self, players_cards, dealers_cards, remaining_cards):
+        super().__init__()
         self.players_cards = [Card(player_card) for player_card in players_cards]
         self.dealers_cards = [Card(dealer_card) for dealer_card in dealers_cards]
         self.blackjack_deck = DeckHitOrStand(remaining_cards)
-
-

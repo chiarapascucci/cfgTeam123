@@ -143,6 +143,7 @@ def blackjack():
     return render_template('blackjack.html', title='Blackjack')
 
 
+# start game, instantiate new blackjack object and deal cards to player and dealer
 @app.route('/blackjack-start', methods=['GET'])
 def start_blackjack_game():
     blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
@@ -157,6 +158,7 @@ def start_blackjack_game():
     return jsonify(game_state)
 
 
+# calculate winner when player stands
 @app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
     game_state = request.get_json()
@@ -180,6 +182,7 @@ def player_stand_blackjack():
     return jsonify(game_state)
 
 
+# deal another card to player, calculate if player goes "bust"
 @app.route('/blackjack-player-hit', methods=['GET', 'POST'])
 def player_hit_blackjack():
     game_state = request.get_json()
@@ -193,7 +196,7 @@ def player_hit_blackjack():
     players_cards = json.dumps([players_card.card for players_card in players_cards])
     dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
     cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
-    if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) < 21:
+    if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) <= 21:
         value_of_hand = blackjack_object.display_value_of_players_hand(blackjack_cards)
         winner = 'None'
         game_state = {'players_cards': players_cards,

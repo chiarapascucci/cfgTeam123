@@ -4,7 +4,7 @@ let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
 // this function is called when the start game button has been clicked
-// it call the starter cards and displays the cards values on the HTML game board
+// it calls the starter cards and displays the cards values on the HTML game board
 function startGame() {
     let xhr = new XMLHttpRequest()
     xhr.open('GET', "http://127.0.0.1:5000/blackjack-start", true)
@@ -24,6 +24,8 @@ function startGame() {
     xhr.send()
 }
 
+// this function is called when the stand button has been clicked
+// it displays the winner of the game
 function playerStand() {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
@@ -40,6 +42,8 @@ function playerStand() {
         }
     }
 
+//this function is called when the hit button has been clicked
+// it displays if player has gone bust or can play again
 function playerHit() {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
