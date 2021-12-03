@@ -168,12 +168,12 @@
         <div class="display-winner" id="display-winner"></div>
     </section>
     <section class="btn-container">
-        <button class="btn hit" id="hit" onclick="playerHit()">hit</button>
-        <button class="btn stand" id="stand" onclick="playerStand()">stand</button>
+        <button class="btn hit" id="hit" onclick="playerHit()" disabled=true>hit</button>
+        <button class="btn stand" id="stand" onclick="playerStand()" disabled=true>stand</button>
     </section>
     <section class="btn-container">
         <button class="btn start" id="new-deck" onclick=startGame()>start game</button>
     </section>
     <div id="game-state" hidden></div>
-    <script src="../static/blackjack_start_ajax.js"></script>
+    <script src="../static/blackjack_ajax.js"></script>
 {% endblock %}

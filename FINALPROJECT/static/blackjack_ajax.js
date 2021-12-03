@@ -1,5 +1,7 @@
 let dealerScore = document.getElementById("dealer-score-value")
 let playerScore = document.getElementById("player-score-value")
+let hitBtn = document.getElementById("hit")
+let standBtn = document.getElementById("stand")
 let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
@@ -14,6 +16,8 @@ function startGame() {
             if (gameState['is_blackjack_true']) {
                 winner.innerHTML = "Blackjack, Player Wins"
             } else {
+                hitBtn.disabled = false
+                standBtn.disabled = false
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
                 winner.innerHTML = ""
@@ -38,6 +42,8 @@ function playerStand() {
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
                 winner.innerHTML = gameState['winner']
+                hitBtn.disabled = true
+                standBtn.disabled = true
             }
         }
     }
@@ -56,6 +62,8 @@ function playerHit() {
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
                 winner.innerHTML = "Player Bust, Dealer Wins"
+                hitBtn.disabled = true
+                standBtn.disabled = true
             } else {
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]

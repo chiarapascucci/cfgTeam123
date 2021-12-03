@@ -11,24 +11,22 @@ def play_game():
     return blackjack, blackjack_cards, is_blackjack_true, value_of_starting_hands
 
 
-def player_hit(blackjack, blackjack_cards):
-    blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
-    blackjack.calculate_value_of_hand(blackjack_cards[0])
-    blackjack.dealer_card_if_less_than_17(blackjack_cards)
-    return blackjack_cards
-
-
-def player_stand(blackjack, blackjack_cards):
-    blackjack.calculate_value_of_hand(blackjack_cards[0])
-    blackjack.dealer_card_if_less_than_17(blackjack_cards)
-    return blackjack_cards
-
-
 def player_hit_or_stand(players_cards, dealers_cards, remaining_cards):
     blackjack = BlackjackHitOrStand(players_cards, dealers_cards, remaining_cards)
     blackjack.shuffle()
     blackjack_cards = blackjack.players_cards, blackjack.dealers_cards
     return blackjack, blackjack_cards
+
+
+def player_hit(blackjack, blackjack_cards):
+    blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
+    blackjack.dealer_card_if_less_than_17(blackjack_cards)
+    return blackjack_cards
+
+
+def player_stand(blackjack, blackjack_cards):
+    blackjack.dealer_card_if_less_than_17(blackjack_cards)
+    return blackjack_cards
 
 
 def decide_winner(blackjack, blackjack_cards):
@@ -63,7 +61,7 @@ class Card:
         return f'{self.card["value"]} of {self.card["suit"]}'
 
 
-# play game [CLASS]
+# create blackjack game object [CLASS]
 class Blackjack:
 
     def __init__(self):
