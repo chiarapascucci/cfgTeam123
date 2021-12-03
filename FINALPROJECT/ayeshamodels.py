@@ -3,7 +3,6 @@ from FINALPROJECT import login_manager
 from FINALPROJECT.data_access_functions import mycursor, db
 
 
-# not yet functional
 @login_manager.user_loader
 def user_loader(user_name):
     mycursor.execute("""
