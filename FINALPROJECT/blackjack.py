@@ -1,31 +1,6 @@
-# THE GOAL IS TO GET TO AS CLOSE TO 21 BUT NOT ABOVE 21
-# IF YOU GET 21 WITH YOUR FIRST TWO CARDS THAT IS BLACKJACK
-# AN ACE CAN BE EITHER HIGH OR LOW [1 OR 11]
-# Two cards are dealt to the player facing upwards (visible to everyone).
-# The dealer deals himself two cards one visible to everyone, and one facing downwards.
-# The player has to decide whether to stand with the current set of cards or get another card.
-# If the player decides to hit, another card is dealt to the player.
-# When the player decides to stand, then the dealer reveals his hidden card/s.
-# The dealer does not have the authority to decide whether to hit or stand.
-# The general rule is that the dealer needs to keep hitting more cards if the sum of dealer’s cards is less than 17.
-# As soon as the sum of dealer’s cards is either 17 or more, the dealer is obliged to stand.
-# According to the final sum of the cards, the winner is decided.
 
 from random import randint, shuffle
 from math import floor
-
-
-def main():
-    print('Welcome to Blackjack')
-    start_game = input('Would you like to play? [Y / N]\n')
-    if start_game.upper() == "Y":
-        blackjack, blackjack_cards, is_blackjack_true, value_of_starting_cards = play_game()
-        if not is_blackjack_true:
-            hit_or_stand(blackjack, blackjack_cards)
-        else:
-            print('You Won!\n Goodbye')
-    else:
-        print('Goodbye')
 
 
 def play_game():
@@ -37,27 +12,14 @@ def play_game():
     return blackjack, blackjack_cards, is_blackjack_true, value_of_starting_hands
 
 
-def hit_or_stand(blackjack, blackjack_cards):
-    hit = input('Would you like to Hit or Stand? [H / S]\n')
-    if hit.upper() == "H":
-        blackjack_cards = player_chose_hit(blackjack, blackjack_cards)
-        if blackjack.calculate_value_of_hand(blackjack_cards[0]) < 21:
-            blackjack.display_value_of_players_hand(blackjack_cards)
-            hit_or_stand(blackjack, blackjack_cards)
-        else:
-            decide_winner(blackjack, blackjack_cards)
-    else:
-        decide_winner(blackjack, blackjack_cards)
-
-
-def player_chose_hit(blackjack, blackjack_cards):
+def player_hit(blackjack, blackjack_cards):
     blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
     blackjack.calculate_value_of_hand(blackjack_cards[0])
     blackjack.dealer_card_if_less_than_17(blackjack_cards)
     return blackjack_cards
 
 
-def player_stand(players_cards, dealers_cards, remaining_cards):
+def player_hit_or_stand(players_cards, dealers_cards, remaining_cards):
     blackjack = BlackjackHitOrStand(players_cards, dealers_cards, remaining_cards)
     blackjack.shuffle()
     blackjack_cards = blackjack.players_cards, blackjack.dealers_cards
@@ -177,8 +139,8 @@ class Blackjack:
     def display_value_of_hands(self, playing_cards):
         players_hand = self.calculate_value_of_hand(playing_cards[0])
         dealers_hand = self.calculate_value_of_hand(playing_cards[1])
-        print(f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}')
-        print(f'Dealer\'s cards are: {playing_cards[1]}, Hand value is: {dealers_hand}')
+        return [f'Player\'s cards are: {playing_cards[0]}, Hand value is: {players_hand}',
+                f'Dealer\'s cards are: {playing_cards[1]}, Hand value is: {dealers_hand}']
 
     # return True if game is a draw
     def is_draw(self, playing_cards):
@@ -206,9 +168,6 @@ class Blackjack:
             self.blackjack_deck.cards[index_b] = card_a
         return self.blackjack_deck.cards
 
-    # calculate deck length
-    def deck_length(self):
-        return len(self.blackjack_deck.cards)
 
 
 class DeckHitOrStand(Deck):
@@ -225,7 +184,3 @@ class BlackjackHitOrStand(Blackjack):
         self.blackjack_deck = DeckHitOrStand(remaining_cards)
 
 
-
-
-if __name__ == '__main__':
-    main()
