@@ -19,6 +19,12 @@ def player_hit(blackjack, blackjack_cards):
     return blackjack_cards
 
 
+def player_stand(blackjack, blackjack_cards):
+    blackjack.calculate_value_of_hand(blackjack_cards[0])
+    blackjack.dealer_card_if_less_than_17(blackjack_cards)
+    return blackjack_cards
+
+
 def player_hit_or_stand(players_cards, dealers_cards, remaining_cards):
     blackjack = BlackjackHitOrStand(players_cards, dealers_cards, remaining_cards)
     blackjack.shuffle()

@@ -11,7 +11,6 @@ function startGame() {
     xhr.onload = function() {
         if (xhr.status == 200) {
             let gameState = JSON.parse(this.response)
-            console.log(gameState)
             if (gameState['is_blackjack_true']) {
                 winner.innerHTML = "Blackjack, Player Wins"
             } else {
@@ -27,37 +26,33 @@ function startGame() {
 
 function playerStand() {
     let gameState = gameStateStorage.innerHTML
-    console.log(gameState)
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-player-stand", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
     xhr.onload = function() {
         if (xhr.status == 200) {
-            let winner = JSON.parse(this.response)
-            playerScore.innerHTML = winner
-            dealerScore.innerHTML = ""
+            let gameState = JSON.parse(this.response)
+                playerScore.innerHTML = gameState['value_of_starting_hands'][0]
+                dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
+                winner.innerHTML = gameState['winner']
             }
         }
     }
 
 function playerHit() {
     let gameState = gameStateStorage.innerHTML
-    console.log(gameState)
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-player-hit", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
     xhr.onload = function() {
             let gameState = JSON.parse(this.response)
-            console.log(gameState)
             if (gameState['winner'] == false) {
-                console.log('if loop')
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
                 winner.innerHTML = "Player Bust, Dealer Wins"
             } else {
-                console.log('else loop')
                 playerScore.innerHTML = gameState['value_of_starting_hands'][0]
                 dealerScore.innerHTML = gameState['value_of_starting_hands'][1]
                 gameStateStorage.innerHTML = JSON.stringify(gameState)
