@@ -1,26 +1,27 @@
-from FINALPROJECT import app
+from flask_login import UserMixin, login_manager, LoginManager
+from FINALPROJECT import login_manager
 from FINALPROJECT.data_access_functions import mycursor, db
-from flask_login import UserMixin, LoginManager
 
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # not yet functional
 @login_manager.user_loader
-def user_loader(user_id):
-    """Given *user_id*, return the associated User object.
-
-    :param unicode user_id: user_id (email) user to retrieve
-
-    """
-    return User.get_id(user_id)
+def user_loader(user_name):
+    mycursor.execute("""
+        SELECT UserID
+        FROM user_info
+        WHERE UserName = '{}'
+        """.format(user_name))
+    user_id = mycursor.fetchone()[0]
+    if user_id is None:
+        raise UserNotFoundException()
+    return user_id
 
 
 class UserNotFoundException(Exception):
     pass
 
 
-class User(UserMixin):
+class User:
 
     def __init__(self, user_name, first_name, last_name, email, password):
         self.user_name = user_name
@@ -60,5 +61,5 @@ class User(UserMixin):
         type, you will need to convert it to unicode. """
         pass
 
-    # def is_anonymous(self):
-    #     return False
+    def is_anonymous(self):
+        return False

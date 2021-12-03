@@ -1,15 +1,15 @@
 from flask import Flask
 import mysql.connector
 from typing import List
+
+from flask_login import LoginManager
+
 from FINALPROJECT.config import USER, PASSWORD, HOST
 
-
-
 app = Flask(__name__)
-
-
-
-
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 """
 https://hackersandslackers.com/configure-flask-applications/
