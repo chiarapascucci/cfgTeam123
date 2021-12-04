@@ -19,6 +19,7 @@ class TriviaGame:
     questions = []
     num_of_questions = 0
     question_num = 0
+    current_question = {}
 
     def __init__(self, num_questions, category, difficulty):
         url = 'https://opentdb.com/api.php?amount={}&category={}&difficulty={}'.format(num_questions, category,
@@ -26,6 +27,7 @@ class TriviaGame:
         response = requests.get(url)
         self.questions = response.json()['results']
         self.num_of_questions = num_questions
+        self.current_question = self.questions[0]
 
     def __iter__(self):
         return self
@@ -36,16 +38,20 @@ class TriviaGame:
 
         result = self.questions[self.question_num]
         self.question_num += 1
+        self.current_question = result
         return result
 
+    def get_current_question(self):
+        return self.current_question
 
-trivia_game = TriviaGame(10, 9, 'easy')
 
-trivia_game2 = TriviaGame(10, 10, 'hard')
+#
+# trivia_game = TriviaGame(10, 9, 'easy')
+#
+# trivia_game2 = TriviaGame(10, 10, 'hard')
 
 # looping through trivia game instances at the same time (to show 2 games can happen in parallel)
-for question in trivia_game:
-    pprint(question)
-    pprint(trivia_game2.__next__())
-
+# for question in trivia_game:
+#     pprint(question)
+#     pprint(trivia_game2.__next__())
 

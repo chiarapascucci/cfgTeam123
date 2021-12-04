@@ -156,4 +156,3 @@ def process_tic_tac():
         result = receive_move(state)
         return jsonify(result)
 
-

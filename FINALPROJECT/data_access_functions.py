@@ -100,10 +100,10 @@ def create_new_session(user_id, start_time, requested_duration):
     return True
 
 
-def create_new_game_record(user_id, game_id, session_id, start_time, end_time):
+def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
-        INSERT INTO game_record(UserID, GameID, SessionID, StartTime, EndTime)
-        VALUES ({}, {}, {}, {}, {})""".format(user_id, game_id, session_id, start_time, end_time))
+        INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
+        VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
     db.commit()
     return True
 
