@@ -3,14 +3,27 @@
 {% block title_block %}Time{% endblock %}
 
 {% block content %}
-    <div class="mb-3">
-          <select id="timer-select-len" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-            <option selected="">Choose how long you want to break for</option>
-              <option value="1">1 minutes</option>
-            <option value="5">5 minutes</option>
-            <option value="10">10 minutes</option>
-            <option value="15">15 minutes</option>
-          </select>
-        <button id="set-timer-btn" type="button" disabled>Take a break!</button>
-    </div>
+<style>
+body {
+ background-image: url("../static/site_assets/background_img.gif");
+}
+</style>
+
+
+        <main class="px-3">
+            <h1>Select how long you want to break for</h1>
+            <p class="lead">We are not opposed to procastination or taking a break... but we want to make sure you stay on track, so let's set a fixed time for your break!</p>
+            <div class="lead">
+                <select id="timer-select-len" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option selected="">Choose how long you want to break for</option>
+                    <option value="1">1 minutes</option>
+                    <option value="5">5 minutes</option>
+                    <option value="10">10 minutes</option>
+                    <option value="15">15 minutes</option>
+                </select>
+                <button id="set-timer-btn" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white" disabled>Take a break!</button>
+            </div>
+        </main>
+
+
 {% endblock %}

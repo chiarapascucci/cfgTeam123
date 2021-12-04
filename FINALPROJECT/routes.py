@@ -1,13 +1,15 @@
 import json
+import random
 
 from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-
 from FINALPROJECT.config import DB_NAME
+from FINALPROJECT.guess_my_num import play
 from FINALPROJECT.tic_tac_toe import receive_move
+from Tic_Tac_Game.ticboard import Board
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -48,16 +50,6 @@ def login():
     return render_template('login.html', title='login', form=form)
 
 
-@app.route('/tic-tac-toe')
-def tic_tac():
-    return render_template('tic_tac.html', title='Tic Tac Toe!')
-
-
-@app.route('/tic-tac-toe-ajax')
-def process_tic_tac_toe():
-    pass
-
-
 @app.route('/start-timer')
 def starttimer():
     return render_template('select_break_time.html', title='Start the Timer')
@@ -74,7 +66,6 @@ def logsessionstart():
     try:
         connection = _connect_to_db()
         if request.method == 'POST':
-
             print("post request received")
 
             data_dict = request.get_json()
@@ -132,7 +123,7 @@ def logsessionend():
         print("db connection failed")
 
 
-@app.route('/play-tic-tac-toe')
+@app.route('/tic-tac-toe')
 def tic_tac_toe():
     return render_template('tic_tac.html', title="tictactoe")
 
@@ -140,20 +131,26 @@ def tic_tac_toe():
 @app.route('/tic-tac-ajax', methods=['GET', 'POST'])
 def process_tic_tac():
     if request.method == 'POST':
-
         data = request.get_json()
-
         print(data)
-        state = {}
+        # state = {}
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
         print(x_list)
         print(o_list)
 
-        state['x'] = set(x_list)
-        state['o'] = set(o_list)
+        board1 = Board(x_list, o_list)
 
-        result = receive_move(state)
-        return jsonify(result)
+        comp_move = board1.computer_move()
+        computer_win = board1.is_a_win("o")
+        human_win = board1.is_a_win("x")
 
+        if computer_win:
+            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
 
+        elif human_win:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
+        elif comp_move == -1:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': False, 'game_end': True})
+        else:
+            return jsonify({'comp_move': comp_move, 'comp_win': False, 'hum_win': False, 'game_end': False})

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<title>Guess My number</title>
+<div class="container">
+    <p> I am thinking of a number between 1 and 200... care to take a guess? </p>
+    <p> You have a total of 10 guesses to get it right </p>
+    <label for="guess-count">So far you have used: </label>
+    <input type="number" id="guess-count" value=0 readonly> guesses
+    <input type="number" id="comp-num" value={{ number }} hidden>
+    <label for="guess">Take a guess!</label>
+    <input type="number" id="guess" name="guess" min="0" max="200" required>
+    <br>
+    <button id="take-guess" type="button" class="btn-primary" >Take guess</button>
+
+    <p id="display-msg"></p>
+</div>
+
+
+
+{% endblock content %}
