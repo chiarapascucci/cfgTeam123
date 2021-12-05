@@ -1,8 +1,11 @@
 function cell_clicked(cel_num){
     console.log("cell clicked");
+    console.log(cel_num);
     // console.log(cel_num);
     let cell_id = "#c"+cel_num;
-    let cell_selected = $(cell_id)
+    console.log(cell_id);
+    let cell_selected = document.querySelector("cell_id");
+    console.log(cell_selected)
 
     let cell_sel_atr = cell_selected.attr("disabled");
     if (! cell_sel_atr){
@@ -13,7 +16,6 @@ function cell_clicked(cel_num){
 }
 
 function play_comp_turn(){
-
     const x_cells = [];
     const o_cells = [];
     let x_str = "";
