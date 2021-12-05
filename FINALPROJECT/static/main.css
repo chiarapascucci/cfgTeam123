@@ -308,4 +308,12 @@ td {
     margin-bottom: 6em;
   }
 }
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
 /*# sourceMappingURL=main.css.map */
