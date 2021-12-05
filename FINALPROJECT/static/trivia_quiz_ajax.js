@@ -1,3 +1,7 @@
+function htmlDecode(input) {
+  var doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
 
 function answer_clicked(answer, game_id){
     console.log(answer + game_id)
@@ -18,7 +22,7 @@ function answer_clicked(answer, game_id){
                 dataType : 'json',
                 contentType : 'application/json',
                 success: function(data){
-                        question.text(data['question'])
+                        question.text(htmlDecode(data['question']))
                         cor_ans = data['correct_answer']
                         console.log(cor_ans)
                         inc_ans = data['incorrect_answers']
