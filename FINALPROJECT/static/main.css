@@ -130,6 +130,7 @@ ul.features-list li:before {
 
 .board-section {
   background: #EFD780;
+  justify-content: center;
 }
 
 .game-board {
@@ -155,7 +156,7 @@ ul.features-list li:before {
 }
 
 .board-title {
-  margin-top: -8em;
+  margin-top: 0.8em;
 }
 
 .board-title .title-text {
@@ -174,7 +175,14 @@ table {
   align: center;
   table-layout:fixed;
   width: 100%;
+  table-layout:fixed;
 
+  /*max-height: 50%
+   overflow: hidden;*/
+}
+tr{
+
+line-height: 0;
 }
 
 td {
@@ -185,9 +193,33 @@ td {
   justify-content: center;
   margin-bottom:5em;
   table-layout:fixed;
-  position: relative;
+  /* position: relative; */
+  font-family: Helvetica;
+  font-weight: bold;
+  font-size: 4em;
+  text-align: center;
+  table-layout:fixed;
+}
+
+/*.feedback-message{
+  justify-content: center;
+  align: center;
+
+}*/
+.feedback-message {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: bold;
+  text-align: center;
+  font-size: 2em;
 
 }
+
+
+
+
+
+
 
 
 .game-browser-title {

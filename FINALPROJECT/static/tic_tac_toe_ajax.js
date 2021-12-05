@@ -1,11 +1,8 @@
 function cell_clicked(cel_num){
     console.log("cell clicked");
-    console.log(cel_num);
     // console.log(cel_num);
     let cell_id = "#c"+cel_num;
-    console.log(cell_id);
-    let cell_selected = document.querySelector("cell_id");
-    console.log(cell_selected)
+    let cell_selected = $(cell_id)
 
     let cell_sel_atr = cell_selected.attr("disabled");
     if (! cell_sel_atr){
