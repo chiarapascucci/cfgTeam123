@@ -12,12 +12,12 @@ function answer_clicked(answer, game_id){
             $('#correct').text(data)
             question = $('#question')
             answers = $('#answers')
-                $.ajax({
-                    type : 'GET',
-                    url : "http://127.0.0.1:5000/trivia-quiz/" + game_id + "/next-question",
-                    dataType : 'json',
-                    contentType : 'application/json',
-                    success: function(data)
+            $.ajax({
+                type : 'GET',
+                url : "http://127.0.0.1:5000/trivia-quiz/" + game_id + "/next-question",
+                dataType : 'json',
+                contentType : 'application/json',
+                success: function(data){
                         question.text(data['question'])
                         cor_ans = data['correct_answer']
                         console.log(cor_ans)
@@ -32,7 +32,7 @@ function answer_clicked(answer, game_id){
                         }
                         answers.html(buttons_html)
                     }
-                });
+            });
         }
     });
 }
