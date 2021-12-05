@@ -40,11 +40,14 @@ def next_question(game_id):
     next_q = trivia_games[game_id].__next__()
     return jsonify(next_q)
 
+
 @app.route('/trivia-quiz/<game_id>/check-answer/<user_answer>')
 def check_question(game_id, user_answer):
     game_id = int(game_id)
     current_q = trivia_games[game_id].get_current_question()
-    return jsonify(current_q['correct_answer'] == user_answer)
+    if current_q['correct_answer'] == user_answer:
+        return jsonify("Correct! :)")
+    return jsonify("Incorrect :(")
 
 
 
