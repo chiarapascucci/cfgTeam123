@@ -1,4 +1,5 @@
-from flask_login import UserMixin, login_manager, LoginManager
+from flask_login import UserMixin
+
 from FINALPROJECT import login_manager
 from FINALPROJECT.data_access_functions import mycursor, db
 
@@ -20,7 +21,7 @@ class UserNotFoundException(Exception):
     pass
 
 
-class User:
+class User(UserMixin):
 
     def __init__(self, user_name, first_name, last_name, email, password):
         self.user_name = user_name
@@ -28,6 +29,8 @@ class User:
         self.last_name = last_name
         self.email = email
         self.password = password
+        self.authenticated = False
+
 
     def create_user_in_db(self):
         mycursor.execute("""
@@ -52,13 +55,17 @@ class User:
         return True
 
     def is_authenticated(self):
+        self.authenticated = True
         return self.authenticated
 
     def get_id(self):
-        """ This method must return a unicode that uniquely identifies this user, and can be used to load the user
-        from the user_loader callback. Note that this must be a unicode - if the ID is natively an int or some other
-        type, you will need to convert it to unicode. """
-        pass
+        mycursor.execute("""
+        SELECT UserID
+        FROM user_info
+        WHERE UserName = '{}'
+        """.format(self.user_name))
+        user_id = mycursor.fetchone()[0]
+        return user_id
 
     def is_anonymous(self):
         return False

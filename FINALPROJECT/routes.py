@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request, render_template, url_for, redirect, f
 
 from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.tic_tac_toe import receive_move
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user, utils, current_user
 
 # from flask_bcrypt import Bcrypt
 from FINALPROJECT.data_access_functions import mycursor
@@ -49,13 +49,14 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     if form.validate_on_submit():
         try:
             user_info = fetch_user_info(form.password.data, form.user_name.data)
             user = User(user_info[0][1], user_info[0][2], user_info[0][3], user_info[0][4], user_info[0][5])
-            login_user(user)
+            user.authenticated = True
+            login_user(user, remember=True)
             flash('You have been logged in', 'success')
             return redirect(url_for('special'))
         except UserNotFoundException:
@@ -63,18 +64,24 @@ def login():
     return render_template('login.html', title='login', form=form)
 
 
-# to be implemented
-# @app.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     return redirect(url_for('home_page'))
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out successfully')
+    return redirect(url_for('home'))
 
 
 @app.route('/special')
 @login_required
 def special():
-    return 'You\'ve officially logged in!'
+    return 'You are logged in'
+
+
+# @app.route('/dashboard')
+# @login_required
+# def dashboard():
+#     return render_template('dashboard.html', title='dashboard')
 
 
 @app.route('/tic-tac-toe')
