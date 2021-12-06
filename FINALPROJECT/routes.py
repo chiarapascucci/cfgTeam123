@@ -8,6 +8,7 @@ from flask import Flask, jsonify, request, render_template, url_for, redirect, f
 
 from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.tic_tac_toe import receive_move
+from FINALPROJECT.blackjack import play_game, player_hit_or_stand, player_hit, player_stand, decide_winner
 
 """
 https://hackersandslackers.com/configure-flask-applications/
@@ -157,3 +158,79 @@ def process_tic_tac():
         return jsonify(result)
 
 
+@app.route('/blackjack')
+def blackjack():
+    return render_template('blackjack.html', title='Blackjack')
+
+
+# start game, instantiate new blackjack object and deal cards to player and dealer
+@app.route('/blackjack-start', methods=['GET'])
+def start_blackjack_game():
+    blackjack_object, blackjack_cards, is_blackjack_true, value_of_starting_hands = play_game()
+    players_cards = json.dumps((blackjack_cards[0][0].card, blackjack_cards[0][1].card))
+    dealers_cards = json.dumps((blackjack_cards[1][0].card, blackjack_cards[1][1].card))
+    remaining_cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    game_state = {'players_cards': players_cards,
+                  'dealers_cards': dealers_cards,
+                  'cards_in_deck': remaining_cards_in_deck,
+                  'is_blackjack_true': is_blackjack_true,
+                  'value_of_starting_hands': value_of_starting_hands}
+    return jsonify(game_state)
+
+
+# calculate winner when player stands
+@app.route('/blackjack-player-stand', methods=['GET', 'POST'])
+def player_stand_blackjack():
+    game_state = request.get_json()
+    players_cards = json.loads(game_state['players_cards'])
+    dealers_cards = json.loads(game_state['dealers_cards'])
+    cards_in_deck = json.loads(game_state['cards_in_deck'])
+    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards = player_stand(blackjack_object, blackjack_cards)
+    players_cards = blackjack_cards[0]
+    dealers_cards = blackjack_cards[1]
+    players_cards = json.dumps([players_card.card for players_card in players_cards])
+    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
+    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    value_of_hand = blackjack_object.display_value_of_hands(blackjack_cards)
+    winner = decide_winner(blackjack_object, blackjack_cards)
+    game_state = {'players_cards': players_cards,
+                  'dealers_cards': dealers_cards,
+                  'cards_in_deck': cards_in_deck,
+                  'value_of_starting_hands': value_of_hand,
+                  'winner': winner}
+    return jsonify(game_state)
+
+
+# deal another card to player, calculate if player goes "bust"
+@app.route('/blackjack-player-hit', methods=['GET', 'POST'])
+def player_hit_blackjack():
+    game_state = request.get_json()
+    players_cards = json.loads(game_state['players_cards'])
+    dealers_cards = json.loads(game_state['dealers_cards'])
+    cards_in_deck = json.loads(game_state['cards_in_deck'])
+    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards = player_hit(blackjack_object, blackjack_cards)
+    players_cards = blackjack_cards[0]
+    dealers_cards = blackjack_cards[1]
+    players_cards = json.dumps([players_card.card for players_card in players_cards])
+    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
+    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) <= 21:
+        value_of_hand = blackjack_object.display_value_of_players_hand(blackjack_cards)
+        winner = 'None'
+        game_state = {'players_cards': players_cards,
+                      'dealers_cards': dealers_cards,
+                      'cards_in_deck': cards_in_deck,
+                      'value_of_starting_hands': value_of_hand,
+                      'winner': winner}
+        return jsonify(game_state)
+    else:
+        value_of_hand = blackjack_object.display_value_of_hands(blackjack_cards)
+        winner = False
+        game_state = {'players_cards': players_cards,
+                      'dealers_cards': dealers_cards,
+                      'cards_in_deck': cards_in_deck,
+                      'value_of_starting_hands': value_of_hand,
+                      'winner': winner}
+        return jsonify(game_state)
