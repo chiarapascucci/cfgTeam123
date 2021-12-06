@@ -62,6 +62,7 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
 
 
+
 def validate_user(user_name, hashed_password):
     mycursor.execute("""
     SELECT UserID
@@ -156,6 +157,7 @@ def test_db_connection():
         cnx.close()
     except Exception:
         raise DBConnectionError
+
 
 
 """Testing to check create_user_in_db and validate_user functions work with DB"""
