@@ -12,6 +12,7 @@ db = mysql.connector.connect(host=HOST,
 mycursor = db.cursor()
 
 
+
 class DBConnectionError(Exception):
     pass
 
@@ -49,26 +50,21 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
-
-
 def create_user_in_db(user_name, first_name, last_name, password):
     mycursor.execute("""
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash) 
     VALUES ('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
+    db.commit()
+    return True
 
-def create_user_in_db(user_name, first_name, last_name, password, email=None):
-    mycursor.execute("""
-    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
-    VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
-
-
-def validate_user(user_name, hashed_password):
+#changed this from hashed to password
+def validate_user(user_name, password):
     mycursor.execute("""
     SELECT UserID
     FROM user_info
     WHERE PasswordHash = '{}'
     and UserName = '{}'
-    """.format(hashed_password, user_name))
+    """.format(password, user_name))
     user_id = mycursor.fetchone()[0]
     if user_id is None:
         raise UserNotFoundException()
@@ -77,14 +73,6 @@ def validate_user(user_name, hashed_password):
 
 class UserNotFoundException(Exception):
     pass
-
-# need to finish this
-def get_user_info(user_id):
-    mycursor.execute("""
-        SELECT * FROM {}.user_info
-        WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchall()
-    return user_name
 
 
 def get_user_first_last_name(user_id):
@@ -134,9 +122,9 @@ def display_total_game_history(user_id):
     FROM sessions s
     INNER JOIN
     game_record r
-    ON
-    s.SessionID = r.SessionID
-    INNER JOIN
+    ON 
+    s.SessionID = r.SessionID 
+    INNER JOIN 
     game_table g
     ON
     g.GameID = r.GameID
@@ -157,10 +145,7 @@ def test_db_connection():
     except Exception:
         raise DBConnectionError
 
-
 """Testing to check create_user_in_db and validate_user functions work with DB"""
-
-
 
 # if __name__ == '__main__':
 #     bcrypt = Bcrypt()
@@ -171,4 +156,3 @@ def test_db_connection():
 #     except:
 #         pass
 #     print(validate_user('Danya5', hashed_pass))
-
