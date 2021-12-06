@@ -49,10 +49,10 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
-def create_user_in_db(user_name, first_name, last_name, password):
+def create_user_in_db(user_name, first_name, last_name, email, password):
     mycursor.execute("""
-    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash)
-    VALUES ('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
+    INSERT INTO user_info (UserName, FirstName, LastName, Email, PasswordHash)
+    VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, email, password))
     db.commit()
     return True
 
@@ -72,6 +72,14 @@ def validate_user(user_name, hashed_password):
 
 class UserNotFoundException(Exception):
     pass
+
+# need to finish this
+def get_user_info(user_id):
+    mycursor.execute("""
+        SELECT * FROM {}.user_info
+        WHERE UserID = {}""".format(user_id))
+    user_name = mycursor.fetchall()
+    return user_name
 
 
 def get_user_first_last_name(user_id):

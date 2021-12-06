@@ -16,7 +16,8 @@ https://hackersandslackers.com/configure-flask-applications/
 above is link with info about app.config for when you want to encrypt information i think
 """
 
-app.config['SECRET_KEY'] = '1851c6857d5faef882b989422f9d3165'
+app.config['SECRET_KEY'] = config.SECRET_KEY
+app.secret_key = config.SECRET_KEY
 
 # how to generate secret key
 # (venv) C:\Users\akhan\PycharmProjects\cfgTeam123>python
