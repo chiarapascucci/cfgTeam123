@@ -204,3 +204,25 @@ def process_tic_tac():
 
 
 ############### GUESS MY NUMBER ##################
+@app.route('/guess-my-number')
+def guess_my_num_game():
+    comp_num = random.randint(1, 200)
+    print(comp_num)
+
+    return render_template('guess_number.html', title="guess_my_number", number = comp_num)
+
+
+@app.route('/number-ajax', methods=['GET', 'POST'])
+def guess_my_num_game_process():
+    if request.method == 'POST':
+
+        data = request.get_json()
+        print(data)
+
+        comp_num = int(data['comp_num'])
+        human_num = int(data['human_num'])
+        guess_num = int(data['no_of_guesses'])
+
+        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num )
+        print(result)
+        return jsonify(result)
