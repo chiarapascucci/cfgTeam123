@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<title>You are so effing special</title>
+    Hello
+
+    {% if current_user.is_authenticated %}
+        you are authenticated !
+    {% endif %}
+
+{% endblock content %}

@@ -13,7 +13,8 @@
     {% endif %}
 
 </head>
-<body>
+<body style="background-color: darksalmon">
+
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -26,12 +27,18 @@
 <header>
     <div class="container">
 
-<!--        <img src="ourpichere.png" alt="logo" class="logo">-->
+
         <nav>
             <ul>
                 <li><a href="{{ url_for('home') }}">home</a></li>
                 <li><a href="{{ url_for('register') }}">Register</a></li>
-                <li><a href="{{ url_for('login') }}">login</a></li>
+
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('logout') }}">logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">login</a></li>
+                {% endif %}
+
                 <li><a href="{{ url_for('browsegames') }}">Browse Games</a></li>
             </ul>
         </nav>
@@ -46,6 +53,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
 <script src="../static/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="../static/timer.js" crossorigin="anonymous"></script>
+<script src="../static/guess_number.js" crossorigin="anonymous"></script>
 
 </body>
 </html>
