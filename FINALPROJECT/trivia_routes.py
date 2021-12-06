@@ -1,8 +1,8 @@
 import random
 
 from FINALPROJECT import app
-from FINALPROJECT.games.trivia_game import TriviaGame
 from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
+from FINALPROJECT.games.trivia_game import TriviaGame
 from FINALPROJECT.data_access_functions import create_new_game_record
 
 
