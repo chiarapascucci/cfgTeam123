@@ -4,11 +4,11 @@ from FINALPROJECT import app
 from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
-from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
+from flask import jsonify, request, render_template, url_for, redirect, flash
 
 from FINALPROJECT.config import DB_NAME
-from FINALPROJECT.tic_tac_toe import receive_move
-from FINALPROJECT.blackjack import play_game, player_hit_or_stand, player_hit, player_stand, decide_winner
+from FINALPROJECT.games.tic_tac_toe import receive_move
+from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_hit, player_stand, decide_winner
 
 """
 https://hackersandslackers.com/configure-flask-applications/
