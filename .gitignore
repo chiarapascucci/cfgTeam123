@@ -1,10 +1,8 @@
+/.idea/
+Tic_Tac_Game/.DS_Store
+Tic_Tac_Game/__pycache__/
+FINALPROJECT/__pycache__/
 .DS_Store
-.DS_Store?
-.idea/
-config.py
-.idea
-__pycache__
-/__pycache__/
-bootstrap.*
-FINALPROJECT/static/jquery-3.3.1.min.js
-
+FINALPROJECT/.DS_Store
+FINALPROJECT/static/.DS_Store
+venv/

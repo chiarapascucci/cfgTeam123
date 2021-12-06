@@ -13,7 +13,6 @@ function cell_clicked(cel_num){
 }
 
 function play_comp_turn(){
-
     const x_cells = [];
     const o_cells = [];
     let x_str = "";
