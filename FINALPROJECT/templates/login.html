@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <title>Login</title>
-
+{% if current_user.is_authenticated %}
+    'You are already logged in'
+{% else %}
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -51,4 +53,5 @@
             </small>
         </div>
     </div>
+{% endif %}
 {% endblock content %}

@@ -49,8 +49,8 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
+    # if current_user.is_authenticated():
+    #     return redirect(url_for('home'))
     if form.validate_on_submit():
         try:
             user_info = fetch_user_info(form.password.data, form.user_name.data)

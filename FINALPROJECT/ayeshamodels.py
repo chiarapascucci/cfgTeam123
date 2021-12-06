@@ -6,15 +6,8 @@ from FINALPROJECT.data_access_functions import mycursor, db
 
 @login_manager.user_loader
 def user_loader(user_name):
-    mycursor.execute("""
-        SELECT UserID
-        FROM user_info
-        WHERE UserName = '{}'
-        """.format(user_name))
-    user_id = mycursor.fetchone()[0]
-    if user_id is None:
-        raise UserNotFoundException()
-    return user_id
+    user_id = User.get_id(user_name)
+    return User.get(user_id)
 
 
 class UserNotFoundException(Exception):
@@ -65,7 +58,7 @@ class User(UserMixin):
         WHERE UserName = '{}'
         """.format(self.user_name))
         user_id = mycursor.fetchone()[0]
-        return user_id
+        return str(user_id).encode('utf-8').decode('utf-8')
 
     def is_anonymous(self):
         return False
