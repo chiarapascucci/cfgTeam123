@@ -21,9 +21,15 @@ class TriviaGame:
     question_num = 0
     current_question = {}
 
-    def __init__(self, num_questions, category, difficulty):
-        url = 'https://opentdb.com/api.php?amount={}&category={}&difficulty={}'.format(num_questions, category,
-                                                                                       difficulty)
+    # Hard coded trivia options to a choice of 10 questions
+    def __init__(self, num_questions=10, category=None, difficulty=None):
+        url = 'https://opentdb.com/api.php?amount={}'.format(num_questions)
+        if category:
+            url += '&category={}'.format(category)
+
+        if difficulty:
+            url += '&difficulty={}'.format(difficulty)
+
         response = requests.get(url)
         self.questions = response.json()['results']
         self.num_of_questions = num_questions

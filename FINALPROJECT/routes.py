@@ -11,6 +11,8 @@ from flask import Flask, jsonify, request, render_template, url_for, redirect, f
 from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
 from FINALPROJECT.guess_my_num import play
+from FINALPROJECT.games.trivia_game import TriviaGame
+from FINALPROJECT.data_access_functions import create_new_game_record
 
 
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
@@ -69,7 +71,7 @@ def register():
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
-        outcome = create_user_in_db(username, first_name, last_name, email, password)
+        outcome = create_user_in_db(username, first_name, last_name, password, email)
         if outcome:
             flash(f'Account created for {form.user_name.data}!', 'Success')
             return redirect(url_for('login'))
@@ -276,6 +278,48 @@ def player_hit_blackjack():
 
 
 ################ TRIVIA #########################
+trivia_games = {}
+
+
+@app.route('/trivia-quiz')
+def trivia_quiz():
+    game_id = create_trivia().json
+    print(game_id)
+    first_q = next_question(game_id).json
+    print(first_q)
+    answers = [first_q['correct_answer']]
+    answers.extend(first_q['incorrect_answers'])
+    random.shuffle(answers)
+    return render_template('trivia-quiz.html', title='Trivia Quiz', question=first_q['question'], answers=answers, len=len(answers),
+                           game_id=game_id, q_num=1)
+
+
+@app.route('/trivia-quiz/create')
+def create_trivia():
+    user_id = 5 # replace with real user_id
+    session_id = 1 # replace wth real session_id
+    # call data access layer function to create game record
+    game_id = create_new_game_record(user_id, 3, session_id)
+    print(game_id)
+    trivia_game = TriviaGame()
+    trivia_games[game_id] = trivia_game
+    return jsonify(game_id)
+
+
+@app.route('/trivia-quiz/<game_id>/next-question')
+def next_question(game_id):
+    game_id = int(game_id)
+    next_q = trivia_games[game_id].__next__()
+    return jsonify(next_q)
+
+
+@app.route('/trivia-quiz/<game_id>/check-answer/<user_answer>')
+def check_question(game_id, user_answer):
+    game_id = int(game_id)
+    current_q = trivia_games[game_id].get_current_question()
+    if current_q['correct_answer'] == user_answer:
+        return jsonify("Correct! :)")
+    return jsonify("Incorrect :(")
 
 
 ############### GUESS MY NUMBER ##################
