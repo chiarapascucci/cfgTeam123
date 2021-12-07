@@ -47,7 +47,7 @@ class Deck:
     def __init__(self, number_of_decks):
         values = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
-        self.cards = [{'value': value, 'suit': suit} for value in values for suit in suits] * number_of_decks
+        self.cards = [{'value': value, 'suit': suit} for value in values for suit in suits] * int(number_of_decks)
 
 
 # create a card [CLASS]
@@ -121,7 +121,7 @@ class Blackjack:
     def calculate_value_of_hand(self, hand):
         hand_as_list_of_integers = [self.card_value_to_int(card) for card in hand]
         if 11 in hand_as_list_of_integers:
-            if sum(hand_as_list_of_integers) >= 21:
+            if sum(hand_as_list_of_integers) > 21:
                 ace_is_one = [card if card != 11 else 1 for card in hand_as_list_of_integers]
                 return sum(ace_is_one)
             else:
