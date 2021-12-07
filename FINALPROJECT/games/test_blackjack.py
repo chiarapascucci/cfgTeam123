@@ -45,24 +45,24 @@ class TestBeginGame(TestCase):
 
     def test_return_cards(self):
         new_blackjack_game = Blackjack()
-        begin_game_cards = new_blackjack_game.begin_game()
-        player_test_cards = ([Card({'value': 'King', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})])
-        dealer_test_cards = ([Card({'value': 'King', 'suit': 'Diamonds'}), Card({'value': 'King', 'suit': 'Hearts'})])
-        self.assertEqual(str(begin_game_cards[0]), str(player_test_cards))
-        self.assertEqual(str(begin_game_cards[1]), str(dealer_test_cards))
+        playing_cards = new_blackjack_game.begin_game()
+        player_test_cards = [Card({'value': 'King', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_test_cards = [Card({'value': 'King', 'suit': 'Diamonds'}), Card({'value': 'King', 'suit': 'Hearts'})]
+        self.assertEqual(str(playing_cards[0]), str(player_test_cards))
+        self.assertEqual(str(playing_cards[1]), str(dealer_test_cards))
 
     def test_starting_hand_is_blackjack(self):
         new_blackjack_game = Blackjack()
-        player_cards = (Card({'value': 'Ace', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'}))
-        dealer_cards = (Card({'value': 'Ace', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'}))
-        game_cards = player_cards, dealer_cards
-        starting_hand_blackjack = new_blackjack_game.is_blackjack(game_cards)
+        player_cards = [Card({'value': 'Ace', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': 'Ace', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        starting_hand_blackjack = new_blackjack_game.is_blackjack(playing_cards)
         self.assertTrue(starting_hand_blackjack)
 
     def test_calculate_value_of_hand(self):
         new_blackjack_game = Blackjack()
-        begin_game_cards = new_blackjack_game.begin_game()
-        value_of_hand = new_blackjack_game.calculate_value_of_hand(begin_game_cards[0])
+        playing_cards = new_blackjack_game.begin_game()
+        value_of_hand = new_blackjack_game.calculate_value_of_hand(playing_cards[0])
         self.assertEqual(value_of_hand, 20)
 
     def test_shuffle_method(self):
@@ -71,6 +71,78 @@ class TestBeginGame(TestCase):
         new_blackjack_game.shuffle()
         post_shuffled_cards = new_blackjack_game.blackjack_deck.cards[0], new_blackjack_game.blackjack_deck.cards[1]
         self.assertNotEqual(pre_shuffled_cards, post_shuffled_cards)
+
+
+class TestDealMethods(TestCase):
+
+    def test_deal_card_to_player(self):
+        new_blackjack_game = Blackjack()
+        playing_cards = new_blackjack_game.begin_game()
+        playing_cards = new_blackjack_game.deal_card_to_player(playing_cards)
+        self.assertEqual(len(playing_cards[0]), 3)
+
+    def test_deal_card_to_dealer(self):
+        new_blackjack_game = Blackjack()
+        playing_cards = new_blackjack_game.begin_game()
+        playing_cards = new_blackjack_game.deal_card_to_dealer(playing_cards)
+        self.assertEqual(len(playing_cards[1]), 3)
+
+    def test_deal_one_card(self):
+        new_blackjack_game = Blackjack()
+        dealt_card = new_blackjack_game.deal()
+        self.assertEqual(dealt_card, {'value': 'King', 'suit': 'Spades'})
+
+    def test_dealer_card_hand_less_than_17(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        playing_cards = new_blackjack_game.dealer_card_if_less_than_17(playing_cards)
+        self.assertEqual(len(playing_cards[1]), 3)
+
+class TestCalculateWinner(TestCase):
+
+    def test_is_draw(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        is_hand_draw = new_blackjack_game.is_draw(playing_cards)
+        self.assertTrue(is_hand_draw)
+
+    def test_is_not_draw(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '3', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        is_hand_draw = new_blackjack_game.is_draw(playing_cards)
+        self.assertFalse(is_hand_draw)
+
+    def test_is_player_winner(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '10', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        is_players_hand_winning = new_blackjack_game.is_player_winner(playing_cards)
+        self.assertTrue(is_players_hand_winning)
+
+    def test_is_player_not_winner(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '10', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        is_players_hand_winning = new_blackjack_game.is_player_winner(playing_cards)
+        self.assertFalse(is_players_hand_winning)
+
+    def test_player_not_winner_over_21(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '10', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'}),
+                        Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '10', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        is_players_hand_winning = new_blackjack_game.is_player_winner(playing_cards)
+        self.assertFalse(is_players_hand_winning)
+
 
 
 
