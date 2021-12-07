@@ -59,6 +59,14 @@ class TestBeginGame(TestCase):
         starting_hand_blackjack = new_blackjack_game.is_blackjack(playing_cards)
         self.assertTrue(starting_hand_blackjack)
 
+    def test_starting_hand_is_not_blackjack(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '9', 'suit': 'Clubs'}), Card({'value': 'Ace', 'suit': 'Spades'})]
+        dealer_cards = [Card({'value': 'Ace', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        starting_hand_blackjack = new_blackjack_game.is_blackjack(playing_cards)
+        self.assertFalse(starting_hand_blackjack)
+
     def test_calculate_value_of_hand(self):
         new_blackjack_game = Blackjack()
         playing_cards = new_blackjack_game.begin_game()

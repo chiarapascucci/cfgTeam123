@@ -65,7 +65,7 @@ class Card:
 class Blackjack:
 
     def __init__(self):
-        self.blackjack_deck = Deck(1)
+        self.blackjack_deck = Deck(2)
 
     # convert card values to integer
     @staticmethod
@@ -80,8 +80,8 @@ class Blackjack:
 
     # place starting game cards
     def begin_game(self):
-        players_cards = [Card(self.deal()), Card(self.deal())]
         dealers_cards = [Card(self.deal()), Card(self.deal())]
+        players_cards = [Card(self.deal()), Card(self.deal())]
         return players_cards, dealers_cards
 
     # deal cards to dealers hand if hand total is less than 17
