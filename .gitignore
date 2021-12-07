@@ -6,3 +6,4 @@ FINALPROJECT/__pycache__/
 FINALPROJECT/.DS_Store
 FINALPROJECT/static/.DS_Store
 venv/
+__pycache__/
