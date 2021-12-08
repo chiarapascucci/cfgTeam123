@@ -1,5 +1,5 @@
 from typing import List
-from flask_bcrypt import Bcrypt
+import bcrypt
 import mysql.connector
 
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
@@ -73,6 +73,14 @@ def validate_user(user_name, hashed_password):
 class UserNotFoundException(Exception):
     pass
 
+# need to finish this
+def get_user_info(user_id):
+    mycursor.execute("""
+        SELECT * FROM {}.user_info
+        WHERE UserID = {}""".format(user_id))
+    user_name = mycursor.fetchall()
+    return user_name
+
 
 def get_user_first_last_name(user_id):
     mycursor.execute("""
@@ -100,12 +108,12 @@ def create_new_session(user_id, start_time, requested_duration):
     return True
 
 
-def create_new_game_record(user_id, game_id, session_id, start_time, end_time):
+def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
-        INSERT INTO game_record(UserID, GameID, SessionID, StartTime, EndTime)
-        VALUES ({}, {}, {}, {}, {})""".format(user_id, game_id, session_id, start_time, end_time))
+        INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
+        VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
     db.commit()
-    return True
+    return mycursor.lastrowid
 
 
 def delete_user_from_db(user_id):
@@ -121,9 +129,9 @@ def display_total_game_history(user_id):
     FROM sessions s
     INNER JOIN
     game_record r
-    ON 
-    s.SessionID = r.SessionID 
-    INNER JOIN 
+    ON
+    s.SessionID = r.SessionID
+    INNER JOIN
     game_table g
     ON
     g.GameID = r.GameID
@@ -145,14 +153,17 @@ def test_db_connection():
         raise DBConnectionError
 
 
-"""Test to check create_user_in_db and validate_user functions work with DB"""
+"""Testing to check create_user_in_db and validate_user functions work with DB"""
 
-if __name__ == '__main__':
-    bcrypt = Bcrypt()
-    hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
-    create_user_in_db('Danya5', 'Daniella', 'Tobit', hashed_pass)
-    try:
-        print(validate_user('aa', 'bb'))
-    except:
-        pass
-    print(validate_user('Danya5', hashed_pass))
+
+
+# if __name__ == '__main__':
+#     bcrypt = Bcrypt()
+#     hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
+#     create_user_in_db('Danya5', 'Daniella', 'Tobit', hashed_pass)
+#     try:
+#         print(validate_user('aa', 'bb'))
+#     except:
+#         pass
+#     print(validate_user('Danya5', hashed_pass))
+

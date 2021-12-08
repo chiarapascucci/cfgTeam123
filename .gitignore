@@ -5,4 +5,9 @@ FINALPROJECT/__pycache__/
 .DS_Store
 FINALPROJECT/.DS_Store
 FINALPROJECT/static/.DS_Store
+<<<<<<< HEAD
 venv/
+=======
+venv/
+__pycache__/
+>>>>>>> 8d26a89e567132b5256535e3aaaef34b3234d5d6

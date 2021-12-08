@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+    body {
+      font-family: "Muli", sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #686de0;
+      padding: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .rule-list {
+      font-size: 0.7rem;
+      text-align: center;
+      list-style: none;
+      background-color: #f2ecff;
+      padding: 10px 20px;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
+    .container-blackjack {
+      width: 600px;
+      height: 400px;
+      background-color: #008866;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: solid 3px black;
+    }
+
+    .grid-wrap {
+      display: grid;
+      grid-template-rows: repeat(5, 1fr);
+      column-gap: 5px;
+      background-color: #008b8e;
+      width: 80%;
+      height: 80%;
+      border-radius: 20px;
+    }
+
+    .table-center,
+    .dealer-score,
+    .player-score {
+      font-size: 1.1rem;
+      padding: 2px;
+    }
+
+    .display-winner {
+      font-size: 2rem;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .grid-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-img {
+      width: 60px;
+      margin: 15px;
+    }
+
+    .btn {
+      background-color: #f2ecff;
+      border: none;
+      width: 100px;
+      height: 50px;
+      margin-top: 50px;
+      margin-right: 20px;
+      margin-left: 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 3px;
+      border: 1px solid black;
+    }
+
+    .btn.hit {
+      margin-top: 10px;
+    }
+
+    .btn.stand {
+      margin-top: 10px;
+    }
+
+    .btn.hit.active {
+      background-color: #ffc75f;
+    }
+
+    .btn.stand.active {
+      background-color: #f9f871;
+    }
+
+    .btn.new-game {
+      background-color: #007ee6;
+      width: 200px;
+    }
+
+    .btn.start {
+      width: 220px;
+      height: 80px;
+      font-size: 1.3rem;
+      font-weight: normal;
+      background-color: #f9f871;
+      margin: 20px;
+      transition: ease 1s;
+    }
+
+    .btn.new-deck.start {
+      width: 200px;
+      height: 50px;
+      font-size: 0.9rem;
+      background-color: #008bb6;
+      margin: 30px;
+    }
+
+    .hidden {
+      background-color: darkgrey;
+      width: 55px;
+      height: 70px;
+      border-radius: 3px;
+      font-size: 0px;
+      border: 1px solid black;
+    }
+    </style>
+
+    <section class="rules">
+        <ul class="rule-list">
+            <li>The goal of blackjack is to beat the dealer's hand without going over 21.</li>
+            <li>Face cards are worth 10. Aces are worth 1 or 11, whichever makes a better hand.</li>
+            <li>Each player starts with two cards, one of the dealer's cards is hidden until the end.</li>
+            <li>To 'Hit' is to ask for another card. To 'Stand' is to hold your total and end your turn.</li>
+            <li>If you go over 21 you bust, and the dealer wins regardless of the dealer's hand.</li>
+            <li>If you are dealt 21 from the start (Ace & 10), you got a blackjack, and you WIN!</li>
+        </ul>
+    </section>
+    <section class="container-blackjack">
+        <div class="grid-wrap">
+            <div class="grid-box dealer-score">
+                <div id="dealer-score-value"></div>
+            </div>
+            <div id="dealers-hand"></div>
+            <div class="grid-box table-center">
+                <img class="card-img" src="https://static.thenounproject.com/png/1705704-200.png" alt="deck of cards">
+            </div>
+            <div class="grid-box player-score">
+                <div id="player-score-value"></div>
+            </div>
+            <div id="players-hand"></div>
+        </div>
+    </section>
+    <section class="winner">
+        <div class="display-winner" id="display-winner"></div>
+    </section>
+    <section class="btn-container">
+        <button class="btn hit" id="hit" onclick="playerHit()" disabled=true>hit</button>
+        <button class="btn stand" id="stand" onclick="playerStand()" disabled=true>stand</button>
+    </section>
+    <section class="btn-container">
+        <button class="btn start" id="new-deck" onclick=startGame()>start game</button>
+    </section>
+    <div id="game-state" hidden></div>
+    <script src="../static/blackjack_ajax.js"></script>
+{% endblock %}

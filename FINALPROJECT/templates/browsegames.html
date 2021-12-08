@@ -1,6 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
 
-<title>Browse Games</title>
+        <section class="browse-games">
+        <div class="container">
 
+            <div class="game-browser-title">
+                <h1 class="browser-title-text">Pick A Game</h1>
+            </div>
+            <ul>
+                <li onclick="location.href='/tic-tac-toe';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/ttt.png' )}}" alt="Tic Tac Toc icon">
+                    <a href=""></a>
+
+                    <blockquote>Tic Tac Toe</blockquote>
+                    <cite>Available Now!</cite>
+                </li>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/cards.png' )}}" alt="Black Jack icon">
+
+                    <blockquote>Black Jack</blockquote>
+                    <cite>Available Now!</cite>
+                </li>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/quiz.png' )}}" alt="Trivia icon">
+
+                    <blockquote>Trivia</blockquote>
+                    <cite>Available Now!</cite>
+                </li>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/mushroom.png' )}}" alt="Mario Mushroom icon">
+                    <a href=""></a>
+
+                    <blockquote>Game Description</blockquote>
+                    <cite>Coming Soon!</cite>
+                </li>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/minecraft.png' )}}" alt="Minecraft icon">
+
+                    <blockquote>Game Description</blockquote>
+                    <cite>Coming Soon!</cite>
+                </li>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/table.png' )}}" alt="game icon">
+
+                    <blockquote>Game Description</blockquote>
+                    <cite>Coming Soon!</cite>
+                </li>
+            </ul>
+
+
+
+        </div>
+
+
+    </section>
+
+<<<<<<< HEAD
+            <ul>
+                <li><a href="{{ url_for('blackjack') }}">Trivia</a></li>
+                <li><a href="{{ url_for('blackjack') }}">Blackjack</a></li>
+                <li><a href="{{ url_for('tic_tac_toe') }}">Tic Tac Toe</a></li>
+            </ul>
+
+=======
+>>>>>>> 3a81545b84da810f9cb854444cc537a9dc7fb99c
 {% endblock content %}
