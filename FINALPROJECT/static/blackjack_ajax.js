@@ -15,6 +15,8 @@ function startGame() {
             let gameState = JSON.parse(this.response)
             if (gameState['is_blackjack_true']) {
                 winner.innerHTML = "Blackjack, Player Wins"
+                playerScore.innerHTML = gameState['value_of_starting_hands'][0]
+                dealerScore.innerHTML = ""
             } else {
                 hitBtn.disabled = false
                 standBtn.disabled = false

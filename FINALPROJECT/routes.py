@@ -2,18 +2,15 @@
 import json
 import random
 
-from FINALPROJECT import app
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
+from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
-from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
-from FINALPROJECT.guess_my_num import play
+from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
+from FINALPROJECT.games.Tic_Tac_Game.ticboard import Board
 from FINALPROJECT.data_access_functions import create_new_game_record
-
 
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
 from flask_login import login_user, login_required, logout_user
@@ -26,7 +23,7 @@ from FINALPROJECT.config import DB_NAME
 ###### this file is a bit of a mess lol ########
 
 ########### basic routes ############
-from Tic_Tac_Game.ticboard import Board
+
 
 
 @app.route('/')

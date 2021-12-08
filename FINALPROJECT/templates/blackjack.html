@@ -2,7 +2,7 @@
 
 {% block content %}
     <style>
-    body {
+    .blackjack_body {
       font-family: "Muli", sans-serif;
       margin: 0;
       display: flex;
@@ -10,12 +10,8 @@
       align-items: center;
       justify-content: space-between;
       height: 100vh;
-      overflow: hidden;
-      background-color: #686de0;
+      background-color: #efd780;
       padding: 20px;
-    }
-
-    * {
       box-sizing: border-box;
     }
 
@@ -38,16 +34,6 @@
       align-items: center;
       justify-content: center;
       border: solid 3px black;
-    }
-
-    .grid-wrap {
-      display: grid;
-      grid-template-rows: repeat(5, 1fr);
-      column-gap: 5px;
-      background-color: #008b8e;
-      width: 80%;
-      height: 80%;
-      border-radius: 20px;
     }
 
     .table-center,
@@ -138,8 +124,8 @@
       border: 1px solid black;
     }
     </style>
-
-    <section class="rules">
+    <body class="blackjack_body">
+        <section class="rules">
         <ul class="rule-list">
             <li>The goal of blackjack is to beat the dealer's hand without going over 21.</li>
             <li>Face cards are worth 10. Aces are worth 1 or 11, whichever makes a better hand.</li>
@@ -176,4 +162,6 @@
     </section>
     <div id="game-state" hidden></div>
     <script src="../static/blackjack_ajax.js"></script>
+    </body>
+
 {% endblock %}
