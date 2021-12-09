@@ -1,13 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 :root {
   --primary-color: #f1aa38;
+  /* --primary-color: #f5b41a; */
+  /* --secondary-color: #320c29; */
+  --secondary-color: #0c3457;
+
+  --third-color: #2c3e50;
 }
 
 body {
+  /*background: var(--secondary-color);*/
+  /* background: #f2f2f2;  */
   background: #f2f2f2;
   margin: 0;
   font-family: "Poppins";
 }
+
+/* Navigation  */
 
 .navbar {
   background: white;
@@ -41,31 +50,36 @@ ul {
 }
 
 section {
-  padding: 5em 2em;
+   /*background: var(--secondary-color);*/
+  /*padding: 5em 2em;*/
 }
 
+/* Hero */
 .hero {
+    background: var(--secondary-color);
+    padding: 5em 2em;
   text-align: center;
 }
 
 .left-col .subhead {
   text-transform: uppercase;
   font-weight: bold;
-  color: grey;
-  letter-spacing: .3em;
+  color: rgb(184, 184, 184);
+  letter-spacing: 0.3em;
 }
 
 .left-col h1 {
   font-size: 2.5em;
   line-height: 1.3em;
-  margin-top: .2em;
+  margin-top: 0.2em;
+  color: white;
 }
 
 .left-col .primary-cta {
   background: var(--primary-color);
   color: white;
   text-decoration: none;
-  padding: .6em 1.3em;
+  padding: 0.6em 1.3em;
   font-size: 1.4em;
   border-radius: 5em;
   font-weight: bold;
@@ -77,18 +91,21 @@ section {
   margin-top: 3em;
 }
 
+/* Features */
 .feature-section {
-  background: #20272E;
-  color: white;
+  background: #f2f2f2;
+  /* background: #20272e; */
+  /* color: white; */
+  color: black;
 }
 
 ul.features-list {
   margin: 0;
-  padding-left: .1em;
+  padding-left: 0.1em;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(19rem, 1fr))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  -ms-grid-columns: (minmax(19rem, 1fr)) [auto-fit];
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
 }
 
 ul.features-list li {
@@ -99,22 +116,62 @@ ul.features-list li {
 }
 
 ul.features-list li:before {
-  content: '';
+  content: "";
   left: -2em;
   position: absolute;
   width: 20px;
   height: 20px;
-  background-image: url("../static/images/bullet.svg");
+  background-image: url("../static/images/tick.svg");
   background-size: contain;
-  margin-right: .5em;
+  margin-right: 0.5em;
 }
 
+/* Learn More */
+.learn-more {
+  background: var(--secondary-color);
+}
+
+.learn-more li {
+  background: var(--primary-color);
+  text-align: center;
+  padding: 2em 1em;
+  width: 50%;
+  margin: 0 auto 5em auto;
+  border-radius: 1em;
+}
+
+.learn-more li img {
+  width: 5em;
+  height: 5em;
+  margin-top: 1em;
+}
+
+.learn-more-title {
+  margin-top: -8em;
+}
+
+.learn-more-title .learn-more-title-text {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+  font-weight: bold;
+  font-size: 2.7em;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Browse Games */
+
 .browse-games {
-  background: #20272E;
+  /* background: #20272e; */
+  /* background: #320c29; */
+  background: var(--secondary-color);
 }
 
 .browse-games li {
-  background: #F4D58D;
+  background: #f4d58d;
+  /*background: var(--primary-color);*/
   text-align: center;
   padding: 2em 1em;
   width: 80%;
@@ -128,10 +185,35 @@ ul.features-list li:before {
   margin-top: -4.5em;
 }
 
-.board-section {
-  background: #EFD780;
-  justify-content: center;
+.browse-games li blockquote {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: var(--secondary-color);
 }
+
+.browse-games li cite {
+  color: var(--secondary-color);
+}
+
+.board-section {
+  background: #efd780;
+}
+.game-browser-title {
+  margin-top: -8em;
+}
+
+.game-browser-title .browser-title-text {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+  font-weight: bold;
+  font-size: 2.7em;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Tic Tac Toe */
 
 .game-board {
   width: 450px;
@@ -156,7 +238,7 @@ ul.features-list li:before {
 }
 
 .board-title {
-  margin-top: 0.8em;
+  margin-top: -8em;
 }
 
 .board-title .title-text {
@@ -167,6 +249,7 @@ ul.features-list li:before {
   text-align: center;
   text-transform: uppercase;
 }
+
 table {
   border-spacing: 0.5em;
   margin-left: auto;
@@ -199,13 +282,9 @@ td {
   font-size: 4em;
   text-align: center;
   table-layout:fixed;
+
 }
 
-/*.feedback-message{
-  justify-content: center;
-  align: center;
-
-}*/
 .feedback-message {
   margin-top: 2em;
   margin-bottom: 1em;
@@ -215,46 +294,75 @@ td {
 
 }
 
+/*TRIVIA*/
+
+  .trivia{
+    background: #EDF6FD;
+    justify-content: center;
+
+
+  }
+
+  .trivia-board{
+    width: 450px;
+    height: 450px;
+    margin: 0 auto;
+    background-color: #34495e;
+    color: #fff;
+    border: 6px solid var(--secondary-color);
+    border-radius: 10px;
+    display: grid;
+    padding: 5em;
+    text-align: center;
+
+  }
+
+
+  }
+
+  .question-label{
+      font-weight: bold;
+  }
+
+  .trivia-title {
+    margin-top: -8em;
+  }
+
+  .trivia-text {
+    margin-bottom: 1em;
+    font-weight: bold;
+    font-size: 4em;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+ .trivia-button{
+     border-radius: 1em;
+     display: inline-block;
+     margin: 0.5em;
+  }
 
 
 
-
-
-
-
-.game-browser-title {
-  margin-top: -8em;
-}
-
-
-.game-browser-title .browser-title-text {
-  margin-top: 1em;
-  margin-bottom: 1.5em;
-  font-weight: bold;
-  font-size: 2.7em;
-  font-weight: bold;
-  text-align: center;
-  color: #adadad;
-  text-transform: uppercase;
-}
 
 @media only screen and (min-width: 768px) {
   .navbar .container {
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 180px auto;
-        grid-template-columns: 180px auto;
+    grid-template-columns: 180px auto;
     -webkit-box-pack: unset;
-        -ms-flex-pack: unset;
-            justify-content: unset;
+    -ms-flex-pack: unset;
+    justify-content: unset;
   }
   .navbar nav {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
     background: none;
     position: unset;
     height: auto;
@@ -270,7 +378,7 @@ td {
     color: black;
     text-decoration: none;
     font-size: 1em;
-    padding: .1em 1em;
+    padding: 0.1em 1em;
   }
   .navbar nav ul.primary-nav {
     margin: 0;
@@ -283,7 +391,7 @@ td {
     border: 3px solid var(--primary-color);
     font-weight: bold;
     border-radius: 5em;
-    margin-top: -.2em;
+    margin-top: -0.2em;
   }
   .navbar nav li.register-now a:hover {
     background: var(--primary-color);
@@ -304,8 +412,8 @@ td {
     display: -ms-flexbox;
     display: flex;
     -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
     text-align: left;
   }
   .hero .container .left-col {
@@ -329,23 +437,24 @@ td {
     width: 30px;
     height: 30px;
   }
+  .learn-more ul {
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  }
+  .learn-more ul li {
+    margin: 0 1em;
+    margin-bottom: 6em;
+  }
+
   .browse-games ul {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: (minmax(19rem, 1fr))[auto-fit];
-        grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    -ms-grid-columns: (minmax(19rem, 1fr)) [auto-fit];
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
   }
   .browse-games ul li {
     margin: 0 1em;
     margin-bottom: 6em;
   }
-}
-
-.content-section {
-  background: #ffffff;
-  padding: 10px 20px;
-  border: 1px solid #dddddd;
-  border-radius: 3px;
-  margin-bottom: 20px;
 }
 /*# sourceMappingURL=main.css.map */

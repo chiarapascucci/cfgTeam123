@@ -9,7 +9,7 @@
                 <h1>Be Productive &amp Play A Game</h1>
 
                 <div class="hero-cta">
-                    <a href="/browsegames" class="primary-cta">Browse Games</a>
+                    <a href="#learn-more-id" class="primary-cta">Learn More</a>
                 </div>
             </div>
             <img src="{{url_for('static', filename='images/duck.png' )}}" class="hero-img" alt="Picture of a duck"/>
@@ -29,6 +29,44 @@
                 <li>Unlimited Fun!</li>
             </ul>
         </div>
+    </section>
+
+
+       <section class="learn-more" id="learn-more-id" >
+        <div class="container">
+
+            <div class="learn-more-title">
+                <h1 class="learn-more-title-text">How To Get Started</h1>
+            </div>
+            <ul>
+                <li onclick="location.href='#';" , style="cursor:pointer;">
+
+                    <h3>Step 1</h3>
+                    <blockquote>Create Account</blockquote>
+                    <img src="{{url_for('static', filename='images/user.png' )}}" alt="Register Image">
+                </li>
+                <li >
+                    <h3>Step 2</h3>
+                    <blockquote>Set Timer</blockquote>
+                    <img src="{{url_for('static', filename='images/alarm.png' )}}" alt="Timer Image">
+                </li>
+                <li >
+                    <h3>Step 3</h3>
+                    <blockquote>Browse Games</blockquote>
+                    <img src="{{url_for('static', filename='images/jigsaw.png' )}}" alt="browser Games Image">
+                </li>
+                <li >
+                    <h3>Step 4</h3>
+                    <blockquote>Have Fun!</blockquote>
+                    <img src="{{url_for('static', filename='images/fun.png' )}}" alt="Tic Tac Toe Image">
+                </li>
+
+            </ul>
+
+
+
+        </div>
+
     </section>
 
 {% endblock content %}
