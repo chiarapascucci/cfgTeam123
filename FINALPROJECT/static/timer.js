@@ -17,14 +17,17 @@ $(document).ready(function(){
             let time_left = interval - 1000;
 
             // updating session storage
-            sessionStorage.setItem("req_len", time_left)
+            sessionStorage.setItem("req_len", time_left.toString())
+            console.log("time left")
+            console.log(time_left)
 
             //checking if time has run out
             if (time_left <= 0) {
                 let session_id = sessionStorage.getItem("session_id");
                 let user_id = sessionStorage.getItem("user_id");
-                time_up(session_id, user_id);
                 alert("time is up");
+                time_up(session_id, user_id);
+
                 clearInterval(my_interval);
             }
         }, 1000);
@@ -58,8 +61,8 @@ $(document).ready(function(){
         //forming a string with current timedate in correct format
         let entry_date = now_date + ' ' + now_time;
 
-        // not sure what this is???
-        data_str = '{'
+        let user_id = parseInt($('#session-info').attr('data'));
+        console.log(user_id)
 
         // forming ajax request to server
         $.ajax({
@@ -68,22 +71,28 @@ $(document).ready(function(){
             dataType : 'json',
             contentType : 'application/json',
             data : JSON.stringify({
-                'user_id' : 1,
+                'user_id' : user_id,
                 'start_time' : entry_date,
                 'requested_duration' : ms_timeout
             }),
             success : function(data){
                 console.log("successful ajax request, data received: ")
                 console.log(data)
-                let session_id = data[0][0];
-                let user_id = data[0][1];
-                console.log("session id fetched from ajax req: ")
+                let session_id = data.result[0][0];
+                let user_id = data.result[0][1];
+                console.log("session id and user id fetched from ajax req: ")
                 console.log(session_id)
+                console.log(user_id)
                 // setting session object to information needed
                 // all data is saved as strings (unfortunately)
-                sessionStorage.setItem("req_len", ms_timeout);
+                sessionStorage.setItem("req_len", ms_timeout.toString());
                 sessionStorage.setItem("user_id", user_id);
                 sessionStorage.setItem("session_id", session_id);
+                console.log(sessionStorage.getItem('user_id'))
+                let redirect_url = data.redirect_url
+               // window.location.replace(redirect_url)
+
+
 
             }
         });
@@ -93,7 +102,9 @@ $(document).ready(function(){
 
 
 function time_up(session_id, user_id){
-
+    console.log("in time up js func")
+    console.log("session id and user id are")
+    console.log(session_id, user_id)
     let now = new Date();
     let now_time = now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
     let now_date = now.getFullYear()+'-'+(now.getMonth()+1)+"-"+now.getDate();
