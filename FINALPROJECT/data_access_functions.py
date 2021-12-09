@@ -49,20 +49,17 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
-
-def create_user_in_db(user_name, first_name, last_name, password):
-    mycursor.execute("""
-    INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash) 
-    VALUES ('{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password))
-
-
 def create_user_in_db(user_name, first_name, last_name, password, email=None):
     mycursor.execute("""
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
     VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
     db.commit()
+    query = "SELECT UserID FROM productivity_app.user_info WHERE UserName = '{}' ".format(user_name)
+    print(query)
+    mycursor.execute(query)
+    result = mycursor.fetchall()
+    print(result)
     return True
-
 
 
 def validate_user(user_name, hashed_password):
@@ -121,7 +118,7 @@ def create_new_game_record(user_id, game_id, session_id):
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
         VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
     db.commit()
-    return True
+    return mycursor.lastrowid
 
 
 def delete_user_from_db(user_id):
@@ -146,6 +143,9 @@ def display_total_game_history(user_id):
     WHERE s.UserID = {}""".format(user_id))
     user_game_history = mycursor.fetchall()
     return user_game_history
+
+
+
 
 def test_db_connection():
     try:
