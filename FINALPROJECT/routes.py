@@ -1,4 +1,3 @@
-
 import json
 import random
 
@@ -12,14 +11,12 @@ from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
 from FINALPROJECT.guess_my_num import play
 
-
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 from FINALPROJECT import app
 from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username_and_passw
 from FINALPROJECT.config import DB_NAME
-
 
 ###### this file is a bit of a mess lol ########
 
@@ -40,6 +37,7 @@ def starttimer():
 @app.route('/browsegames')
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
+
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -79,15 +77,14 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-
 #################### user login + authentication ########################
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # if current_user.is_authenticated():
-    #     return redirect(url_for('home'))
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     if form.validate_on_submit():
         try:
             user_info = fetch_user_info_with_username_and_passw(form.password.data, form.user_name.data)
@@ -165,7 +162,6 @@ def logsessionend():
 
     except DBConnectionError:
         print("db connection failed")
-
 
 
 ################################# GAMES RELATED VIEWS ##########################################
@@ -284,13 +280,12 @@ def guess_my_num_game():
     comp_num = random.randint(1, 200)
     print(comp_num)
 
-    return render_template('guess_number.html', title="guess_my_number", number = comp_num)
+    return render_template('guess_number.html', title="guess_my_number", number=comp_num)
 
 
 @app.route('/number-ajax', methods=['GET', 'POST'])
 def guess_my_num_game_process():
     if request.method == 'POST':
-
         data = request.get_json()
         print(data)
 
@@ -298,8 +293,6 @@ def guess_my_num_game_process():
         human_num = int(data['human_num'])
         guess_num = int(data['no_of_guesses'])
 
-
-        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num )
+        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num)
         print(result)
         return jsonify(result)
-
