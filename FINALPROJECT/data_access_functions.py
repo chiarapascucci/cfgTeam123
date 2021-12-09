@@ -1,7 +1,6 @@
 from typing import List
 import bcrypt
 import mysql.connector
-
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
 db = None
 mycursor = None
@@ -93,8 +92,9 @@ def get_user_info(user_id):
 def get_user_first_last_name(user_id):
     mycursor.execute("""
     SELECT FirstName, LastName
+    FROM user_info
     WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchall()
+    user_name = mycursor.fetchone()
     return user_name
 
 

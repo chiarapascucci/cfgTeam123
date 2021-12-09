@@ -1,41 +1,52 @@
-from unittest.mock import MagicMock
 from unittest import TestCase, main, mock
-from FINALPROJECT.data_access_functions import initialise_db
-
 import mysql.connector
-
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, get_user_first_last_name, \
+from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, get_user_first_last_name, initialise_db, \
     update_last_login_time, create_new_session, create_new_game_record, delete_user_from_db, display_total_game_history
+from FINALPROJECT.config import HOST, USER, PASSWORD
 
 
 class TestDataFunctions(TestCase):
 
-    def test_create_user_in_db(self):
-        dbc = MagicMock()
-        cursor = MagicMock()
-        initialise_db(dbc, cursor)
-        test_data = create_user_in_db("TestUserName", "TestFirstName", "TestLastName", "TestPasswordHash", "TestEmail")
-        call_args = cursor.execute.call_args
-        self.assertTrue(cursor.execute.called)
-        self.assertIn("TestUserName", str(call_args.args))
+    def setUp(self):
+        self.db = mysql.connector.connect(host=HOST,
+                                     user=USER,
+                                     password=PASSWORD,
+                                     database="test_db")
+        self.mycursor = self.db.cursor()
+        initialise_db(self.db, self.mycursor)
+        self.mycursor.execute("DELETE FROM user_info WHERE UserID > 0")
+        self.mycursor.execute("""
+            INSERT INTO user_info (UserID, UserName, FirstName, LastName, PasswordHash, Email) 
+            VALUES (1, '{}', '{}', '{}', '{}', '{}')""".format("sample_username", "sample_first_name", "sample_last_name",
+                                                            "sample_password", "sample_email"))
+        self.db.commit()
+
+    def tearDown(self):
+        self.mycursor.execute("DELETE FROM user_info WHERE UserID > 0")
+        self.db.commit()
+
+    # Using test_db (created in mysql with schema for productivity_app db for testing purposes)
+
+    def test_create_user_in_db_(self):
+        test_user_name = "TestUserName"
+        test_hashed_password = "TestPasswordHash"
+        create_user_in_db(test_user_name, "TestFirstName", "TestLastName", test_hashed_password, "TestEmail")
+        self.mycursor.execute("""
+        SELECT UserID
+        FROM user_info
+        WHERE PasswordHash = '{}'
+        and UserName = '{}'
+        """.format(test_hashed_password, test_user_name))
+        test_user_id = self.mycursor.fetchone()[0]
+        self.assertIsNotNone(test_user_id)
 
     def test_validate_user(self):
-        pass
+        user_id = validate_user("sample_username", "sample_password")
+        self.assertEqual(user_id, 1)
 
     def test_get_user_name(self):
-        pass
+        first_name, last_name = get_user_first_last_name(1)
+        self.assertEqual("sample_first_name", first_name)
+        self.assertEqual("sample_last_name", last_name)
 
-    def test_update_login(self):
-        pass
 
-    def test_new_session(self):
-        pass
-
-    def test_new_game(self):
-        pass
-
-    def test_delete_user(self):
-        pass
-
-    def test_display_history(self):
-        pass
