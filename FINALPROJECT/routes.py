@@ -2,15 +2,12 @@
 import json
 import random
 
-from FINALPROJECT import app
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, DBConnectionError, _connect_to_db, \
+from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
     create_new_session
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
-from flask import Flask, jsonify, request, render_template, url_for, redirect, flash
-from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
-from FINALPROJECT.guess_my_num import play
+from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
 from FINALPROJECT.data_access_functions import create_new_game_record
 
@@ -19,7 +16,7 @@ from flask import jsonify, request, render_template, url_for, redirect, flash, s
 from flask_login import login_user, login_required, logout_user
 
 from FINALPROJECT import app
-from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username_and_passw
+from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
 
@@ -35,8 +32,17 @@ def home():
 
 
 @app.route('/start-timer')
+@login_required
 def starttimer():
-    return render_template('select_break_time.html', title='Start the Timer')
+    print(session)
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        print(user_id)
+        print(type(user_id))
+
+    if not session.get('username') is None:
+        username = session.get('username')
+    return render_template('select_break_time.html', title='Start the Timer', user_id=user_id)
 
 
 @app.route('/browsegames')
@@ -65,13 +71,15 @@ def special():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        # hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         username = form.user_name.data
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
-        outcome = create_user_in_db(username, first_name, last_name, password, email)
+        print(type(password))
+        user = CustomAuthUser(user_name=username, first_name=first_name, last_name=last_name, email=email, password=password)
+        user.save()
+        outcome = True
         if outcome:
             flash(f'Account created for {form.user_name.data}!', 'Success')
             return redirect(url_for('login'))
@@ -88,25 +96,30 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # if current_user.is_authenticated():
-    #     return redirect(url_for('home'))
+
     if form.validate_on_submit():
-        try:
-            user_info = fetch_user_info_with_username_and_passw(form.password.data, form.user_name.data)
-            user = CustomAuthUser(user_info[0][0], user_info[0][1], user_info[0][2], user_info[0][3],
-                                  user_info[0][4], user_info[0][5])
-            login_user(user, remember=True)
+
+        user = get_user_instance(user_name=form.user_name.data)
+        provided_password = form.password.data
+        print(type(provided_password))
+        print(provided_password)
+        if user.verify_password(pwd=provided_password):
+            login_user(user)
             session['username'] = user.user_name
+            session['used_id'] = user.id
             flash('You have been logged in', 'success')
-            return redirect(url_for('special'))
-        except UserNotFoundException:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            return redirect(url_for('starttimer'))
+        else:
+            flash('details provided are not correct, please try again')
+            return render_template('login.html', title='login', form=form)
+
     return render_template('login.html', title='login', form=form)
 
 
 ############## TIMER RELATED views ######################
 
 @app.route('/log-session-start', methods=['GET', 'POST'])
+@login_required
 def logsessionstart():
     """will need some way of retrieving user ID"""
     try:
@@ -118,14 +131,16 @@ def logsessionstart():
             user_id = data_dict['user_id']
             start_time = data_dict['start_time']
             req_len = str(data_dict['requested_duration'])
+            print(data_dict)
             session_created = create_new_session(user_id, start_time, req_len)
             follow_query = f"select * from {DB_NAME}.sessions WHERE UserID = {user_id} ORDER BY SessionID DESC LIMIT 1;"
             print(follow_query)
             other_cur = connection.cursor()
             other_cur.execute(follow_query)
             result = other_cur.fetchall()
+            response = {'result': result, 'redirect_url': url_for('browsegames')}
             print("printing result of query to get latest entry: ", result)
-            result = jsonify(result)
+            result = jsonify(response)
 
             other_cur.close()
             connection.close()
@@ -137,6 +152,7 @@ def logsessionstart():
 
 
 @app.route('/log-session-end', methods=['GET', 'POST'])
+@login_required
 def logsessionend():
     try:
         connection = _connect_to_db()
@@ -162,8 +178,9 @@ def logsessionend():
             print("printing check result: ", check_result)
             my_cur.close()
             connection.close()
+            response = {'result': result, 'redirect_url': url_for('browsegames')}
             print("connection closed")
-            return jsonify(result)
+            return jsonify(response)
 
     except DBConnectionError:
         print("db connection failed")
@@ -175,6 +192,7 @@ def logsessionend():
 #################### TIC TAC TOE #######################
 
 @app.route('/tic-tac-toe')
+@login_required
 def tic_tac_toe():
     return render_template('tic_tac.html', title="tictactoe")
 
@@ -324,6 +342,7 @@ def check_question(game_id, user_answer):
 
 ############### GUESS MY NUMBER ##################
 @app.route('/guess-my-number')
+@login_required
 def guess_my_num_game():
     comp_num = random.randint(1, 200)
     print(comp_num)
@@ -342,8 +361,7 @@ def guess_my_num_game_process():
         human_num = int(data['human_num'])
         guess_num = int(data['no_of_guesses'])
 
-
-        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num )
+        result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num)
         print(result)
         return jsonify(result)
 

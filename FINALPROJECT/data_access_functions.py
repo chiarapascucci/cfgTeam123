@@ -54,6 +54,11 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
     VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
     db.commit()
+    query = "SELECT UserID FROM productivity_app.user_info WHERE UserName = '{}' ".format(user_name)
+    print(query)
+    mycursor.execute(query)
+    result = mycursor.fetchall()
+    print(result)
     return True
 
 
@@ -138,6 +143,9 @@ def display_total_game_history(user_id):
     WHERE s.UserID = {}""".format(user_id))
     user_game_history = mycursor.fetchall()
     return user_game_history
+
+
+
 
 def test_db_connection():
     try:

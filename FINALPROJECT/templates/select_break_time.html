@@ -3,16 +3,14 @@
 {% block title_block %}Time{% endblock %}
 
 {% block content %}
-<style>
-body {
- background-image: url("../static/site_assets/background_img.gif");
-}
-</style>
+
 
 
         <main class="px-3">
-            <h1>Select how long you want to break for</h1>
+            <h1>Hi {{ username }}</h1>
+            <h2>Please select how long you want to take a break for, then we'll redirect you to one of our awesome games!</h2>
             <p class="lead">We are not opposed to procastination or taking a break... but we want to make sure you stay on track, so let's set a fixed time for your break!</p>
+            <p id="session-info" data="{{ user_id }}" hidden></p>
             <div class="lead">
                 <select id="timer-select-len" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
                     <option selected="">Choose how long you want to break for</option>
