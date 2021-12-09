@@ -196,6 +196,16 @@ def process_tic_tac():
         computer_win = board1.is_a_win("o")
         human_win = board1.is_a_win("x")
 
+        if computer_win:
+            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
+
+        elif human_win:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
+        elif comp_move == -1:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': False, 'game_end': True})
+        else:
+            return jsonify({'comp_move': comp_move, 'comp_win': False, 'hum_win': False, 'game_end': False})
+
 
 ################# BLACKJACK ####################
 
