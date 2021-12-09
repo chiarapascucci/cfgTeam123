@@ -6,7 +6,8 @@ from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionEr
     create_new_session, get_session_id
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
-from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
+from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner, player_hit, \
+    jsonify_blackjack_object, recreate_blackjack_object
 from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
 from FINALPROJECT.games.Tic_Tac_Game.ticboard import Board
@@ -230,16 +231,9 @@ def start_blackjack_game():
 @app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_stand(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     value_of_hand = blackjack_object.display_value_of_hands(blackjack_cards)
     winner = decide_winner(blackjack_object, blackjack_cards)
     game_state = {'players_cards': players_cards,
@@ -254,16 +248,9 @@ def player_stand_blackjack():
 @app.route('/blackjack-player-hit', methods=['GET', 'POST'])
 def player_hit_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_hit(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) <= 21:
         value_of_hand = blackjack_object.display_value_of_players_hand(blackjack_cards)
         winner = 'None'
