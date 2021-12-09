@@ -3,7 +3,7 @@ import json
 import random
 
 from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
-    create_new_session, get_session_id
+    create_new_session, get_session_id, log_game_record_end_time
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
 from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner, player_hit, \
@@ -269,6 +269,21 @@ def player_hit_blackjack():
                       'value_of_starting_hands': value_of_hand,
                       'winner': winner}
         return jsonify(game_state)
+
+@app.route('/blackjack-end')
+def blackjack_end():
+    print("SESSION ENDED AND LOGGED TO PYTHON")
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        # session_id = get_session_id(user_id)
+        game_id = log_game_record_end_time(user_id)
+        print(user_id)
+        # print(session_id)
+        print(game_id)
+    return "Session Ended"
+
 
 
 ################ TRIVIA #########################
