@@ -93,7 +93,7 @@ def login():
             login_user(user, remember=True)
             session['username'] = user.user_name
             flash('You have been logged in', 'success')
-            return redirect(url_for('special'))
+            return redirect(url_for('starttimer'))
         except UserNotFoundException:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='login', form=form)
