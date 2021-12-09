@@ -3,7 +3,7 @@ import json
 import random
 
 from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
-    create_new_session
+    create_new_session, get_session_id
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
@@ -198,6 +198,16 @@ def process_tic_tac():
 
 @app.route('/blackjack')
 def blackjack():
+    print(session)
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        session_id = get_session_id(user_id)
+        game_id = create_new_game_record(user_id, 3, session_id)
+        print(user_id)
+        print(session_id)
+        print(game_id)
     return render_template('blackjack.html', title='Blackjack')
 
 

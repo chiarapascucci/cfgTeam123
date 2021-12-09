@@ -108,6 +108,19 @@ def create_new_session(user_id, start_time, requested_duration):
     return True
 
 
+def get_session_id(user_id):
+    mycursor.execute("""
+        SELECT SessionID 
+        FROM sessions
+        WHERE UserID = {}
+        """.format(user_id))
+    session_id = mycursor.fetchone()[0]
+    if session_id is None:
+        raise UserNotFoundException()
+    return session_id
+
+
+
 def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
