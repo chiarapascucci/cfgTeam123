@@ -5,6 +5,20 @@ let standBtn = document.getElementById("stand")
 let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
+window.addEventListener('beforeunload', (e) => {
+    e.returnValue = 'Are you sure you want to leave?'
+    endGame()
+    console.log("FIRED")
+})
+
+
+// this function should make a not of when the player ends the game and updates end time in database
+function endGame() {
+    let xhr = new XMLHttpRequest()
+    xhr.open('GET', "http://127.0.0.1:5000/blackjack-end", true)
+    xhr.send()
+}
+
 // this function is called when the start game button has been clicked
 // it calls the starter cards and displays the cards values on the HTML game board
 function startGame() {
@@ -15,6 +29,8 @@ function startGame() {
             let gameState = JSON.parse(this.response)
             if (gameState['is_blackjack_true']) {
                 winner.innerHTML = "Blackjack, Player Wins"
+                playerScore.innerHTML = gameState['value_of_starting_hands'][0]
+                dealerScore.innerHTML = ""
             } else {
                 hitBtn.disabled = false
                 standBtn.disabled = false

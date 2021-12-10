@@ -78,6 +78,7 @@ def validate_user(user_name, hashed_password):
 class UserNotFoundException(Exception):
     pass
 
+
 # need to finish this
 def get_user_info(user_id):
     mycursor.execute("""
@@ -113,10 +114,32 @@ def create_new_session(user_id, start_time, requested_duration):
     return True
 
 
+def get_session_id(user_id):
+    mycursor.execute("""
+        SELECT SessionID 
+        FROM sessions
+        WHERE UserID = {}
+        """.format(user_id))
+    session_id = mycursor.fetchone()[0]
+    if session_id is None:
+        raise UserNotFoundException()
+    return session_id
+
+
 def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
         VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
+    db.commit()
+    return mycursor.lastrowid
+
+
+def log_game_record_end_time(user_id):
+    mycursor.execute("""
+        UPDATE game_record
+        SET EndTime = now()
+        WHERE UserID = {}
+        """.format(user_id))
     db.commit()
     return mycursor.lastrowid
 
@@ -145,8 +168,6 @@ def display_total_game_history(user_id):
     return user_game_history
 
 
-
-
 def test_db_connection():
     try:
         cnx = _connect_to_db()
@@ -163,8 +184,6 @@ def test_db_connection():
 
 """Testing to check create_user_in_db and validate_user functions work with DB"""
 
-
-
 # if __name__ == '__main__':
 #     bcrypt = Bcrypt()
 #     hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
@@ -174,4 +193,3 @@ def test_db_connection():
 #     except:
 #         pass
 #     print(validate_user('Danya5', hashed_pass))
-

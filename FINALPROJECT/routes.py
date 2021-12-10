@@ -2,12 +2,18 @@ import json
 import random
 
 from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
-    create_new_session
-from FINALPROJECT.forms import RegistrationForm, LoginForm
+    create_new_session, get_session_id, log_game_record_end_time
 
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
+
+from FINALPROJECT.forms import RegistrationForm, LoginForm
+
+from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner, player_hit, \
+    jsonify_blackjack_object, recreate_blackjack_object
+
 from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
+from FINALPROJECT.games.Tic_Tac_Game.ticboard import Board
 from FINALPROJECT.data_access_functions import create_new_game_record
 
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
@@ -20,7 +26,7 @@ from FINALPROJECT.config import DB_NAME
 ###### this file is a bit of a mess lol ########
 
 ########### basic routes ############
-from Tic_Tac_Game.ticboard import Board
+
 
 
 @app.route('/')
@@ -219,6 +225,16 @@ def process_tic_tac():
 
 @app.route('/blackjack')
 def blackjack():
+    print(session)
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        session_id = get_session_id(user_id)
+        game_id = create_new_game_record(user_id, 3, session_id)
+        print(user_id)
+        print(session_id)
+        print(game_id)
     return render_template('blackjack.html', title='Blackjack')
 
 
@@ -241,16 +257,9 @@ def start_blackjack_game():
 @app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_stand(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     value_of_hand = blackjack_object.display_value_of_hands(blackjack_cards)
     winner = decide_winner(blackjack_object, blackjack_cards)
     game_state = {'players_cards': players_cards,
@@ -265,16 +274,9 @@ def player_stand_blackjack():
 @app.route('/blackjack-player-hit', methods=['GET', 'POST'])
 def player_hit_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_hit(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) <= 21:
         value_of_hand = blackjack_object.display_value_of_players_hand(blackjack_cards)
         winner = 'None'
@@ -293,6 +295,21 @@ def player_hit_blackjack():
                       'value_of_starting_hands': value_of_hand,
                       'winner': winner}
         return jsonify(game_state)
+
+@app.route('/blackjack-end')
+def blackjack_end():
+    print("SESSION ENDED AND LOGGED TO PYTHON")
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        # session_id = get_session_id(user_id)
+        game_id = log_game_record_end_time(user_id)
+        print(user_id)
+        # print(session_id)
+        print(game_id)
+    return "Session Ended"
+
 
 
 ################ TRIVIA #########################
