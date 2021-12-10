@@ -1,11 +1,18 @@
 from flask_login import UserMixin, AnonymousUserMixin
+import mysql.connector
 
-from FINALPROJECT import login_manager
+from FINALPROJECT import login_manager, HOST, USER, PASSWORD
+from FINALPROJECT.config import DB_NAME
 from FINALPROJECT.data_access_functions import mycursor, db, create_user_in_db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def fetch_user_info_with_user_id(user_id):
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 database=DB_NAME)
+    mycursor = db.cursor()
     mycursor.execute("""
     SELECT *
     FROM user_info
@@ -16,6 +23,11 @@ def fetch_user_info_with_user_id(user_id):
 
 
 def fetch_user_info_with_username(user_name):
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 database=DB_NAME)
+    mycursor = db.cursor()
     mycursor.execute("""
     SELECT *
     FROM user_info

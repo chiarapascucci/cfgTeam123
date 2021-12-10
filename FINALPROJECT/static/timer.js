@@ -90,7 +90,7 @@ $(document).ready(function(){
                 sessionStorage.setItem("session_id", session_id);
                 console.log(sessionStorage.getItem('user_id'))
                 let redirect_url = data.redirect_url
-               // window.location.replace(redirect_url)
+                window.location.replace(redirect_url)
 
 
 

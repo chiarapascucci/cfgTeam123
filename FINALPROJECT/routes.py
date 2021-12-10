@@ -80,6 +80,7 @@ def register():
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
+
         print(type(password))
         user = CustomAuthUser(user_name=username, first_name=first_name, last_name=last_name, email=email, password=password)
         user.save()
@@ -104,7 +105,7 @@ def login():
         return redirect(url_for('home'))
 
     if form.validate_on_submit():
-
+        print(form.user_name.data)
         user = get_user_instance(user_name=form.user_name.data)
         provided_password = form.password.data
         print(type(provided_password))
