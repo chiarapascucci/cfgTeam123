@@ -1,15 +1,9 @@
 from typing import List
 import bcrypt
 import mysql.connector
-
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
-
-db = mysql.connector.connect(host=HOST,
-                             user=USER,
-                             password=PASSWORD,
-                             database=DB_NAME)
-
-mycursor = db.cursor()
+db = None
+mycursor = None
 
 
 class DBConnectionError(Exception):
@@ -47,6 +41,19 @@ def get_all_records() -> List:
         if db_connection:
             db_connection.close()
             print('DB Connection is now closed.')
+
+
+def initialise_db(db_in=None, mycursor_in=None):
+    global db, mycursor
+    if db_in is None:
+        db = mysql.connector.connect(host=HOST,
+                                     user=USER,
+                                     password=PASSWORD,
+                                     database=DB_NAME)
+        mycursor = db.cursor()
+    else:
+        db = db_in
+        mycursor = mycursor_in
 
 
 def create_user_in_db(user_name, first_name, last_name, password, email=None):
@@ -91,8 +98,9 @@ def get_user_info(user_id):
 def get_user_first_last_name(user_id):
     mycursor.execute("""
     SELECT FirstName, LastName
+    FROM user_info
     WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchall()
+    user_name = mycursor.fetchone()
     return user_name
 
 
