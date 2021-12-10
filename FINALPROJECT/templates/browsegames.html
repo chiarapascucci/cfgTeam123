@@ -15,16 +15,22 @@
                     <blockquote>Tic Tac Toe</blockquote>
                     <cite>Available Now!</cite>
                 </li>
-                <li onclick="location.href='#';" , style="cursor:pointer;">
+                <li onclick="location.href='/blackjack';" , style="cursor:pointer;">
                     <img src="{{url_for('static', filename='images/cards.png' )}}" alt="Black Jack icon">
 
                     <blockquote>Black Jack</blockquote>
                     <cite>Available Now!</cite>
                 </li>
-                <li onclick="location.href='#';" , style="cursor:pointer;">
+                <li onclick="location.href='/trivia-quiz';" , style="cursor:pointer;">
                     <img src="{{url_for('static', filename='images/quiz.png' )}}" alt="Trivia icon">
 
                     <blockquote>Trivia</blockquote>
+                    <cite>Available Now!</cite>
+                </li>
+                   <li onclick="location.href='/guess-my-number';" , style="cursor:pointer;">
+                    <img src="{{url_for('static', filename='images/question.png' )}}" alt="Guessing icon">
+
+                    <blockquote>Guess My Number</blockquote>
                     <cite>Available Now!</cite>
                 </li>
                 <li onclick="location.href='#';" , style="cursor:pointer;">
@@ -34,12 +40,7 @@
                     <blockquote>Game Description</blockquote>
                     <cite>Coming Soon!</cite>
                 </li>
-                <li onclick="location.href='#';" , style="cursor:pointer;">
-                    <img src="{{url_for('static', filename='images/minecraft.png' )}}" alt="Minecraft icon">
 
-                    <blockquote>Game Description</blockquote>
-                    <cite>Coming Soon!</cite>
-                </li>
                 <li onclick="location.href='#';" , style="cursor:pointer;">
                     <img src="{{url_for('static', filename='images/table.png' )}}" alt="game icon">
 
@@ -55,13 +56,5 @@
 
     </section>
 
-<<<<<<< HEAD
-            <ul>
-                <li><a href="{{ url_for('blackjack') }}">Trivia</a></li>
-                <li><a href="{{ url_for('blackjack') }}">Blackjack</a></li>
-                <li><a href="{{ url_for('tic_tac_toe') }}">Tic Tac Toe</a></li>
-            </ul>
 
-=======
->>>>>>> 3a81545b84da810f9cb854444cc537a9dc7fb99c
 {% endblock content %}
