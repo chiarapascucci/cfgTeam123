@@ -11,7 +11,6 @@ answers. e.g.
  'question': 'In The Lies Of Locke Lamora, what does &quot;Lamora&quot; mean '
              'in Throne Therin?',
  'type': 'multiple'}
-
 """
 
 
@@ -47,17 +46,11 @@ class TriviaGame:
         self.current_question = result
         return result
 
-    def get_current_question(self):
-        return self.current_question
+    def check_correct(self, user_answer):
+        return user_answer == self.current_question['correct_answer']
 
 
-#
-# trivia_game = TriviaGame(10, 9, 'easy')
-#
-# trivia_game2 = TriviaGame(10, 10, 'hard')
 
-# looping through trivia game instances at the same time (to show 2 games can happen in parallel)
-# for question in trivia_game:
-#     pprint(question)
-#     pprint(trivia_game2.__next__())
+
+
 
