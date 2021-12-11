@@ -240,12 +240,14 @@ def blackjack():
     if not session.get('_user_id') is None:
         user_id = session.get('_user_id')
         # need to access the log-session-start page
-        user_id = 20
+        # user_id = 20
         session_id = get_session_id(user_id)
-        game_id = create_new_game_record(user_id, 3, session_id)
         print(user_id)
         print(session_id)
-        print(game_id)
+        create_new_game_record(user_id, 3, session_id)
+        print(user_id)
+        print(session_id)
+        # print(game_id)
     return render_template('blackjack.html', title='Blackjack')
 
 

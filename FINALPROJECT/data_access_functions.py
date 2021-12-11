@@ -50,7 +50,7 @@ def initialise_db(db_in=None, mycursor_in=None):
                                      user=USER,
                                      password=PASSWORD,
                                      database=DB_NAME)
-        mycursor = db.cursor()
+        mycursor = db.cursor(buffered=True)
     else:
         db = db_in
         mycursor = mycursor_in
@@ -139,7 +139,7 @@ def create_new_game_record(user_id, game_id, session_id):
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
         VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
     db.commit()
-    return mycursor.lastrowid
+    # return mycursor.lastrowid
 
 
 def log_game_record_end_time(user_id):
