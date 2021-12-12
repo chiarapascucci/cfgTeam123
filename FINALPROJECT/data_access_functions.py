@@ -183,7 +183,7 @@ def test_db_connection():
         query = "show TABLES"
         cur.execute(query)
         result = cur.fetchall()
-        print(result)
+        # print(result)
         cur.close()
         cnx.close()
     except Exception:

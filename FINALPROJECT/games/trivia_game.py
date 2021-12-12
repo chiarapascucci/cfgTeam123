@@ -19,6 +19,7 @@ class TriviaGame:
     num_of_questions = 0
     question_num = 0
     current_question = {}
+    num_correct = 0
 
     # Hard coded trivia options to a choice of 10 questions
     def __init__(self, num_questions=10, category=None, difficulty=None):
@@ -47,7 +48,15 @@ class TriviaGame:
         return result
 
     def check_correct(self, user_answer):
-        return user_answer == self.current_question['correct_answer']
+        correct = user_answer == self.current_question['correct_answer']
+        if correct:
+            self.num_correct += 1
+        return correct
+
+    def get_score(self):
+        return "{} / {}".format(self.num_correct, self.num_of_questions)
+
+
 
 
 
