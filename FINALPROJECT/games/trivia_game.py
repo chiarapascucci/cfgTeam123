@@ -1,4 +1,6 @@
 from pprint import pprint
+import random
+
 import requests
 
 """output of TriviaGame class is a dictionary of keys (what the user selects) values (options), and correct/incorrect 
@@ -43,6 +45,10 @@ class TriviaGame:
             raise StopIteration
 
         result = self.questions[self.question_num]
+        all_answers = [result['correct_answer']]
+        all_answers.extend(result['incorrect_answers'])
+        random.shuffle(all_answers)
+        result['answers'] = all_answers
         self.question_num += 1
         self.current_question = result
         return result

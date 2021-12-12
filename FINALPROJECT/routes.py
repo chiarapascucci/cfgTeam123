@@ -343,12 +343,10 @@ def trivia_quiz():
 
 
 @app.route('/trivia-quiz/create')
-def create_trivia():
-    user_id = 5 # replace with real user_id
-    session_id = 1 # replace wth real session_id
+def create_trivia(user_id):
+    session_id = get_session_id(user_id)
     # call data access layer function to create game record
     game_id = create_new_game_record(user_id, 3, session_id)
-    print(game_id)
     trivia_game = TriviaGame()
     trivia_games[game_id] = trivia_game
     return jsonify(game_id)

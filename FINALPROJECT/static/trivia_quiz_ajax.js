@@ -6,9 +6,10 @@ function htmlDecode(input) {
 function answer_clicked(answer, game_id){
     console.log(answer + game_id)
     $.ajax({
-        type : 'GET',
-        url : "http://127.0.0.1:5000/trivia-quiz/" + game_id + "/check-answer/" + answer,
+        type : 'POST',
+        url : "http://127.0.0.1:5000/trivia-quiz/" + game_id + "/check-answer",
         dataType : 'json',
+        data: '{"user_answer": "' + answer + '"}',
         contentType : 'application/json',
         success: function(data){
             console.log("ajax success: data received")
