@@ -139,15 +139,15 @@ def create_new_game_record(user_id, game_id, session_id):
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
         VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
     db.commit()
-    # return mycursor.lastrowid
+    return mycursor.lastrowid
 
 
-def log_game_record_end_time(user_id):
+def log_game_record_end_time(record_id):
     mycursor.execute("""
         UPDATE game_record
         SET EndTime = now()
-        WHERE UserID = {}
-        """.format(user_id))
+        WHERE RecordID = {}
+        """.format(record_id))
     db.commit()
     return mycursor.lastrowid
 
