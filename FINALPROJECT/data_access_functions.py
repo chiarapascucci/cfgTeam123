@@ -43,6 +43,7 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
+# Form a connection to database
 def initialise_db(db_in=None, mycursor_in=None):
     global db, mycursor
     if db_in is None:
@@ -128,6 +129,7 @@ def get_session_id(user_id):
         FROM sessions
         WHERE UserID = {}
         """.format(user_id))
+    # fetchone() returns a tuple e.g. (5, ), [0] accesses first element in tuple - which is user_id
     session_id = mycursor.fetchone()[0]
     if session_id is None:
         raise UserNotFoundException()

@@ -1,18 +1,10 @@
 from pprint import pprint
 import random
-
 import requests
 
-"""output of TriviaGame class is a dictionary of keys (what the user selects) values (options), and correct/incorrect 
-answers. e.g.
-
-{'category': 'Entertainment: Books',
- 'correct_answer': 'Shadow',
- 'difficulty': 'hard',
- 'incorrect_answers': ['Thievery', 'Justice', 'Chaos'],
- 'question': 'In The Lies Of Locke Lamora, what does &quot;Lamora&quot; mean '
-             'in Throne Therin?',
- 'type': 'multiple'}
+"""
+Output of TriviaGame class is a dictionary of keys (what the user selects) values (options), and correct/incorrect 
+answers.
 """
 
 
@@ -23,7 +15,7 @@ class TriviaGame:
     current_question = {}
     num_correct = 0
 
-    # Hard coded trivia options to a choice of 10 questions
+    # Hard coded trivia options to 10 questions, initialisation of instances
     def __init__(self, num_questions=10, category=None, difficulty=None):
         url = 'https://opentdb.com/api.php?amount={}'.format(num_questions)
         if category:
@@ -40,19 +32,24 @@ class TriviaGame:
     def __iter__(self):
         return self
 
+    # Limit to 10 iterations and keep the state of question number
     def __next__(self):
         if self.question_num >= self.num_of_questions:
             raise StopIteration
 
         result = self.questions[self.question_num]
-        all_answers = [result['correct_answer']]
-        all_answers.extend(result['incorrect_answers'])
-        random.shuffle(all_answers)
-        result['answers'] = all_answers
+        self.shuffle_answers(result)
         self.question_num += 1
         self.current_question = result
         return result
 
+    def shuffle_answers(self, result):
+        all_answers = [result['correct_answer']]
+        all_answers.extend(result['incorrect_answers'])
+        random.shuffle(all_answers)
+        result['answers'] = all_answers
+
+    # Keep the state of user score
     def check_correct(self, user_answer):
         correct = user_answer == self.current_question['correct_answer']
         if correct:

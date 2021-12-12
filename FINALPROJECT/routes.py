@@ -244,7 +244,7 @@ def blackjack():
         # need to access the log-session-start page
         user_id = 20
         session_id = get_session_id(user_id)
-        game_id = create_new_game_record(user_id, 3, session_id)
+        game_id = create_new_game_record(user_id, 2, session_id)
         print(user_id)
         print(session_id)
         print(game_id)
@@ -324,16 +324,17 @@ def blackjack_end():
     return "Session Ended"
 
 
-
 ################ TRIVIA #########################
 trivia_games = {}
 
 
+# Initiate trivia game
 @app.route('/trivia-quiz')
 @login_required
 def trivia_quiz():
-    user_id = 5 # replace with session.get('_user_id')
-    game_id = create_trivia(user_id).json
+    # user_id = session.get('_user_id')
+    user_id = 5
+    game_id = create_trivia(user_id)
     first_q = next_question(game_id).json['next_question']
     answers = first_q['answers']
     for index, answer in enumerate(answers):
@@ -342,22 +343,23 @@ def trivia_quiz():
                            game_id=game_id, q_num=1)
 
 
-@app.route('/trivia-quiz/create')
+# Create an instance of a trivia game, make a mapping between game_id and the created instance
 def create_trivia(user_id):
     session_id = get_session_id(user_id)
     # call data access layer function to create game record
     game_id = create_new_game_record(user_id, 3, session_id)
     trivia_game = TriviaGame()
     trivia_games[game_id] = trivia_game
-    return jsonify(game_id)
+    return game_id
 
 
+# Make a call to next() function to get next question
 @app.route('/trivia-quiz/<game_id>/next-question')
 def next_question(game_id):
     game_id = int(game_id)
     trivia_game = trivia_games[game_id]
     try:
-        next_q = trivia_game.__next__()
+        next_q = next(trivia_game)
     except StopIteration:
         next_q = None
     return jsonify({"question_num": trivia_game.question_num,
@@ -365,6 +367,7 @@ def next_question(game_id):
                     "next_question": next_q})
 
 
+# Check user answer with correct/incorrect answers
 @app.route('/trivia-quiz/<game_id>/check-answer', methods=['POST'])
 def check_question(game_id):
     data = request.get_json()
