@@ -204,3 +204,38 @@ def test_db_connection():
 #     except:
 #         pass
 #     print(validate_user('Danya5', hashed_pass))
+
+
+# function used when instantiating a user object
+def fetch_user_info_with_user_id(user_id):
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 database=DB_NAME)
+    mycursor = db.cursor()
+    mycursor.execute("""
+    SELECT *
+    FROM user_info
+    WHERE UserId = {};
+    """.format(user_id))
+    user_info = mycursor.fetchall()
+    return user_info
+
+
+# function used when instantiating a user object
+def fetch_user_info_with_username(user_name):
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 database=DB_NAME)
+    mycursor = db.cursor()
+    mycursor.execute("""
+    SELECT *
+    FROM user_info
+    WHERE UserName = '{}'
+    """.format(user_name))
+    user_info = mycursor.fetchall()
+    if user_info is None:
+        raise UserNotFoundException()
+    print(user_info)
+    return user_info

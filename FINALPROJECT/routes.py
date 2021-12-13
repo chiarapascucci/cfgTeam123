@@ -1,7 +1,7 @@
 import json
 import random
 
-from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
+from FINALPROJECT.data_access_functions import  DBConnectionError, _connect_to_db, \
     create_new_session, get_session_id, log_game_record_end_time
 
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
@@ -20,12 +20,11 @@ from flask import jsonify, request, render_template, url_for, redirect, flash, s
 from flask_login import login_user, login_required, logout_user, current_user
 
 from FINALPROJECT import app
-from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username, get_user_instance
+from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
 import html
 
-###### this file is a bit of a mess lol ########
 
 ########### basic routes ############
 
@@ -43,10 +42,12 @@ def starttimer():
         user_id = session.get('_user_id')
         print(user_id)
         print(type(user_id))
+        return render_template('select_break_time.html', title='Start the Timer', user_id=user_id)
 
     if not session.get('username') is None:
         username = session.get('username')
-    return render_template('select_break_time.html', title='Start the Timer', user_id=user_id)
+        return render_template('select_break_time.html', title='Start the Timer', username=username)
+# need to provide some return type if something goes wrong (i.e. sesssion object does not have user id or username
 
 
 @app.route('/browsegames')
@@ -70,52 +71,59 @@ def special():
     return render_template('special.html', title='special')
 
 
-############# user registration ################
+################### user registration ###############################
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # registation form is instantiated
     form = RegistrationForm()
+    # if the form is submitted and it is valid
+    # data is extracted to create an instance of user
     if form.validate_on_submit():
         username = form.user_name.data
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
-
-        print(type(password))
         user = CustomAuthUser(user_name=username, first_name=first_name, last_name=last_name, email=email,
                               password=password)
+        # created user is saved to the DB
         user.save()
-        outcome = True
-        if outcome:
-            flash(f'Account created for {form.user_name.data}!', 'Success')
-            return redirect(url_for('login'))
-        else:
-            flash('something went wrong, please try again')
-            return render_template('register.html', title='Register', form=form)
-    return render_template('register.html', title='Register', form=form)
+
+        return redirect(url_for('login'))
+    else:
+        flash('something went wrong, please try again')
+        return render_template('register.html', title='Register', form=form)
 
 
 #################### user login + authentication ########################
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # instantiating the login form
     form = LoginForm()
 
     if current_user.is_authenticated:
         return redirect(url_for('home'))
 
+    # if the form is submitted and it is valid
+    # data is extracted to log the user in
     if form.validate_on_submit():
-        print(form.user_name.data)
+
+        # since the user has provided their user name
+        # the username is used to retrieve the relevant user as an instance of User
         user = get_user_instance(user_name=form.user_name.data)
+        # password provided is retrieved
         provided_password = form.password.data
-        print(type(provided_password))
-        print(provided_password)
+
+        # using method implemented in user class to check if the provided password
+        # and the password associated with the instance of user that has been retrieved correspond
         if user.verify_password(pwd=provided_password):
+            # if the password is valid
+            # the user is logged in
             login_user(user)
+            # their user name is saved to the session object
             session['username'] = user.user_name
-            session['used_id'] = user.id
             flash('You have been logged in', 'success')
             return redirect(url_for('starttimer'))
         else:
@@ -130,31 +138,33 @@ def login():
 @app.route('/log-session-start', methods=['GET', 'POST'])
 @login_required
 def logsessionstart():
-    """will need some way of retrieving user ID"""
+    """
+    this function is called when the timer starts by sending an AJAX request to the server
+    the request object contains the info needed to create a new session entry in the DB
+    :return: returns a JSON obj if creation is successful, None otherwise
+    """
     try:
         connection = _connect_to_db()
         if request.method == 'POST':
-            print("post request received")
-
             data_dict = request.get_json()
             user_id = data_dict['user_id']
             start_time = data_dict['start_time']
             req_len = str(data_dict['requested_duration'])
-            print(data_dict)
             session_created = create_new_session(user_id, start_time, req_len)
-            follow_query = f"select * from {DB_NAME}.sessions WHERE UserID = {user_id} ORDER BY SessionID DESC LIMIT 1;"
-            print(follow_query)
-            other_cur = connection.cursor()
-            other_cur.execute(follow_query)
-            result = other_cur.fetchall()
-            response = {'result': result, 'redirect_url': url_for('browsegames')}
-            print("printing result of query to get latest entry: ", result)
-            result = jsonify(response)
+            if session_created:
+                follow_query = f"select * from {DB_NAME}.sessions WHERE UserID = {user_id} and EndTime IS NULL ORDER BY SessionID DESC LIMIT 1;"
+                other_cur = connection.cursor()
+                other_cur.execute(follow_query)
+                result = other_cur.fetchall()
+                response = {'result': result, 'redirect_url': url_for('browsegames')}
+                result = jsonify(response)
 
-            other_cur.close()
-            connection.close()
-            print("connection closed")
-            return result
+                other_cur.close()
+                connection.close()
+
+                return result
+            else:
+                return None
 
     except DBConnectionError:
         print("db connection failed")
@@ -163,6 +173,11 @@ def logsessionstart():
 @app.route('/log-session-end', methods=['GET', 'POST'])
 @login_required
 def logsessionend():
+    """
+    This function (similar to the above) is called when the timer expires, by sending an AJAX request.
+    The request contains the info needed to update a given session entry with the relevant end time
+    :return: returns a JSON object with the data retrieved (as a check) and the url for redirecting the user
+    """
     try:
         connection = _connect_to_db()
         if request.method == 'POST':
@@ -187,7 +202,7 @@ def logsessionend():
             print("printing check result: ", check_result)
             my_cur.close()
             connection.close()
-            response = {'result': result, 'redirect_url': url_for('browsegames')}
+            response = {'result': result, 'redirect_url': url_for('logout')}
             print("connection closed")
             return jsonify(response)
 
