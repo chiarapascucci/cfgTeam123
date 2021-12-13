@@ -17,7 +17,7 @@ window.addEventListener('beforeunload', (e) => {
     console.log("FIRED")
 })
 
-// this function should make a note of when the player starts the game and creates new database record
+// log player start game and creates new database record
 function logStartGame() {
     console.log('start game function')
     let xhr = new XMLHttpRequest()
@@ -33,7 +33,7 @@ function logStartGame() {
 
 
 
-// this function should make a note of when the player ends the game and updates end time in database
+// logs player end the game and updates end time in database
 function logEndGame() {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
