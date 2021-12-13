@@ -128,6 +128,7 @@ def get_session_id(user_id):
         SELECT SessionID 
         FROM sessions
         WHERE UserID = {}
+        ORDER BY SessionID DESC
         """.format(user_id))
     # fetchone() returns a tuple e.g. (5, ), [0] accesses first element in tuple - which is user_id
     session_id = mycursor.fetchone()[0]
