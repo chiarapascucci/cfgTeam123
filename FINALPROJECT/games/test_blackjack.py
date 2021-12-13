@@ -46,8 +46,8 @@ class TestBeginGame(TestCase):
     def test_return_cards(self):
         new_blackjack_game = Blackjack()
         playing_cards = new_blackjack_game.begin_game()
-        player_test_cards = [Card({'value': 'King', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
-        dealer_test_cards = [Card({'value': 'King', 'suit': 'Diamonds'}), Card({'value': 'King', 'suit': 'Hearts'})]
+        dealer_test_cards = [Card({'value': 'King', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        player_test_cards = [Card({'value': 'King', 'suit': 'Diamonds'}), Card({'value': 'King', 'suit': 'Hearts'})]
         self.assertEqual(str(playing_cards[0]), str(player_test_cards))
         self.assertEqual(str(playing_cards[1]), str(dealer_test_cards))
 
@@ -108,6 +108,15 @@ class TestDealMethods(TestCase):
         playing_cards = new_blackjack_game.dealer_card_if_less_than_17(playing_cards)
         self.assertEqual(len(playing_cards[1]), 3)
 
+    def test_dealer_card_hand_more_than_17(self):
+        new_blackjack_game = Blackjack()
+        player_cards = [Card({'value': '2', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        dealer_cards = [Card({'value': '7', 'suit': 'Spades'}), Card({'value': 'King', 'suit': 'Clubs'})]
+        playing_cards = player_cards, dealer_cards
+        playing_cards = new_blackjack_game.dealer_card_if_less_than_17(playing_cards)
+        self.assertEqual(len(playing_cards[1]), 2)
+
+
 class TestCalculateWinner(TestCase):
 
     def test_is_draw(self):
@@ -150,8 +159,6 @@ class TestCalculateWinner(TestCase):
         playing_cards = player_cards, dealer_cards
         is_players_hand_winning = new_blackjack_game.is_player_winner(playing_cards)
         self.assertFalse(is_players_hand_winning)
-
-
 
 
 if __name__ == '__main__':

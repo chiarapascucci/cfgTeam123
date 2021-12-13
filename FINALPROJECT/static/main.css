@@ -344,6 +344,132 @@ td {
   }
 
 
+/* Blackjack */
+    .blackjack-body {
+      font-family: "Muli", sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      background-color: #efd780;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .rule-list {
+      font-size: 0.7rem;
+      text-align: center;
+      list-style: none;
+      background-color: #f2ecff;
+      padding: 10px 20px;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
+    section.blackjack {
+        padding: 10px 10px;
+    }
+
+    section.container-blackjack {
+      width: 600px;
+      height: 400px;
+      background-color: #008866;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: solid 3px black;
+    }
+
+    .table-center,
+    .dealer-score,
+    .player-score {
+      font-size: 1.1rem;
+      padding: 2px;
+    }
+
+    .display-winner {
+      font-size: 2rem;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .grid-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-img {
+      width: 60px;
+      margin: 15px;
+    }
+
+    .btn {
+      background-color: #f2ecff;
+      border: none;
+      width: 100px;
+      height: 50px;
+      margin-top: 50px;
+      margin-right: 20px;
+      margin-left: 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 3px;
+      border: 1px solid black;
+    }
+
+    .btn.hit {
+      margin-top: 10px;
+    }
+
+    .btn.stand {
+      margin-top: 10px;
+    }
+
+    .btn.hit.active {
+      background-color: #ffc75f;
+    }
+
+    .btn.stand.active {
+      background-color: #f9f871;
+    }
+
+    .btn.new-game {
+      background-color: #007ee6;
+      width: 200px;
+    }
+
+    .btn.start {
+      width: 220px;
+      height: 80px;
+      font-size: 1.3rem;
+      font-weight: normal;
+      background-color: #f9f871;
+      margin: 20px;
+      transition: ease 1s;
+    }
+
+    .btn.new-deck.start {
+      width: 200px;
+      height: 50px;
+      font-size: 0.9rem;
+      background-color: #008bb6;
+      margin: 30px;
+    }
+
+    .hidden {
+      background-color: darkgrey;
+      width: 55px;
+      height: 70px;
+      border-radius: 3px;
+      font-size: 0px;
+      border: 1px solid black;
+    }
 
 
 @media only screen and (min-width: 768px) {
