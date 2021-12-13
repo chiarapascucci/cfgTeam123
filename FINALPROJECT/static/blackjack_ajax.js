@@ -5,21 +5,8 @@ let standBtn = document.getElementById("stand")
 let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
-window.addEventListener('load', (e) => {
-    logBlackjackStartGame()
-    console.log('Blackjack is fully loaded');
-})
-
-
-window.addEventListener('beforeunload', (e) => {
-    e.returnValue = 'Are you sure you want to leave?'
-    logBlackjackEndGame()
-    console.log("Blackjack FIRED")
-})
-
 // log player start game and creates new database record
-function logBlackjackStartGame() {
-    console.log('start game function')
+window.addEventListener('load', (e) => {
     let xhr = new XMLHttpRequest()
     xhr.open('GET', "http://127.0.0.1:5000/blackjack-game-record", true)
     xhr.onload = function() {
@@ -29,18 +16,17 @@ function logBlackjackStartGame() {
             }
         }
     xhr.send()
-    }
-
-
+})
 
 // logs player end the game and updates end time in database
-function logBlackjackEndGame() {
+window.addEventListener('beforeunload', (e) => {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-end", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
-}
+})
+
 
 // this function is called when the start game button has been clicked
 // it calls the starter cards and displays the cards values on the HTML game board

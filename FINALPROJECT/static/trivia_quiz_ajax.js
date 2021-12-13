@@ -1,7 +1,6 @@
 let gameStateStorage = document.getElementById("game-state")
 
 window.addEventListener('beforeunload', (e) => {
-    e.returnValue = 'Are you sure you want to leave?'
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/trivia-end", true)

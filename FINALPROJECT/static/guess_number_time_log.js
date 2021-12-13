@@ -1,20 +1,7 @@
 let gameStateStorage = document.getElementById("game-state")
 
-window.addEventListener('load', (e) => {
-    logGuessNumberStartGame()
-    console.log('Tic Tac is fully loaded');
-})
-
-
-window.addEventListener('beforeunload', (e) => {
-    e.returnValue = 'Are you sure you want to leave?'
-    logGuessNumberEndGame()
-    console.log("Tic Tac FIRED")
-})
-
 // logs player start game and creates new database record
-function logGuessNumberStartGame() {
-    console.log('start game function')
+window.addEventListener('load', (e) => {
     let xhr = new XMLHttpRequest()
     xhr.open('GET', "http://127.0.0.1:5000/guess-num-game-record", true)
     xhr.onload = function() {
@@ -24,14 +11,14 @@ function logGuessNumberStartGame() {
             }
         }
     xhr.send()
-    }
-
+})
 
 // logs player end the game and updates end time in database
-function logGuessNumberEndGame() {
+
+window.addEventListener('beforeunload', (e) => {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/guess-num-end", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
-}
+})
