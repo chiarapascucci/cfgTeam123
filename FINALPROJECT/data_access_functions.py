@@ -62,7 +62,7 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
     VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
     db.commit()
-    query = "SELECT UserID FROM productivity_app.user_info WHERE UserName = '{}' ".format(user_name)
+    query = "SELECT UserID FROM user_info WHERE UserName = '{}' ".format(user_name)
     print(query)
     mycursor.execute(query)
     result = mycursor.fetchall()
