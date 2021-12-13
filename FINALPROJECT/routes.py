@@ -199,21 +199,15 @@ def logsessionend():
 
 #################### TIC TAC TOE #######################
 
+# logs the start of the game in the game record table
 @app.route('/tic-tac-toe')
 @login_required
 def tic_tac_toe():
-    return render_template('tic_tac.html', title="tictactoe")
-
-
-# logs the start of the game in the game record table
-@app.route('/tic-tac-game-record', methods=['GET', 'POST'])
-def log_game_record():
     if not session.get('_user_id') is None:
         user_id = session.get('_user_id')
         session_id = get_session_id(user_id)
-        game_record = create_new_game_record(user_id, 1, session_id)
-        game_state = {'game_record': str(game_record)}
-    return jsonify(game_state)
+        game_id = create_new_game_record(user_id, 1, session_id)
+    return render_template('tic_tac.html', title="tictactoe", game_id=game_id)
 
 
 @app.route('/tic-tac-ajax', methods=['GET', 'POST'])
@@ -247,7 +241,7 @@ def process_tic_tac():
 @app.route('/tic-tac-end', methods=['GET', 'POST'])
 def tic_tac_end():
     game_state = request.get_json()
-    game_record = int(json.loads(game_state['game_record']))
+    game_record = int(game_state)
     print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
@@ -256,6 +250,7 @@ def tic_tac_end():
 ################# BLACKJACK ####################
 
 @app.route('/blackjack')
+@login_required
 def blackjack():
     return render_template('blackjack.html', title='Blackjack')
 
@@ -411,23 +406,16 @@ def trivia_end():
 
 
 ############### GUESS MY NUMBER ##################
+# logs the start of the game in the game record table
 @app.route('/guess-my-number')
 @login_required
 def guess_my_num_game():
     comp_num = random.randint(1, 200)
-    print(comp_num)
-    return render_template('guess_number.html', title="guess_my_number", number=comp_num)
-
-
-# logs the start of the game in the game record table
-@app.route('/guess-num-game-record', methods=['GET', 'POST'])
-def log_guess_number_game_record():
     if not session.get('_user_id') is None:
         user_id = session.get('_user_id')
         session_id = get_session_id(user_id)
-        game_record = create_new_game_record(user_id, 4, session_id)
-        game_state = {'game_record': str(game_record)}
-    return jsonify(game_state)
+        game_id = create_new_game_record(user_id, 4, session_id)
+    return render_template('guess_number.html', title="guess_my_number", number=comp_num, game_id=game_id)
 
 
 @app.route('/number-ajax', methods=['GET', 'POST'])
@@ -448,7 +436,7 @@ def guess_my_num_game_process():
 @app.route('/guess-num-end', methods=['GET', 'POST'])
 def guess_num_end():
     game_state = request.get_json()
-    game_record = int(json.loads(game_state['game_record']))
+    game_record = int(game_state)
     print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
