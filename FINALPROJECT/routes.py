@@ -366,12 +366,20 @@ def trivia_quiz():
                            game_id=game_id, q_num=1)
 
 
+# logs the start of the game in the game record table
+@app.route('/trivia-game-record', methods=['GET', 'POST'])
+def log_trivia_game_record():
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        session_id = get_session_id(user_id)
+        game_record = create_new_game_record(user_id, 3, session_id)
+        game_state = {'game_record': str(game_record)}
+    return jsonify(game_state)
+
+
 @app.route('/trivia-quiz/create')
 def create_trivia():
-    user_id = 5  # replace with real user_id
-    session_id = 1  # replace wth real session_id
-    # call data access layer function to create game record
-    game_id = create_new_game_record(user_id, 3, session_id)
+    game_id = 1
     print(game_id)
     trivia_game = TriviaGame()
     trivia_games[game_id] = trivia_game
@@ -394,13 +402,22 @@ def check_question(game_id, user_answer):
     return jsonify("Incorrect :(")
 
 
+@app.route('/trivia-end', methods=['GET', 'POST'])
+def trivia_end():
+    game_state = request.get_json()
+    game_record = json.loads(game_state['game_record'])
+    game_record = int(game_record)
+    print("SESSION ENDED AND LOGGED TO PYTHON")
+    game_id = log_game_record_end_time(game_record)
+    return "Session Ended"
+
+
 ############### GUESS MY NUMBER ##################
 @app.route('/guess-my-number')
 @login_required
 def guess_my_num_game():
     comp_num = random.randint(1, 200)
     print(comp_num)
-
     return render_template('guess_number.html', title="guess_my_number", number=comp_num)
 
 

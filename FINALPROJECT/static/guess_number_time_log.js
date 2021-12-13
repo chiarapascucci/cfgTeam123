@@ -35,19 +35,3 @@ function logGuessNumberEndGame() {
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
 }
-
-$(document).ready(function(){
-    let btn = $('#take-guess')
-    btn.click(function(){
-        let input_val = $('#guess').val()
-        if (!input_val || input_val <=0){
-            console.log(btn.val())
-            alert("please enter a valid number to play");
-        }
-        else {
-            take_guess();
-        }
-
-    });
-
-});
