@@ -1,3 +1,15 @@
+let gameStateStorage = document.getElementById("game-state")
+
+window.addEventListener('beforeunload', (e) => {
+    let gameState = gameStateStorage.innerHTML
+    let xhr = new XMLHttpRequest()
+    xhr.open('POST', "http://127.0.0.1:5000/trivia-end", true)
+    xhr.setRequestHeader("Content-Type", "application/json")
+    xhr.send(gameState)
+    console.log("Trivia FIRED")
+})
+
+
 function htmlDecode(input) {
   var doc = new DOMParser().parseFromString(input, "text/html");
   return doc.documentElement.textContent;
@@ -47,3 +59,5 @@ function answer_clicked(answer, game_id){
         }
     });
 }
+
+

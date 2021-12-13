@@ -5,25 +5,36 @@ let standBtn = document.getElementById("stand")
 let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
-window.addEventListener('beforeunload', (e) => {
-    e.returnValue = 'Are you sure you want to leave?'
-    endGame()
-    console.log("FIRED")
+// log player start game and creates new database record
+window.addEventListener('load', (e) => {
+    let xhr = new XMLHttpRequest()
+    xhr.open('GET', "http://127.0.0.1:5000/blackjack-game-record", true)
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            let gameState = JSON.parse(this.response)
+            gameStateStorage.innerHTML = JSON.stringify(gameState)
+            }
+        }
+    xhr.send()
 })
 
-
-// this function should make a not of when the player ends the game and updates end time in database
-function endGame() {
+// logs player end the game and updates end time in database
+window.addEventListener('beforeunload', (e) => {
+    let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
-    xhr.open('GET', "http://127.0.0.1:5000/blackjack-end", true)
-    xhr.send()
-}
+    xhr.open('POST', "http://127.0.0.1:5000/blackjack-end", true)
+    xhr.setRequestHeader("Content-Type", "application/json")
+    xhr.send(gameState)
+})
+
 
 // this function is called when the start game button has been clicked
 // it calls the starter cards and displays the cards values on the HTML game board
 function startGame() {
+    let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
-    xhr.open('GET', "http://127.0.0.1:5000/blackjack-start", true)
+    xhr.open('POST', "http://127.0.0.1:5000/blackjack-start", true)
+    xhr.setRequestHeader("Content-Type", "application/json")
     xhr.onload = function() {
         if (xhr.status == 200) {
             let gameState = JSON.parse(this.response)
@@ -41,7 +52,7 @@ function startGame() {
             }
         }
     }
-    xhr.send()
+    xhr.send(gameState)
 }
 
 // this function is called when the stand button has been clicked
