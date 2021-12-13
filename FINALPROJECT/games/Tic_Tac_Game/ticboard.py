@@ -2,19 +2,17 @@ import random
 
 
 class Board:
-
-
     def __init__(self, x_list, o_list):
         self.board = [" " for x in range(10)]
         self.x_list = x_list
         self.o_list = o_list
-
+        # populating the board with the moves
         for x in x_list:
             self.board[x] = "x"
-
         for o in o_list:
             self.board[o] = "o"
 
+    # checks if x or o are about to win
     def is_a_win(self, the_letter):
         result = (self.board[1] == the_letter and self.board[4] == the_letter and self.board[7] == the_letter) or \
                  (self.board[1] == the_letter and self.board[5] == the_letter and self.board[9] == the_letter) or \
@@ -26,8 +24,10 @@ class Board:
                  (self.board[7] == the_letter and self.board[8] == the_letter and self.board[9] == the_letter)
         return result
 
+    # pick a random move for computer to use later
     def random_move(self, move_list):
         return random.choice(move_list)
+
 
     def computer_move(self):
         possible_moves = []
@@ -41,6 +41,8 @@ class Board:
         if len(possible_moves) == 0:
             return -1
 
+        # identify a winning position and plays
+        # checks if it can block x from winning
         for i in possible_moves:
             board_copy = self.board.copy()
             board_copy[i] = 'o'
@@ -49,7 +51,7 @@ class Board:
                 self.board[i] = 'o'
                 return move
 
-        # play in middle
+        # plays in middle
         if 5 in possible_moves:
             move = 5
             self.board[5] = 'o'
