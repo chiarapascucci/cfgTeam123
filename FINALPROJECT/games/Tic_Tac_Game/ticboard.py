@@ -12,22 +12,20 @@ class Board:
         for o in o_list:
             self.board[o] = "o"
 
-    # checks if x or o are about to win
-    def is_a_win(self, the_letter):
-        result = (self.board[1] == the_letter and self.board[4] == the_letter and self.board[7] == the_letter) or \
-                 (self.board[1] == the_letter and self.board[5] == the_letter and self.board[9] == the_letter) or \
-                 (self.board[1] == the_letter and self.board[2] == the_letter and self.board[3] == the_letter) or \
-                 (self.board[2] == the_letter and self.board[5] == the_letter and self.board[8] == the_letter) or \
-                 (self.board[4] == the_letter and self.board[5] == the_letter and self.board[6] == the_letter) or \
-                 (self.board[3] == the_letter and self.board[6] == the_letter and self.board[9] == the_letter) or \
-                 (self.board[3] == the_letter and self.board[5] == the_letter and self.board[7] == the_letter) or \
-                 (self.board[7] == the_letter and self.board[8] == the_letter and self.board[9] == the_letter)
+    def is_a_win(self, the_board, the_letter):
+        result = (the_board[1] == the_letter and the_board[4] == the_letter and the_board[7] == the_letter) or \
+                 (the_board[1] == the_letter and the_board[5] == the_letter and the_board[9] == the_letter) or \
+                 (the_board[1] == the_letter and the_board[2] == the_letter and the_board[3] == the_letter) or \
+                 (the_board[2] == the_letter and the_board[5] == the_letter and the_board[8] == the_letter) or \
+                 (the_board[4] == the_letter and the_board[5] == the_letter and the_board[6] == the_letter) or \
+                 (the_board[3] == the_letter and the_board[6] == the_letter and the_board[9] == the_letter) or \
+                 (the_board[3] == the_letter and the_board[5] == the_letter and the_board[7] == the_letter) or \
+                 (the_board[7] == the_letter and the_board[8] == the_letter and the_board[9] == the_letter)
         return result
 
     # pick a random move for computer to use later
     def random_move(self, move_list):
         return random.choice(move_list)
-
 
     def computer_move(self):
         possible_moves = []
@@ -37,19 +35,18 @@ class Board:
             if x_or_o == " " and index != 0:
                 possible_moves.append(index)
 
-        print("printing list of possible moves: ", possible_moves)
         if len(possible_moves) == 0:
             return -1
 
         # identify a winning position and plays
         # checks if it can block x from winning
-        for i in possible_moves:
-            board_copy = self.board.copy()
-            board_copy[i] = 'o'
-            if self.is_a_win(board_copy):
-                move = i
-                self.board[i] = 'o'
-                return move
+        for let in ["o", "x"]:
+            for i in possible_moves:
+                board_copy = self.board.copy()
+                board_copy[i] = let
+                if self.is_a_win(board_copy, let):
+                    move = i
+                    return move
 
         # plays in middle
         if 5 in possible_moves:
@@ -70,4 +67,3 @@ class Board:
             move = self.random_move(open_edge)
             self.board[move] = 'o'
             return move
-

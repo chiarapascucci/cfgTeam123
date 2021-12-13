@@ -220,8 +220,8 @@ def process_tic_tac():
         board1 = Board(x_list, o_list)
 
         comp_move = board1.computer_move()
-        computer_win = board1.is_a_win("o")
-        human_win = board1.is_a_win("x")
+        computer_win = board1.is_a_win(board1.board, "o")
+        human_win = board1.is_a_win(board1.board, "x")
 
         # creating a json that can be used by ajax
         if computer_win:
