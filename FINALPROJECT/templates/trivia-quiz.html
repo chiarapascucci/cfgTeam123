@@ -13,7 +13,7 @@
 
             <div id="answers" >
                 {% for i in range(len)%}
-                    <button class= "trivia-button" onclick="answer_clicked('{{answers[i]}}', {{game_id}})">{{answers[i]}}</button>
+                    <button class= "trivia-button" onclick="answer_clicked(`{{answers[i]}}`, {{game_id}})">{{answers[i]}}</button>
                 {%endfor%}
             </div>
             <p id="correct"></p>

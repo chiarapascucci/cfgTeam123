@@ -23,6 +23,7 @@ from FINALPROJECT import app
 from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
+import html
 
 ###### this file is a bit of a mess lol ########
 
@@ -348,21 +349,23 @@ def blackjack_end():
     return "Session Ended"
 
 
+
 ################ TRIVIA #########################
 trivia_games = {}
 
 
+# Initiate trivia game
 @app.route('/trivia-quiz')
+@login_required
 def trivia_quiz():
-    game_id = create_trivia().json
-    print(game_id)
-    first_q = next_question(game_id).json
-    print(first_q)
-    answers = [first_q['correct_answer']]
-    answers.extend(first_q['incorrect_answers'])
-    random.shuffle(answers)
-    return render_template('trivia-quiz.html', title='Trivia Quiz', question=first_q['question'], answers=answers,
-                           len=len(answers),
+    # user_id = session.get('_user_id')
+    user_id = 5
+    game_id = create_trivia(user_id)
+    first_q = next_question(game_id).json['next_question']
+    answers = first_q['answers']
+    for index, answer in enumerate(answers):
+        answers[index] = html.unescape(answer)
+    return render_template('trivia-quiz.html', title='Trivia Quiz', question=html.unescape(first_q['question']), answers=answers, len=len(answers),
                            game_id=game_id, q_num=1)
 
 
@@ -377,26 +380,36 @@ def log_trivia_game_record():
     return jsonify(game_state)
 
 
-@app.route('/trivia-quiz/create')
-def create_trivia():
-    game_id = 1
-    print(game_id)
+# Create an instance of a trivia game, make a mapping between game_id and the created instance
+def create_trivia(user_id):
+    session_id = get_session_id(user_id)
+    # call data access layer function to create game record
+    game_id = create_new_game_record(user_id, 3, session_id)
     trivia_game = TriviaGame()
     trivia_games[game_id] = trivia_game
-    return jsonify(game_id)
+    return game_id
 
 
+# Make a call to next() function to get next question
 @app.route('/trivia-quiz/<game_id>/next-question')
 def next_question(game_id):
     game_id = int(game_id)
-    next_q = trivia_games[game_id].__next__()
-    return jsonify(next_q)
+    trivia_game = trivia_games[game_id]
+    try:
+        next_q = next(trivia_game)
+    except StopIteration:
+        next_q = None
+    return jsonify({"question_num": trivia_game.question_num,
+                    "score": trivia_game.get_score(),
+                    "next_question": next_q})
 
 
-@app.route('/trivia-quiz/<game_id>/check-answer/<user_answer>')
-def check_question(game_id, user_answer):
+# Check user answer with correct/incorrect answers
+@app.route('/trivia-quiz/<game_id>/check-answer', methods=['POST'])
+def check_question(game_id):
+    data = request.get_json()
     game_id = int(game_id)
-    correct = trivia_games[game_id].check_correct()
+    correct = trivia_games[game_id].check_correct(data['user_answer'])
     if correct:
         return jsonify("Correct! :)")
     return jsonify("Incorrect :(")
