@@ -51,19 +51,16 @@ class Board:
         # plays in middle
         if 5 in possible_moves:
             move = 5
-            self.board[5] = 'o'
             return move
 
         # check if any of the possible movers are corners
         open_corners = [i for i in possible_moves if i in [1, 3, 7, 9]]
         if len(open_corners) > 0:
             move = self.random_move(open_corners)
-            self.board[move] = 'o'
             return move
 
         # if any edges open
         open_edge = [i for i in possible_moves if i in [2, 4, 6, 8]]
         if len(open_edge) > 0:
             move = self.random_move(open_edge)
-            self.board[move] = 'o'
             return move
