@@ -1,15 +1,9 @@
 from typing import List
 import bcrypt
 import mysql.connector
-
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
-
-db = mysql.connector.connect(host=HOST,
-                             user=USER,
-                             password=PASSWORD,
-                             database=DB_NAME)
-
-mycursor = db.cursor()
+db = None
+mycursor = None
 
 
 class DBConnectionError(Exception):
@@ -49,6 +43,20 @@ def get_all_records() -> List:
             print('DB Connection is now closed.')
 
 
+# Form a connection to database
+def initialise_db(db_in=None, mycursor_in=None):
+    global db, mycursor
+    if db_in is None:
+        db = mysql.connector.connect(host=HOST,
+                                     user=USER,
+                                     password=PASSWORD,
+                                     database=DB_NAME)
+        mycursor = db.cursor()
+    else:
+        db = db_in
+        mycursor = mycursor_in
+
+
 def create_user_in_db(user_name, first_name, last_name, password, email=None):
     mycursor.execute("""
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
@@ -78,6 +86,7 @@ def validate_user(user_name, hashed_password):
 class UserNotFoundException(Exception):
     pass
 
+
 # need to finish this
 def get_user_info(user_id):
     mycursor.execute("""
@@ -90,8 +99,9 @@ def get_user_info(user_id):
 def get_user_first_last_name(user_id):
     mycursor.execute("""
     SELECT FirstName, LastName
+    FROM user_info
     WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchall()
+    user_name = mycursor.fetchone()
     return user_name
 
 
@@ -113,10 +123,33 @@ def create_new_session(user_id, start_time, requested_duration):
     return True
 
 
+def get_session_id(user_id):
+    mycursor.execute("""
+        SELECT SessionID 
+        FROM sessions
+        WHERE UserID = {}
+        """.format(user_id))
+    # fetchone() returns a tuple e.g. (5, ), [0] accesses first element in tuple - which is user_id
+    session_id = mycursor.fetchone()[0]
+    if session_id is None:
+        raise UserNotFoundException()
+    return session_id
+
+
 def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
         VALUES ({}, {}, {}, now())""".format(user_id, game_id, session_id))
+    db.commit()
+    return mycursor.lastrowid
+
+
+def log_game_record_end_time(user_id):
+    mycursor.execute("""
+        UPDATE game_record
+        SET EndTime = now()
+        WHERE UserID = {}
+        """.format(user_id))
     db.commit()
     return mycursor.lastrowid
 
@@ -145,8 +178,6 @@ def display_total_game_history(user_id):
     return user_game_history
 
 
-
-
 def test_db_connection():
     try:
         cnx = _connect_to_db()
@@ -154,7 +185,7 @@ def test_db_connection():
         query = "show TABLES"
         cur.execute(query)
         result = cur.fetchall()
-        print(result)
+        # print(result)
         cur.close()
         cnx.close()
     except Exception:
@@ -162,8 +193,6 @@ def test_db_connection():
 
 
 """Testing to check create_user_in_db and validate_user functions work with DB"""
-
-
 
 # if __name__ == '__main__':
 #     bcrypt = Bcrypt()
@@ -174,4 +203,3 @@ def test_db_connection():
 #     except:
 #         pass
 #     print(validate_user('Danya5', hashed_pass))
-

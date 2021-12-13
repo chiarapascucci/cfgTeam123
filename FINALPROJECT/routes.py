@@ -1,29 +1,34 @@
-
 import json
 import random
 
 from FINALPROJECT.data_access_functions import create_user_in_db, DBConnectionError, _connect_to_db, \
-    create_new_session
-from FINALPROJECT.forms import RegistrationForm, LoginForm
+    create_new_session, get_session_id, log_game_record_end_time
 
 from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
+
+from FINALPROJECT.forms import RegistrationForm, LoginForm
+
+from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner, player_hit, \
+    jsonify_blackjack_object, recreate_blackjack_object
+
 from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
+from FINALPROJECT.games.Tic_Tac_Game.ticboard import Board
 from FINALPROJECT.data_access_functions import create_new_game_record
 
-
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 from FINALPROJECT import app
 from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, fetch_user_info_with_username, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
+import html
 
 ###### this file is a bit of a mess lol ########
 
 ########### basic routes ############
-from Tic_Tac_Game.ticboard import Board
+
 
 
 @app.route('/')
@@ -48,6 +53,7 @@ def starttimer():
 @app.route('/browsegames')
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
+
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -76,6 +82,7 @@ def register():
         last_name = form.last_name.data
         email = form.email.data
         password = form.password.data
+
         print(type(password))
         user = CustomAuthUser(user_name=username, first_name=first_name, last_name=last_name, email=email, password=password)
         user.save()
@@ -89,7 +96,6 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-
 #################### user login + authentication ########################
 
 
@@ -97,8 +103,11 @@ def register():
 def login():
     form = LoginForm()
 
-    if form.validate_on_submit():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
 
+    if form.validate_on_submit():
+        print(form.user_name.data)
         user = get_user_instance(user_name=form.user_name.data)
         provided_password = form.password.data
         print(type(provided_password))
@@ -112,6 +121,7 @@ def login():
         else:
             flash('details provided are not correct, please try again')
             return render_template('login.html', title='login', form=form)
+
 
     return render_template('login.html', title='login', form=form)
 
@@ -186,7 +196,6 @@ def logsessionend():
         print("db connection failed")
 
 
-
 ################################# GAMES RELATED VIEWS ##########################################
 
 #################### TIC TAC TOE #######################
@@ -214,11 +223,31 @@ def process_tic_tac():
         computer_win = board1.is_a_win("o")
         human_win = board1.is_a_win("x")
 
+        if computer_win:
+            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
+
+        elif human_win:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
+        elif comp_move == -1:
+            return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': False, 'game_end': True})
+        else:
+            return jsonify({'comp_move': comp_move, 'comp_win': False, 'hum_win': False, 'game_end': False})
+
 
 ################# BLACKJACK ####################
 
 @app.route('/blackjack')
 def blackjack():
+    print(session)
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        session_id = get_session_id(user_id)
+        game_id = create_new_game_record(user_id, 2, session_id)
+        print(user_id)
+        print(session_id)
+        print(game_id)
     return render_template('blackjack.html', title='Blackjack')
 
 
@@ -241,16 +270,9 @@ def start_blackjack_game():
 @app.route('/blackjack-player-stand', methods=['GET', 'POST'])
 def player_stand_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_stand(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     value_of_hand = blackjack_object.display_value_of_hands(blackjack_cards)
     winner = decide_winner(blackjack_object, blackjack_cards)
     game_state = {'players_cards': players_cards,
@@ -265,16 +287,9 @@ def player_stand_blackjack():
 @app.route('/blackjack-player-hit', methods=['GET', 'POST'])
 def player_hit_blackjack():
     game_state = request.get_json()
-    players_cards = json.loads(game_state['players_cards'])
-    dealers_cards = json.loads(game_state['dealers_cards'])
-    cards_in_deck = json.loads(game_state['cards_in_deck'])
-    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    blackjack_cards, blackjack_object = recreate_blackjack_object(game_state)
     blackjack_cards = player_hit(blackjack_object, blackjack_cards)
-    players_cards = blackjack_cards[0]
-    dealers_cards = blackjack_cards[1]
-    players_cards = json.dumps([players_card.card for players_card in players_cards])
-    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
-    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    cards_in_deck, dealers_cards, players_cards = jsonify_blackjack_object(blackjack_cards, blackjack_object)
     if blackjack_object.calculate_value_of_hand(blackjack_cards[0]) <= 21:
         value_of_hand = blackjack_object.display_value_of_players_hand(blackjack_cards)
         winner = 'None'
@@ -294,48 +309,71 @@ def player_hit_blackjack():
                       'winner': winner}
         return jsonify(game_state)
 
+@app.route('/blackjack-end')
+def blackjack_end():
+    print("SESSION ENDED AND LOGGED TO PYTHON")
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        # need to access the log-session-start page
+        user_id = 20
+        # session_id = get_session_id(user_id)
+        game_id = log_game_record_end_time(user_id)
+        print(user_id)
+        # print(session_id)
+        print(game_id)
+    return "Session Ended"
+
 
 ################ TRIVIA #########################
 trivia_games = {}
 
 
+# Initiate trivia game
 @app.route('/trivia-quiz')
+@login_required
 def trivia_quiz():
-    game_id = create_trivia().json
-    print(game_id)
-    first_q = next_question(game_id).json
-    print(first_q)
-    answers = [first_q['correct_answer']]
-    answers.extend(first_q['incorrect_answers'])
-    random.shuffle(answers)
-    return render_template('trivia-quiz.html', title='Trivia Quiz', question=first_q['question'], answers=answers, len=len(answers),
+    # user_id = session.get('_user_id')
+    user_id = 5
+    game_id = create_trivia(user_id)
+    first_q = next_question(game_id).json['next_question']
+    answers = first_q['answers']
+    for index, answer in enumerate(answers):
+        answers[index] = html.unescape(answer)
+    return render_template('trivia-quiz.html', title='Trivia Quiz', question=html.unescape(first_q['question']), answers=answers, len=len(answers),
                            game_id=game_id, q_num=1)
 
 
-@app.route('/trivia-quiz/create')
-def create_trivia():
-    user_id = 5 # replace with real user_id
-    session_id = 1 # replace wth real session_id
+# Create an instance of a trivia game, make a mapping between game_id and the created instance
+def create_trivia(user_id):
+    session_id = get_session_id(user_id)
     # call data access layer function to create game record
     game_id = create_new_game_record(user_id, 3, session_id)
-    print(game_id)
     trivia_game = TriviaGame()
     trivia_games[game_id] = trivia_game
-    return jsonify(game_id)
+    return game_id
 
 
+# Make a call to next() function to get next question
 @app.route('/trivia-quiz/<game_id>/next-question')
 def next_question(game_id):
     game_id = int(game_id)
-    next_q = trivia_games[game_id].__next__()
-    return jsonify(next_q)
+    trivia_game = trivia_games[game_id]
+    try:
+        next_q = next(trivia_game)
+    except StopIteration:
+        next_q = None
+    return jsonify({"question_num": trivia_game.question_num,
+                    "score": trivia_game.get_score(),
+                    "next_question": next_q})
 
 
-@app.route('/trivia-quiz/<game_id>/check-answer/<user_answer>')
-def check_question(game_id, user_answer):
+# Check user answer with correct/incorrect answers
+@app.route('/trivia-quiz/<game_id>/check-answer', methods=['POST'])
+def check_question(game_id):
+    data = request.get_json()
     game_id = int(game_id)
-    current_q = trivia_games[game_id].get_current_question()
-    if current_q['correct_answer'] == user_answer:
+    correct = trivia_games[game_id].check_correct(data['user_answer'])
+    if correct:
         return jsonify("Correct! :)")
     return jsonify("Incorrect :(")
 
@@ -347,13 +385,12 @@ def guess_my_num_game():
     comp_num = random.randint(1, 200)
     print(comp_num)
 
-    return render_template('guess_number.html', title="guess_my_number", number = comp_num)
+    return render_template('guess_number.html', title="guess_my_number", number=comp_num)
 
 
 @app.route('/number-ajax', methods=['GET', 'POST'])
 def guess_my_num_game_process():
     if request.method == 'POST':
-
         data = request.get_json()
         print(data)
 
@@ -364,4 +401,3 @@ def guess_my_num_game_process():
         result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num)
         print(result)
         return jsonify(result)
-

@@ -1,3 +1,4 @@
+import json
 from random import randint
 from math import floor
 
@@ -39,6 +40,23 @@ def decide_winner(blackjack, blackjack_cards):
     else:
         blackjack.display_value_of_hands(blackjack_cards)
         return 'Dealer Wins'
+
+
+def jsonify_blackjack_object(blackjack_cards, blackjack_object):
+    players_cards = blackjack_cards[0]
+    dealers_cards = blackjack_cards[1]
+    players_cards = json.dumps([players_card.card for players_card in players_cards])
+    dealers_cards = json.dumps([dealers_card.card for dealers_card in dealers_cards])
+    cards_in_deck = json.dumps(blackjack_object.blackjack_deck.cards)
+    return cards_in_deck, dealers_cards, players_cards
+
+
+def recreate_blackjack_object(game_state):
+    players_cards = json.loads(game_state['players_cards'])
+    dealers_cards = json.loads(game_state['dealers_cards'])
+    cards_in_deck = json.loads(game_state['cards_in_deck'])
+    blackjack_object, blackjack_cards = player_hit_or_stand(players_cards, dealers_cards, cards_in_deck)
+    return blackjack_cards, blackjack_object
 
 
 # create a deck [CLASS]

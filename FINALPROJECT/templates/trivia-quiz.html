@@ -1,26 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class="container">
-    <div class="col-lg-3">
-
-        <p id="question">Question {{q_num}}: {{question}}</p>
-
-        <div id="answers">
-            {% for i in range(len)%}
-            <button onclick="answer_clicked('{{answers[i]}}', {{game_id}})">{{answers[i]}}</button>
-            {%endfor%}
+<section class="trivia">
+    <div class="container">
+         <div class="trivia-title">
+            <h1 class="trivia-text">Trivia Quiz</h1>
         </div>
-        <p id="correct"></p>
 
-    </div>
+        <div class="trivia-board">
+
+            <p id="question" class="question-label">Question {{q_num}}: {{question}}</p>
+
+            <div id="answers" >
+                {% for i in range(len)%}
+                    <button class= "trivia-button" onclick="answer_clicked(`{{answers[i]}}`, {{game_id}})">{{answers[i]}}</button>
+                {%endfor%}
+            </div>
+            <p id="correct"></p>
+
+        </div>
     <div class="col-lg-3">
         <p id="end-msg"></p>
     </div>
 </div>
+</section>
+
 
 
     <script src="../static/trivia_quiz_ajax.js"></script>
 {% endblock %}
-
