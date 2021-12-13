@@ -1,3 +1,16 @@
+let gameStateStorage = document.getElementById("game-state")
+
+window.addEventListener('beforeunload', (e) => {
+    e.returnValue = 'Are you sure you want to leave?'
+    let gameState = gameStateStorage.innerHTML
+    let xhr = new XMLHttpRequest()
+    xhr.open('POST', "http://127.0.0.1:5000/trivia-end", true)
+    xhr.setRequestHeader("Content-Type", "application/json")
+    xhr.send(gameState)
+    console.log("Trivia FIRED")
+})
+
+
 function htmlDecode(input) {
   var doc = new DOMParser().parseFromString(input, "text/html");
   return doc.documentElement.textContent;
@@ -47,41 +60,5 @@ function answer_clicked(answer, game_id){
         }
     });
 }
-//
-//let gameStateStorage = document.getElementById("game-state")
-//
-//window.addEventListener('load', (e) => {
-//    logTriviaStartGame()
-//    console.log('Trivia is fully loaded');
-//})
-//
-//
-//window.addEventListener('beforeunload', (e) => {
-//    e.returnValue = 'Are you sure you want to leave?'
-//    logTriviaEndGame()
-//    console.log("Trivia FIRED")
-//})
-//
-//// logs player start game and creates new database record
-//function logTriviaStartGame() {
-//    console.log('start game function')
-//    let xhr = new XMLHttpRequest()
-//    xhr.open('GET', "http://127.0.0.1:5000/trivia-game-record", true)
-//    xhr.onload = function() {
-//        if (xhr.status == 200) {
-//            let gameState = JSON.parse(this.response)
-//            gameStateStorage.innerHTML = JSON.stringify(gameState)
-//            }
-//        }
-//    xhr.send()
-//    }
-//
-//
-//// logs player end the game and updates end time in database
-//function logTriviaEndGame() {
-//    let gameState = gameStateStorage.innerHTML
-//    let xhr = new XMLHttpRequest()
-//    xhr.open('POST', "http://127.0.0.1:5000/trivia-end", true)
-//    xhr.setRequestHeader("Content-Type", "application/json")
-//    xhr.send(gameState)
-//}
+
+

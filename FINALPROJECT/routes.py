@@ -247,10 +247,9 @@ def process_tic_tac():
 @app.route('/tic-tac-end', methods=['GET', 'POST'])
 def tic_tac_end():
     game_state = request.get_json()
-    game_record = json.loads(game_state['game_record'])
-    game_record = int(game_record)
+    game_record = int(json.loads(game_state['game_record']))
     print("SESSION ENDED AND LOGGED TO PYTHON")
-    game_id = log_game_record_end_time(game_record)
+    log_game_record_end_time(game_record)
     return "Session Ended"
 
 
@@ -342,10 +341,9 @@ def player_hit_blackjack():
 @app.route('/blackjack-end', methods=['GET', 'POST'])
 def blackjack_end():
     game_state = request.get_json()
-    game_record = json.loads(game_state['game_record'])
-    game_record = int(game_record)
+    game_record = int(json.loads(game_state['game_record']))
     print("SESSION ENDED AND LOGGED TO PYTHON")
-    game_id = log_game_record_end_time(game_record)
+    log_game_record_end_time(game_record)
     return "Session Ended"
 
 
@@ -358,8 +356,7 @@ trivia_games = {}
 @app.route('/trivia-quiz')
 @login_required
 def trivia_quiz():
-    # user_id = session.get('_user_id')
-    user_id = 5
+    user_id = session.get('_user_id')
     game_id = create_trivia(user_id)
     first_q = next_question(game_id).json['next_question']
     answers = first_q['answers']
@@ -367,17 +364,6 @@ def trivia_quiz():
         answers[index] = html.unescape(answer)
     return render_template('trivia-quiz.html', title='Trivia Quiz', question=html.unescape(first_q['question']), answers=answers, len=len(answers),
                            game_id=game_id, q_num=1)
-
-
-# logs the start of the game in the game record table
-@app.route('/trivia-game-record', methods=['GET', 'POST'])
-def log_trivia_game_record():
-    if not session.get('_user_id') is None:
-        user_id = session.get('_user_id')
-        session_id = get_session_id(user_id)
-        game_record = create_new_game_record(user_id, 3, session_id)
-        game_state = {'game_record': str(game_record)}
-    return jsonify(game_state)
 
 
 # Create an instance of a trivia game, make a mapping between game_id and the created instance
@@ -418,10 +404,9 @@ def check_question(game_id):
 @app.route('/trivia-end', methods=['GET', 'POST'])
 def trivia_end():
     game_state = request.get_json()
-    game_record = json.loads(game_state['game_record'])
-    game_record = int(game_record)
+    game_record = int(game_state)
     print("SESSION ENDED AND LOGGED TO PYTHON")
-    game_id = log_game_record_end_time(game_record)
+    log_game_record_end_time(game_record)
     return "Session Ended"
 
 
@@ -463,8 +448,7 @@ def guess_my_num_game_process():
 @app.route('/guess-num-end', methods=['GET', 'POST'])
 def guess_num_end():
     game_state = request.get_json()
-    game_record = json.loads(game_state['game_record'])
-    game_record = int(game_record)
+    game_record = int(json.loads(game_state['game_record']))
     print("SESSION ENDED AND LOGGED TO PYTHON")
-    game_id = log_game_record_end_time(game_record)
+    log_game_record_end_time(game_record)
     return "Session Ended"
