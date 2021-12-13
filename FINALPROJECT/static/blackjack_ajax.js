@@ -6,19 +6,19 @@ let winner = document.getElementById("display-winner")
 let gameStateStorage = document.getElementById("game-state")
 
 window.addEventListener('load', (e) => {
-    logStartGame()
-    console.log('page is fully loaded');
+    logBlackjackStartGame()
+    console.log('Blackjack is fully loaded');
 })
 
 
 window.addEventListener('beforeunload', (e) => {
     e.returnValue = 'Are you sure you want to leave?'
-    logEndGame()
-    console.log("FIRED")
+    logBlackjackEndGame()
+    console.log("Blackjack FIRED")
 })
 
 // log player start game and creates new database record
-function logStartGame() {
+function logBlackjackStartGame() {
     console.log('start game function')
     let xhr = new XMLHttpRequest()
     xhr.open('GET', "http://127.0.0.1:5000/blackjack-game-record", true)
@@ -34,7 +34,7 @@ function logStartGame() {
 
 
 // logs player end the game and updates end time in database
-function logEndGame() {
+function logBlackjackEndGame() {
     let gameState = gameStateStorage.innerHTML
     let xhr = new XMLHttpRequest()
     xhr.open('POST', "http://127.0.0.1:5000/blackjack-end", true)
