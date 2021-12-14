@@ -240,8 +240,8 @@ def tic_tac_toe():
 def process_tic_tac():
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
-        # state = {}
+
+        # gets the moves and stores in a lisy
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
         print(x_list)
@@ -250,12 +250,12 @@ def process_tic_tac():
         board1 = Board(x_list, o_list)
 
         comp_move = board1.computer_move()
-        computer_win = board1.is_a_win("o")
-        human_win = board1.is_a_win("x")
+        computer_win = board1.is_a_win(board1.board, "o")
+        human_win = board1.is_a_win(board1.board, "x")
 
+        # creating a json that can be used by ajax
         if computer_win:
             return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
-
         elif human_win:
             return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
         elif comp_move == -1:
