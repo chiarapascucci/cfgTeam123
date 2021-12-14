@@ -55,10 +55,11 @@ def get_user_instance(user_info=None, user_id=None, user_name=None):
         return user
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return get_user_instance(user_id=user_id)
+
+# this user_loader callback allows us to load the user object from their user_id
 
 
 class UserNotFoundException(Exception):

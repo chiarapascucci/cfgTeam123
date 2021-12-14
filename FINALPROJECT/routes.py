@@ -25,6 +25,7 @@ from FINALPROJECT.config import DB_NAME
 
 import html
 
+
 ###### this file is a bit of a mess lol ########
 
 ########### basic routes ############
@@ -49,7 +50,9 @@ def starttimer():
     return render_template('select_break_time.html', title='Start the Timer', user_id=user_id)
 
 
+
 @app.route('/browsegames')
+@login_required
 def browsegames():
     return render_template('browsegames.html', title='browsegames')
 
@@ -58,6 +61,7 @@ def browsegames():
 @login_required
 def logout():
     logout_user()
+    # this is an imported function from the flask_login library which automatically ends the current_users session
     flash('You have been logged out successfully')
     return redirect(url_for('home'))
 
@@ -73,9 +77,14 @@ def special():
 ############# user registration ################
 
 @app.route('/register', methods=['GET', 'POST'])
+# as this is a form it's essential that the post method is allowed so that we can send data
 def register():
     form = RegistrationForm()
+    # instantiating the form object from our Registration form class from forms.py
+    # this will give us the ability to use the information the user has entered into our form
     if form.validate_on_submit():
+        # if the inputs to the form meet the requirements of all the validators we put in place then assign
+        # those inputs to the variables below
         username = form.user_name.data
         first_name = form.first_name.data
         last_name = form.last_name.data
@@ -85,7 +94,9 @@ def register():
         print(type(password))
         user = CustomAuthUser(user_name=username, first_name=first_name, last_name=last_name, email=email,
                               password=password)
+        # here we are instantiating the user who is registering as an object of our CustomAuthUser class from out models.py file
         user.save()
+        # the save method from out CustomAuthUser class adds our user to our database through an SQL process
         outcome = True
         if outcome:
             flash(f'Account created for {form.user_name.data}!', 'Success')
@@ -102,10 +113,11 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-
+    # instantiating the object 'form' from the LoginForm class from forms.py to give us the ability to use the information the user has entered into our form
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-
+    # the if statement above is a second level of security to ensure that the user cannot view the log in page if they are already authenticated (logged in)
+    # current_user is a proxy which is available in every template, so we can create conditionals depending of if 'current_user' is authenticated in our other html pages
     if form.validate_on_submit():
         print(form.user_name.data)
         user = get_user_instance(user_name=form.user_name.data)
@@ -342,7 +354,6 @@ def blackjack_end():
     return "Session Ended"
 
 
-
 ################ TRIVIA #########################
 trivia_games = {}
 
@@ -357,7 +368,8 @@ def trivia_quiz():
     answers = first_q['answers']
     for index, answer in enumerate(answers):
         answers[index] = html.unescape(answer)
-    return render_template('trivia-quiz.html', title='Trivia Quiz', question=html.unescape(first_q['question']), answers=answers, len=len(answers),
+    return render_template('trivia-quiz.html', title='Trivia Quiz', question=html.unescape(first_q['question']),
+                           answers=answers, len=len(answers),
                            game_id=game_id, q_num=1)
 
 
