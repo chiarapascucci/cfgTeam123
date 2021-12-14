@@ -7,11 +7,16 @@
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
+<!--            form.hidden_tag() creates our CSRF token to match our secret key which is stored in the __init__ file-->
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Log In</legend>
                 <div class="form-group">
                     {{ form.user_name.label(class="form-control-label") }}
+<!--                    creates the label for our input field-->
                     {% if form.user_name.errors %}
+<!--                    the code below ensures that if the incorrect information/format is submitted into
+                    the form fields that the correct error is displayed based on the validator applied to that field
+                    this also applies to the rest of the fields in this form, as well as the registration form -->
                         {{ form.user_name(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.user_name.errors %}
@@ -42,14 +47,19 @@
             </fieldset>
             <div class="form-group">
                     {{ form.submit(class="btn btn-outline-info") }}
+<!--                above is our submit button -->
             </div>
             <small class="text-muted ml-2">
                 <a href="#">Forgot Password?</a>
+<!--                This button is not yet functional however given more time we would create a feature where upon clicking this button you would be
+                    taken to a separate form where you could input your email address and answer a question with a secret password which would have been set up previously, then you would
+                    receive an email with a link to reset your password. Next time!-->
             </small>
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
                 Need an account?? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
+<!--                This link will take you to the register page if you've accidentally clicked on log in but don't actually have an account-->
             </small>
         </div>
     </div>
