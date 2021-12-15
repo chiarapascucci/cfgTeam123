@@ -2,8 +2,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 import mysql.connector
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, \
-    initialise_db
+from FINALPROJECT.data_access_functions import create_user_in_db, validate_user
 from FINALPROJECT.config import HOST, USER, PASSWORD
 
 """
