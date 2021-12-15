@@ -2,6 +2,15 @@ from unittest import TestCase, main
 from FINALPROJECT.games.trivia_game import TriviaGame
 
 
+"""
+Tests check:
+the number of questions is always 0-10,
+the current question number is never higher than the total number of questions,
+if a user selects correct answer, it returns True
+if a user selects an incorrect answer, it returns True
+iterating through the trivia game instance will provide the same number of questions as requested (10)
+"""
+
 class TestTriviaQuiz(TestCase):
 
     def test_questions_not_0(self):
@@ -10,7 +19,8 @@ class TestTriviaQuiz(TestCase):
 
     def test_question_num_not_higher_than_questions(self):
         trivia = TriviaGame()
-        self.assertTrue(trivia.num_of_questions > trivia.question_num)
+        for question in trivia:
+            self.assertTrue(trivia.num_of_questions >= trivia.question_num)
 
     def test_correct_answer(self):
         trivia = TriviaGame()
