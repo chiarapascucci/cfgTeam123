@@ -1,8 +1,9 @@
 import json
 import random
+import datetime
 
-from FINALPROJECT.data_access_functions import  DBConnectionError, _connect_to_db, \
-    create_new_session, get_session_id, log_game_record_end_time
+from FINALPROJECT.data_access_functions import DBConnectionError, _connect_to_db, \
+    create_new_session, get_session_id, log_game_record_end_time, display_total_game_history
 
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
@@ -22,6 +23,7 @@ from FINALPROJECT.models import CustomAuthUser, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
 import html
+
 
 ########### basic routes ############
 
@@ -44,8 +46,9 @@ def starttimer():
     if not session.get('username') is None:
         username = session.get('username')
         return render_template('select_break_time.html', title='Start the Timer', username=username)
-# need to provide some return type if something goes wrong (i.e. sesssion object does not have user id or username
 
+
+# need to provide some return type if something goes wrong (i.e. sesssion object does not have user id or username
 
 
 @app.route('/browsegames')
@@ -95,7 +98,6 @@ def register():
                               password=password)
         # created user is saved to the DB
         user.save()
-
 
         return redirect(url_for('login'))
     else:
@@ -465,3 +467,26 @@ def guess_num_end():
     print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
+
+
+############### USER ANALYTICS ##################
+# retrieves and displays the user game history
+@app.route('/user_analytics')
+@login_required
+def user_analytics():
+    if not session.get('_user_id') is None:
+        user_id = session.get('_user_id')
+        game_history = display_total_game_history(user_id)
+        game_history = display_game_history(game_history)
+    return render_template('user_analytics.html', title="user_analytics", game_history=game_history)
+
+
+def display_game_history(game_history):
+    simplified_history = []
+    for item in game_history:
+        game = item[0]
+        date = item[2].date()
+        game_time = item[3] - item[2]
+        record = [game, date, game_time]
+        simplified_history.append(record)
+    return simplified_history
