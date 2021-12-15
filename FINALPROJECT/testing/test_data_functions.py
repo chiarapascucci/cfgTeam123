@@ -1,8 +1,9 @@
-from unittest import TestCase, main, mock
+from unittest import TestCase
+from unittest.mock import patch
+
 import mysql.connector
-from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, get_user_first_last_name, \
-    initialise_db, \
-    update_last_login_time, create_new_session, create_new_game_record, delete_user_from_db, display_total_game_history
+from FINALPROJECT.data_access_functions import create_user_in_db, validate_user, \
+    initialise_db
 from FINALPROJECT.config import HOST, USER, PASSWORD
 
 """
@@ -23,7 +24,6 @@ class TestDataFunctions(TestCase):
                                           password=PASSWORD,
                                           database="test_db")
         self.mycursor = self.db.cursor()
-        initialise_db(self.db, self.mycursor)
         self.mycursor.execute("DELETE FROM user_info WHERE UserID > 0")
         self.mycursor.execute("""
             INSERT INTO user_info (UserID, UserName, FirstName, LastName, PasswordHash, Email) 
@@ -37,6 +37,7 @@ class TestDataFunctions(TestCase):
         self.mycursor.execute("DELETE FROM user_info WHERE UserID > 0")
         self.db.commit()
 
+    @patch("FINALPROJECT.config.DB_NAME", "test_db")
     def test_create_user_in_db_(self):
         test_user_name = "TestUserName"
         test_hashed_password = "TestPasswordHash"
@@ -51,12 +52,7 @@ class TestDataFunctions(TestCase):
         self.assertIsNotNone(test_user_id)
 
     # validates a sample user (with a user_id of 1)
+    @patch("FINALPROJECT.config.DB_NAME", "test_db")
     def test_validate_user(self):
         user_id = validate_user("sample_username", "sample_password")
         self.assertEqual(user_id, 1)
-
-    # checks name of a sample user (with a user_id of 1)
-    def test_get_user_name(self):
-        first_name, last_name = get_user_first_last_name(1)
-        self.assertEqual("sample_first_name", first_name)
-        self.assertEqual("sample_last_name", last_name)

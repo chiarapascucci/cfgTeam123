@@ -1,62 +1,28 @@
 from typing import List
-import bcrypt
 import mysql.connector
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
-db = None
-mycursor = None
+import FINALPROJECT
+
+global db, mycursor
 
 
-class DBConnectionError(Exception):
-    pass
-
-
-def _connect_to_db():
-    cnx = mysql.connector.connect(host=HOST,
-                                  user=USER,
-                                  password=PASSWORD,
-                                  auth_plugin='mysql_native_password',
-                                  database=DB_NAME)
-    return cnx
-
-
-def get_all_records() -> List:
-    db_connection = None
-    try:
-
-        db_connection = _connect_to_db()
-        cursor = db_connection.cursor()
-        query = ""
-        cursor.execute(query)
-        result = cursor.fetchall()
-        for i in result:
-            print(i)
-        cursor.close()
-
-        return result
-
-    except Exception:
-        raise DBConnectionError('Failed to read the data from DB')
-
-    finally:
-        if db_connection:
-            db_connection.close()
-            print('DB Connection is now closed.')
-
-
-# Form a connection to database
-def initialise_db(db_in=None, mycursor_in=None):
-    global db, mycursor
-    if db_in is None:
+# decorator for all functions that hit database
+def connect_to_db(func):
+    def inner_func(*args, **kwargs):
+        global db, mycursor
         db = mysql.connector.connect(host=HOST,
                                      user=USER,
                                      password=PASSWORD,
-                                     database=DB_NAME)
+                                     # for unit testing the reference has to be fully qualified
+                                     database=FINALPROJECT.config.DB_NAME)
         mycursor = db.cursor(buffered=True)
-    else:
-        db = db_in
-        mycursor = mycursor_in
+        result = func(*args, **kwargs)
+        mycursor.close()
+        db.close()
+        return result
+    return inner_func
 
-
+@connect_to_db
 def create_user_in_db(user_name, first_name, last_name, password, email=None):
     mycursor.execute("""
     INSERT INTO user_info (UserName, FirstName, LastName, PasswordHash, Email) 
@@ -69,7 +35,7 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     print(result)
     return True
 
-
+@connect_to_db
 def validate_user(user_name, hashed_password):
     mycursor.execute("""
     SELECT UserID
@@ -86,43 +52,15 @@ def validate_user(user_name, hashed_password):
 class UserNotFoundException(Exception):
     pass
 
-
-# need to finish this
-def get_user_info(user_id):
-    mycursor.execute("""
-        SELECT * FROM {}.user_info
-        WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchall()
-    return user_name
-
-
-def get_user_first_last_name(user_id):
-    mycursor.execute("""
-    SELECT FirstName, LastName
-    FROM user_info
-    WHERE UserID = {}""".format(user_id))
-    user_name = mycursor.fetchone()
-    return user_name
-
-
-def update_last_login_time(user_id):
-    mycursor.execute("""
-    UPDATE user_info SET
-    LastLogin = now()
-    WHERE UserID = {};
-    """.format(user_id))
-    db.commit()
-    return True
-
-
+@connect_to_db
 def create_new_session(user_id, start_time, requested_duration):
     mycursor.execute("""
         INSERT INTO sessions(UserID, StartTime, RequestedDuration)
         VALUES ({}, '{}', {})""".format(user_id, start_time, requested_duration))
     db.commit()
-    return True
+    return mycursor.lastrowid
 
-
+@connect_to_db
 def get_session_id(user_id):
     mycursor.execute("""
         SELECT SessionID 
@@ -136,7 +74,15 @@ def get_session_id(user_id):
         raise UserNotFoundException()
     return session_id
 
+@connect_to_db
+def update_session_end_time(end_time, session_id, user_id):
+    mycursor.execute(f"UPDATE {DB_NAME}.sessions SET EndTime = '{end_time}' WHERE SessionID = {session_id} A"
+                     f"ND UserID = {user_id};")
+    result = mycursor.fetchall()
+    db.commit()
+    return result
 
+@connect_to_db
 def create_new_game_record(user_id, game_id, session_id):
     mycursor.execute("""
         INSERT INTO game_record(UserID, GameID, SessionID, StartTime)
@@ -144,7 +90,7 @@ def create_new_game_record(user_id, game_id, session_id):
     db.commit()
     return mycursor.lastrowid
 
-
+@connect_to_db
 def log_game_record_end_time(record_id):
     mycursor.execute("""
         UPDATE game_record
@@ -154,7 +100,7 @@ def log_game_record_end_time(record_id):
     db.commit()
     return mycursor.lastrowid
 
-
+@connect_to_db
 def delete_user_from_db(user_id):
     mycursor.execute("""
     DELETE FROM user_info
@@ -162,6 +108,7 @@ def delete_user_from_db(user_id):
     """.format(user_id))
 
 
+@connect_to_db
 def display_total_game_history(user_id):
     mycursor.execute("""
     SELECT g.GameName, r.RecordID, r.StartTime, r.EndTime, s.SessionID, s.StartTime, s.EndTime, s.RequestedDuration
@@ -179,40 +126,10 @@ def display_total_game_history(user_id):
     return user_game_history
 
 
-def test_db_connection():
-    try:
-        cnx = _connect_to_db()
-        cur = cnx.cursor()
-        query = "show TABLES"
-        cur.execute(query)
-        result = cur.fetchall()
-        # print(result)
-        cur.close()
-        cnx.close()
-    except Exception:
-        raise DBConnectionError
-
-
-"""Testing to check create_user_in_db and validate_user functions work with DB"""
-
-# if __name__ == '__main__':
-#     bcrypt = Bcrypt()
-#     hashed_pass = bcrypt.generate_password_hash('testpass').decode('utf-8')
-#     create_user_in_db('Danya5', 'Daniella', 'Tobit', hashed_pass)
-#     try:
-#         print(validate_user('aa', 'bb'))
-#     except:
-#         pass
-#     print(validate_user('Danya5', hashed_pass))
-
-
 # function used when instantiating a user object
+@connect_to_db
 def fetch_user_info_with_user_id(user_id):
-    db = mysql.connector.connect(host=HOST,
-                                 user=USER,
-                                 password=PASSWORD,
-                                 database=DB_NAME)
-    mycursor = db.cursor()
+    global mycursor
     mycursor.execute("""
     SELECT *
     FROM user_info
@@ -223,12 +140,8 @@ def fetch_user_info_with_user_id(user_id):
 
 
 # function used when instantiating a user object
+@connect_to_db
 def fetch_user_info_with_username(user_name):
-    db = mysql.connector.connect(host=HOST,
-                                 user=USER,
-                                 password=PASSWORD,
-                                 database=DB_NAME)
-    mycursor = db.cursor()
     mycursor.execute("""
     SELECT *
     FROM user_info

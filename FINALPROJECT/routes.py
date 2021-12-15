@@ -1,8 +1,8 @@
 import json
 import random
 
-from FINALPROJECT.data_access_functions import  DBConnectionError, _connect_to_db, \
-    create_new_session, get_session_id, log_game_record_end_time
+from FINALPROJECT.data_access_functions import \
+    create_new_session, get_session_id, log_game_record_end_time, update_session_end_time
 
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
@@ -19,7 +19,6 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 from FINALPROJECT import app
 from FINALPROJECT.models import CustomAuthUser, get_user_instance
-from FINALPROJECT.config import DB_NAME
 
 import html
 
@@ -76,7 +75,7 @@ def special():
 @app.route('/register', methods=['GET', 'POST'])
 # as this is a form it's essential that the post method is allowed so that we can send data
 def register():
-    # registation form is instantiated
+    # registration form is instantiated
     form = RegistrationForm()
 
     # instantiating the form object from our Registration form class from forms.py
@@ -152,31 +151,17 @@ def logsessionstart():
     the request object contains the info needed to create a new session entry in the DB
     :return: returns a JSON obj if creation is successful, None otherwise
     """
-    try:
-        connection = _connect_to_db()
-        if request.method == 'POST':
-            data_dict = request.get_json()
-            user_id = data_dict['user_id']
-            start_time = data_dict['start_time']
-            req_len = str(data_dict['requested_duration'])
-            session_created = create_new_session(user_id, start_time, req_len)
-            if session_created:
-                follow_query = f"select * from {DB_NAME}.sessions WHERE UserID = {user_id} and EndTime IS NULL ORDER BY SessionID DESC LIMIT 1;"
-                other_cur = connection.cursor()
-                other_cur.execute(follow_query)
-                result = other_cur.fetchall()
-                response = {'result': result, 'redirect_url': url_for('browsegames')}
-                result = jsonify(response)
 
-                other_cur.close()
-                connection.close()
+    if request.method == 'POST':
+        data_dict = request.get_json()
+        user_id = data_dict['user_id']
+        start_time = data_dict['start_time']
+        req_len = str(data_dict['requested_duration'])
+        session_id = create_new_session(user_id, start_time, req_len)
+        response = {'result': (session_id, user_id), 'redirect_url': url_for('browsegames')}
+        result = jsonify(response)
 
-                return result
-            else:
-                return None
-
-    except DBConnectionError:
-        print("db connection failed")
+        return result
 
 
 @app.route('/log-session-end', methods=['GET', 'POST'])
@@ -187,36 +172,19 @@ def logsessionend():
     The request contains the info needed to update a given session entry with the relevant end time
     :return: returns a JSON object with the data retrieved (as a check) and the url for redirecting the user
     """
-    try:
-        connection = _connect_to_db()
-        if request.method == 'POST':
-            print("post request received")
-            print("trying to print json data from request \n", request.get_json())
-            print("post request received")
-            print("print type of return", type(request.get_json()))
-            data_dict = request.get_json()
-            user_id = int(data_dict['user_id'])
-            end_time = data_dict['end_time']
-            session_id = int(data_dict['session_id'])
-            query = f"UPDATE {DB_NAME}.sessions SET EndTime = '{end_time}' WHERE SessionID = {session_id} AND UserID = {user_id};"
-            print(query)
-            my_cur = connection.cursor()
-            my_cur.execute(query)
-            result = my_cur.fetchall()
-            connection.commit()
-            check_query = f"SELECT * FROM {DB_NAME}.sessions WHERE SessionID = {session_id};"
-            print("printin check query ", check_query)
-            my_cur.execute(check_query)
-            check_result = my_cur.fetchall()
-            print("printing check result: ", check_result)
-            my_cur.close()
-            connection.close()
-            response = {'result': result, 'redirect_url': url_for('logout')}
-            print("connection closed")
-            return jsonify(response)
 
-    except DBConnectionError:
-        print("db connection failed")
+    if request.method == 'POST':
+        print("post request received")
+        print("trying to print json data from request \n", request.get_json())
+        print("post request received")
+        print("print type of return", type(request.get_json()))
+        data_dict = request.get_json()
+        user_id = int(data_dict['user_id'])
+        end_time = data_dict['end_time']
+        session_id = int(data_dict['session_id'])
+        result = update_session_end_time(end_time, session_id, user_id)
+        response = {'result': result, 'redirect_url': url_for('logout')}
+        return jsonify(response)
 
 
 ################################# GAMES RELATED VIEWS ##########################################
@@ -239,7 +207,7 @@ def process_tic_tac():
     if request.method == 'POST':
         data = request.get_json()
 
-        # gets the moves and stores in a lisy
+        # gets the moves and stores in a list
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
         print(x_list)
