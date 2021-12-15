@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS productivity_app;
+-- DROP DATABASE IF EXISTS productivity_app;
 CREATE DATABASE productivity_app;
 USE productivity_app;
 
