@@ -4,8 +4,6 @@ import random
 from FINALPROJECT.data_access_functions import  DBConnectionError, _connect_to_db, \
     create_new_session, get_session_id, log_game_record_end_time
 
-from FINALPROJECT.games.blackjack import play_game, player_hit_or_stand, player_stand, decide_winner, player_hit
-
 from FINALPROJECT.forms import RegistrationForm, LoginForm
 
 from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner, player_hit, \
@@ -13,14 +11,14 @@ from FINALPROJECT.games.blackjack import play_game, player_stand, decide_winner,
 
 from FINALPROJECT.games.guess_my_num import play
 from FINALPROJECT.games.trivia_game import TriviaGame
-from FINALPROJECT.games.Tic_Tac_Game.ticboard import Board
+from FINALPROJECT.games.ticboard import Board
 from FINALPROJECT.data_access_functions import create_new_game_record
 
 from flask import jsonify, request, render_template, url_for, redirect, flash, session
 from flask_login import login_user, login_required, logout_user, current_user
 
 from FINALPROJECT import app
-from FINALPROJECT.models import UserNotFoundException, CustomAuthUser, get_user_instance
+from FINALPROJECT.models import CustomAuthUser, get_user_instance
 from FINALPROJECT.config import DB_NAME
 
 import html

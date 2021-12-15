@@ -45,6 +45,7 @@ class Board:
                 board_copy = self.board.copy()
                 board_copy[i] = let
                 if self.is_a_win(board_copy, let):
+                    self.board[i] = 'o'
                     move = i
                     return move
 
