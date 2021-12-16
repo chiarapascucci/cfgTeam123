@@ -225,10 +225,11 @@ def process_tic_tac():
         human_win = board1.is_a_win(board1.board, "x")
 
         # creating a json that can be used by ajax
-        if computer_win:
-            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
-        elif human_win:
+        if human_win:
             return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': True, 'game_end': False})
+
+        elif computer_win:
+            return jsonify({'comp_move': comp_move, 'comp_win': True, 'hum_win': False, 'game_end': False})
         elif comp_move == -1:
             return jsonify({'comp_move': -1, 'comp_win': False, 'hum_win': False, 'game_end': True})
         else:

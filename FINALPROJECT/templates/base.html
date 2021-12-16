@@ -28,10 +28,12 @@
                 <ul class="primary-nav">
                     {% if current_user.is_authenticated %}
                         <li class="current"><a href="/">Home</a></li>
-                        <li><a href="/start-timer">Set Break Timer</a></li>
+                        <li><a href="/start-timer">Set Timer</a></li>
+                        <li><a href="/browsegames">Browse Games</a></li>
                     {% else %}
                         <li class="current"><a href="/">Home</a></li>
-                        <li><a href="/login">Set Break Timer</a></li>
+                        <li><a href="/login">Set Timer</a></li>
+                        <li><a href="/browsegames">Browse Games</a></li>
                     {% endif %}
 <!--                The logic above allows you to access the timing page if you are logged in, and if you are not logged in the same button will redirect you to the log in page, -->
 <!--                    if log in is successful, you will then be redirected to the set timer page-->

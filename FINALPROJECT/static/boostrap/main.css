@@ -113,6 +113,7 @@ ul.features-list li {
   margin-bottom: 1em;
   margin-left: 2em;
   position: relative;
+
 }
 
 ul.features-list li:before {
@@ -121,7 +122,7 @@ ul.features-list li:before {
   position: absolute;
   width: 20px;
   height: 20px;
-  background-image: url("../static/images/tick.svg");
+  background-image: url('../static/images/tick.svg');
   background-size: contain;
   margin-right: 0.5em;
 }
@@ -343,6 +344,17 @@ td {
      margin: 0.5em;
   }
 
+/* Take Break button */
+.break-button{
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  padding: 0.6em 1.3em;
+  font-size: 0.5 em;
+  border-radius: 5em;
+  font-weight: bold;
+  display: inline-block;
+}
 
 /* Blackjack */
     .blackjack-body {

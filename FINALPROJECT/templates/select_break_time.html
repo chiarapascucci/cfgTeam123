@@ -5,7 +5,7 @@
 {% block content %}
 
 
-<section>
+<section class="timer-section">
         <main class="px-3">
             <h1>Hi {{ username }}</h1>
             <h2>Please select how long you want to take a break for, then we'll redirect you to one of our awesome games!</h2>
@@ -19,9 +19,10 @@
                     <option value="10">10 minutes</option>
                     <option value="15">15 minutes</option>
                 </select>
-                <button id="set-timer-btn" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white" disabled>Take a break!</button>
+                <button id="set-timer-btn" type="button" class="break-button" disabled>Take a Break!</button>
             </div>
         </main>
 </section>
-
+<!--<a href="/browsegames" class="primary-cta">Play Now</a>-->
+<!--class="btn btn-lg btn-secondary fw-bold border-white bg-white"-->
 {% endblock %}
