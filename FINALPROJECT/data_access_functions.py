@@ -78,9 +78,8 @@ def get_session_id(user_id):
 def update_session_end_time(end_time, session_id, user_id):
     mycursor.execute(f"UPDATE {DB_NAME}.sessions SET EndTime = '{end_time}' WHERE SessionID = {session_id} A"
                      f"ND UserID = {user_id};")
-    result = mycursor.fetchall()
     db.commit()
-    return result
+
 
 @connect_to_db
 def create_new_game_record(user_id, game_id, session_id):
@@ -127,9 +126,14 @@ def display_total_game_history(user_id):
 
 
 # function used when instantiating a user object
-@connect_to_db
+
 def fetch_user_info_with_user_id(user_id):
-    global mycursor
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 # for unit testing the reference has to be fully qualified
+                                 database=FINALPROJECT.config.DB_NAME)
+    mycursor = db.cursor()
     mycursor.execute("""
     SELECT *
     FROM user_info
@@ -140,8 +144,14 @@ def fetch_user_info_with_user_id(user_id):
 
 
 # function used when instantiating a user object
-@connect_to_db
+
 def fetch_user_info_with_username(user_name):
+    db = mysql.connector.connect(host=HOST,
+                                 user=USER,
+                                 password=PASSWORD,
+                                 # for unit testing the reference has to be fully qualified
+                                 database=FINALPROJECT.config.DB_NAME)
+    mycursor = db.cursor()
     mycursor.execute("""
     SELECT *
     FROM user_info

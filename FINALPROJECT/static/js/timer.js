@@ -20,10 +20,13 @@ $(document).ready(function(){
             if (time_left <= 0) {
                 let session_id = sessionStorage.getItem("session_id");
                 let user_id = sessionStorage.getItem("user_id");
-                sessionStorage.clear();
+                console.log("data retrieved from session storage")
+                console.log(session_id)
+                console.log(user_id)
                 alert("time is up");
                 clearInterval(my_interval);
                 time_up(session_id, user_id);
+                sessionStorage.clear();
 
             }
         }, 1000);
@@ -73,15 +76,18 @@ $(document).ready(function(){
             // user and session id are stored in sessionstorage
             // and user is redirected to browsegames page
             success : function(data){
-                let session_id = data.result[0][0];
-                let user_id = data.result[0][1];
-
+                console.log(data)
+                let session_id = data.session_id;
+                let user_id = data.user_id;
+                console.log("data to be stored in session storage")
+                console.log(session_id)
+                console.log(user_id)
                 // setting session object to information needed
                 // all data is saved as strings (unfortunately)
                 sessionStorage.setItem("req_len", ms_timeout.toString());
                 sessionStorage.setItem("user_id", user_id);
                 sessionStorage.setItem("session_id", session_id);
-
+                console.log(sessionStorage)
                 let redirect_url = data.redirect_url
                 window.location.replace(redirect_url)
 
@@ -112,6 +118,7 @@ function time_up(session_id, user_id){
             }),
             success: function(data){
                 // upon completion the user is logged out
+                console.log(data)
                 let redirect_url = data.redirect_url;
                 window.location.replace(redirect_url);
             }

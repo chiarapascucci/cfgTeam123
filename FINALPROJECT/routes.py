@@ -162,7 +162,8 @@ def logsessionstart():
         start_time = data_dict['start_time']
         req_len = str(data_dict['requested_duration'])
         session_id = create_new_session(user_id, start_time, req_len)
-        response = {'result': (session_id, user_id), 'redirect_url': url_for('browsegames')}
+        print("session logged, user id: ", user_id, type(user_id), "session_id: ", session_id, type(session_id))
+        response = {'user_id': user_id, 'session_id': session_id, 'redirect_url': url_for('browsegames')}
         result = jsonify(response)
 
         return result
@@ -186,8 +187,8 @@ def logsessionend():
         user_id = int(data_dict['user_id'])
         end_time = data_dict['end_time']
         session_id = int(data_dict['session_id'])
-        result = update_session_end_time(end_time, session_id, user_id)
-        response = {'result': result, 'redirect_url': url_for('logout')}
+        update_session_end_time(end_time, session_id, user_id)
+        response = {'redirect_url': url_for('logout')}
         return jsonify(response)
 
 
