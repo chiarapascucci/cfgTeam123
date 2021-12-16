@@ -6,7 +6,6 @@ window.addEventListener('beforeunload', (e) => {
     xhr.open('POST', "http://127.0.0.1:5000/trivia-end", true)
     xhr.setRequestHeader("Content-Type", "application/json")
     xhr.send(gameState)
-    console.log("Trivia FIRED")
 })
 
 
@@ -24,8 +23,6 @@ function answer_clicked(answer, game_id){
         data: '{"user_answer": "' + answer + '"}',
         contentType : 'application/json',
         success: function(data){
-            console.log("ajax success: data received")
-            console.log(data)
             $('#correct').text(data)
             question = $('#question')
             answers = $('#answers')
@@ -44,7 +41,6 @@ function answer_clicked(answer, game_id){
                     } else {
                         question.text('Question ' + question_num + ': ' + htmlDecode(next_question['question']))
                         all_ans = next_question['answers']
-                        console.log(all_ans)
                         buttons_html = ''
                         for (i = 0; i < all_ans.length; i++) {
                             ans_text = all_ans[i]

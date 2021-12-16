@@ -8,7 +8,6 @@ class py_timer():
         delta_value_minutes = float(minutes)
         self.delta_value_seconds = delta_value_minutes * 60
         self.end_time = (self.start_time + timedelta(minutes=delta_value_minutes)).replace(microsecond=0)
-        print(f"timer set, starting at : {self.start_time}, ending at {self.end_time}")
 
     # timer runs on a while loop using time's sleep function
     def run_timer(self):
@@ -19,8 +18,6 @@ class py_timer():
             print(t)
 
         dt = datetime.now().replace(microsecond=0)
-        print(f"time now {dt}, required end time {self.end_time}")
-        print(dt == self.end_time)
 
 # for testing
 if __name__ == '__main__':

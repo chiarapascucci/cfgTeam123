@@ -11,8 +11,6 @@ window.addEventListener('beforeunload', (e) => {
 
 
 function cell_clicked(cel_num){
-    console.log("cell clicked");
-    // console.log(cel_num);
     let cell_id = "#c"+cel_num;
     let cell_selected = $(cell_id)
 
@@ -44,11 +42,6 @@ function play_comp_turn(){
             }
         }
     }
-    console.log("printing list of X cells");
-    console.log(x_cells);
-
-    console.log("printing list of O cells");
-    console.log(o_cells);
 
 
     $.ajax({
@@ -61,37 +54,27 @@ function play_comp_turn(){
             'o' : o_str,
         }),
         success: function(data){
-            console.log("ajax success: data received")
-            console.log(data)
-
             let msg = $('#end-msg')
-
             let cell_id = "#c"+data['comp_move'];
             let cell = $(cell_id);
-
             if (data['game_end']){
-                console.log("tie");
                 cell.text('o');
                 cell.attr('disabled', true);
                 msg.text("it's a tie!");
                 setTimeout(function (){clear_table()}, 1500)
-
             }
             else if (data['comp_win']){
-                console.log("comp win");
                 cell.text('o');
                 cell.attr('disabled', true);
                 msg.text("I win!");
                 setTimeout(function (){clear_table()}, 1500)
             }
             else if (data['hum_win']){
-                console.log("human win");
                 msg.text("You win!");
                 setTimeout(function (){clear_table()}, 1500)
             }
             else {
                 let comp_move = data['comp_move'];
-                console.log(comp_move);
                 let cell_id = "#c"+comp_move.toString();
                 let cell = $(cell_id);
                 cell.text('o');
