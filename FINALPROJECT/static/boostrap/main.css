@@ -113,7 +113,7 @@ ul.features-list li {
   margin-bottom: 1em;
   margin-left: 2em;
   position: relative;
-  background-image: url('../static/images/bullet.svg');
+
 }
 
 ul.features-list li:before {
@@ -344,6 +344,17 @@ td {
      margin: 0.5em;
   }
 
+/* Take Break button */
+.break-button{
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  padding: 0.6em 1.3em;
+  font-size: 0.5 em;
+  border-radius: 5em;
+  font-weight: bold;
+  display: inline-block;
+}
 
 /* Blackjack */
     .blackjack-body {
