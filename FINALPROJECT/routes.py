@@ -4,7 +4,7 @@ import datetime
 
 
 from FINALPROJECT.data_access_functions import \
-    create_new_session, get_session_id, log_game_record_end_time, update_session_end_time
+    create_new_session, get_session_id, log_game_record_end_time, update_session_end_time, display_total_game_history
 
 
 from FINALPROJECT.forms import RegistrationForm, LoginForm
