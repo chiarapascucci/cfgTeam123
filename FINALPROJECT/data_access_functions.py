@@ -1,4 +1,3 @@
-from typing import List
 import mysql.connector
 from FINALPROJECT.config import DB_NAME, HOST, USER, PASSWORD
 import FINALPROJECT
@@ -22,6 +21,7 @@ def connect_to_db(func):
         return result
     return inner_func
 
+
 @connect_to_db
 def create_user_in_db(user_name, first_name, last_name, password, email=None):
     mycursor.execute("""
@@ -34,6 +34,7 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     result = mycursor.fetchall()
     print(result)
     return True
+
 
 @connect_to_db
 def validate_user(user_name, hashed_password):
@@ -60,6 +61,7 @@ def create_new_session(user_id, start_time, requested_duration):
     db.commit()
     return mycursor.lastrowid
 
+
 @connect_to_db
 def get_session_id(user_id):
     mycursor.execute("""
@@ -74,11 +76,13 @@ def get_session_id(user_id):
         raise UserNotFoundException()
     return session_id
 
+
 @connect_to_db
 def update_session_end_time(end_time, session_id, user_id):
     mycursor.execute(f"UPDATE {DB_NAME}.sessions SET EndTime = '{end_time}' WHERE SessionID = {session_id} A"
                      f"ND UserID = {user_id};")
     db.commit()
+
 
 
 @connect_to_db
@@ -89,6 +93,7 @@ def create_new_game_record(user_id, game_id, session_id):
     db.commit()
     return mycursor.lastrowid
 
+
 @connect_to_db
 def log_game_record_end_time(record_id):
     mycursor.execute("""
@@ -98,6 +103,7 @@ def log_game_record_end_time(record_id):
         """.format(record_id))
     db.commit()
     return mycursor.lastrowid
+
 
 @connect_to_db
 def delete_user_from_db(user_id):
