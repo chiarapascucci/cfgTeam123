@@ -113,6 +113,7 @@ ul.features-list li {
   margin-bottom: 1em;
   margin-left: 2em;
   position: relative;
+  background-image: url('../static/images/bullet.svg');
 }
 
 ul.features-list li:before {
@@ -121,7 +122,7 @@ ul.features-list li:before {
   position: absolute;
   width: 20px;
   height: 20px;
-  background-image: url("../static/images/tick.svg");
+  background-image: url('../static/images/bullet.svg');
   background-size: contain;
   margin-right: 0.5em;
 }

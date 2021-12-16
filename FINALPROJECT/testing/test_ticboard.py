@@ -1,5 +1,5 @@
 import unittest
-from ticboard import Board
+from FINALPROJECT.games.ticboard import Board
 
 
 class TestBoard(unittest.TestCase):
