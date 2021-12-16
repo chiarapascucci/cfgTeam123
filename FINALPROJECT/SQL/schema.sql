@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS productivity_app;
+-- DROP DATABASE IF EXISTS productivity_app;
 CREATE DATABASE productivity_app;
 USE productivity_app;
 
@@ -8,8 +8,7 @@ UserName varchar(20) UNIQUE NOT NULL,
 FirstName varchar(50) NOT NULL,
 LastName varchar(50) NOT NULL,
 Email varchar(50),
-PasswordHash varchar(256) NOT NULL,
-LastLogin datetime
+PasswordHash varchar(256) NOT NULL
 );
 
 CREATE TABLE game_table (

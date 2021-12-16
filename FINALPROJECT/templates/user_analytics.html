@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+        <ul>
+    {% for list in game_history %}
+        {% for item in list %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        <br>
+    {% endfor %}
+    </ul>
+</section>
+
+{% endblock %}
