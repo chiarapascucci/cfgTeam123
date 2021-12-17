@@ -3,6 +3,7 @@ from random import randint
 from math import floor
 
 
+# starts the game, initialises Blackjack object, check if hand is blackjack and returns starting cards
 def play_game():
     blackjack = Blackjack()
     blackjack.shuffle()
@@ -12,6 +13,7 @@ def play_game():
     return blackjack, blackjack_cards, is_blackjack_true, value_of_starting_hands
 
 
+# recreates the blackjack object
 def player_hit_or_stand(players_cards, dealers_cards, remaining_cards):
     blackjack = BlackjackHitOrStand(players_cards, dealers_cards, remaining_cards)
     blackjack.shuffle()
@@ -19,17 +21,19 @@ def player_hit_or_stand(players_cards, dealers_cards, remaining_cards):
     return blackjack, blackjack_cards
 
 
+# deals cards when player has chosen hit
 def player_hit(blackjack, blackjack_cards):
     blackjack_cards = blackjack.deal_card_to_player(blackjack_cards)
     blackjack.dealer_card_if_less_than_17(blackjack_cards)
     return blackjack_cards
 
 
+# deals cards when player has chosen to stand
 def player_stand(blackjack, blackjack_cards):
     blackjack.dealer_card_if_less_than_17(blackjack_cards)
     return blackjack_cards
 
-
+# decides the winner of the game
 def decide_winner(blackjack, blackjack_cards):
     if blackjack.is_player_winner(blackjack_cards):
         blackjack.display_value_of_hands(blackjack_cards)
@@ -42,6 +46,7 @@ def decide_winner(blackjack, blackjack_cards):
         return 'Dealer Wins'
 
 
+# turns the blackjack object into json format
 def jsonify_blackjack_object(blackjack_cards, blackjack_object):
     players_cards = blackjack_cards[0]
     dealers_cards = blackjack_cards[1]
@@ -51,6 +56,7 @@ def jsonify_blackjack_object(blackjack_cards, blackjack_object):
     return cards_in_deck, dealers_cards, players_cards
 
 
+# loads the json data and creates the blackjack object
 def recreate_blackjack_object(game_state):
     players_cards = json.loads(game_state['players_cards'])
     dealers_cards = json.loads(game_state['dealers_cards'])

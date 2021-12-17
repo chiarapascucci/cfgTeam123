@@ -14,28 +14,11 @@ $(document).ready(function(){
 
 });
 
-// function toggle_btn(){
-//     let btn = $('#take-guess')
-//     if (btn.attr("disabled")){
-//         btn.removeAttr("disabled");
-//     } else {
-//         btn.attr("disabled", "disabled");
-//     }
-//     return null
-// }
-
 // will need to refactor this to follow DRY principles better
 function take_guess(){
     let comp_num = $('#comp-num').val();
     let hum_num = $('#guess').val();
     let guess_num = $('#guess-count').val();
-
-    console.log("computer number: ");
-    console.log(comp_num);
-    console.log("hum guess: ");
-    console.log(hum_num);
-    console.log("number of guesses taken");
-    console.log(guess_num);
 
     $.ajax({
         url : "http://127.0.0.1:5000/number-ajax",
@@ -49,7 +32,6 @@ function take_guess(){
         }),
         success : function(data){
             let p_msg = $('#display-msg');
-            console.log(data);
             if (data['game_end']){
                 p_msg.text(data['msg']);
                 reset_game();

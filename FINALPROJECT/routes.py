@@ -37,11 +37,8 @@ def home():
 @app.route('/start-timer')
 @login_required
 def starttimer():
-    print(session)
     if not session.get('_user_id') is None:
         user_id = session.get('_user_id')
-        print(user_id)
-        print(type(user_id))
         return render_template('select_break_time.html', title='Start the Timer', user_id=user_id)
 
     if not session.get('username') is None:
@@ -179,10 +176,6 @@ def logsessionend():
     """
 
     if request.method == 'POST':
-        print("post request received")
-        print("trying to print json data from request \n", request.get_json())
-        print("post request received")
-        print("print type of return", type(request.get_json()))
         data_dict = request.get_json()
         user_id = int(data_dict['user_id'])
         end_time = data_dict['end_time']
@@ -215,8 +208,6 @@ def process_tic_tac():
         # gets the moves and stores in a list
         x_list = [int(c) for c in data['x']]
         o_list = [int(c) for c in data['o']]
-        print(x_list)
-        print(o_list)
 
         board1 = Board(x_list, o_list)
 
@@ -240,7 +231,6 @@ def process_tic_tac():
 def tic_tac_end():
     game_state = request.get_json()
     game_record = int(game_state)
-    print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
 
@@ -335,7 +325,6 @@ def player_hit_blackjack():
 def blackjack_end():
     game_state = request.get_json()
     game_record = int(json.loads(game_state['game_record']))
-    print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
 
@@ -398,7 +387,6 @@ def check_question(game_id):
 def trivia_end():
     game_state = request.get_json()
     game_record = int(game_state)
-    print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
 
@@ -421,14 +409,12 @@ def guess_my_num_game():
 def guess_my_num_game_process():
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
 
         comp_num = int(data['comp_num'])
         human_num = int(data['human_num'])
         guess_num = int(data['no_of_guesses'])
 
         result = play(human_guess=human_num, computer_num=comp_num, num_of_guesses=guess_num)
-        print(result)
         return jsonify(result)
 
 
@@ -436,7 +422,6 @@ def guess_my_num_game_process():
 def guess_num_end():
     game_state = request.get_json()
     game_record = int(game_state)
-    print("SESSION ENDED AND LOGGED TO PYTHON")
     log_game_record_end_time(game_record)
     return "Session Ended"
 
@@ -458,7 +443,10 @@ def display_game_history(game_history):
     for item in game_history:
         game = item[0]
         date = item[2].date()
-        game_time = item[3] - item[2]
+        if item[2] is not None and item[3] is not None:
+            game_time = item[3] - item[2]
+        else:
+            game_time = '00:00:00'
         record = [game, date, game_time]
         simplified_history.append(record)
     return simplified_history

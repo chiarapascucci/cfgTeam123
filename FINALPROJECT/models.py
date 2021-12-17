@@ -27,7 +27,6 @@ def get_user_instance(user_info=None, user_id=None, user_name=None):
                 user_info = fetch_user_info_with_user_id(user_id)
             elif user_name is not None:
                 user_info = fetch_user_info_with_username(user_name)
-        print(user_info[0][5])
         user = CustomAuthUser(user_name=user_info[0][1], first_name=user_info[0][2], last_name=user_info[0][3],
                               email=user_info[0][4], password=user_info[0][5], user_id=user_info[0][0])
         return user
