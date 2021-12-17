@@ -441,7 +441,10 @@ def display_game_history(game_history):
     for item in game_history:
         game = item[0]
         date = item[2].date()
-        game_time = item[3] - item[2]
+        if item[2] is not None and item[3] is not None:
+            game_time = item[3] - item[2]
+        else:
+            game_time = '00:00:00'
         record = [game, date, game_time]
         simplified_history.append(record)
     return simplified_history
