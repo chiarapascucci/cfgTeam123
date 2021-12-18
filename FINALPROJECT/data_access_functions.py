@@ -29,10 +29,8 @@ def create_user_in_db(user_name, first_name, last_name, password, email=None):
     VALUES ('{}', '{}', '{}', '{}', '{}')""".format(user_name, first_name, last_name, password, email))
     db.commit()
     query = "SELECT UserID FROM user_info WHERE UserName = '{}' ".format(user_name)
-    print(query)
     mycursor.execute(query)
     result = mycursor.fetchall()
-    print(result)
     return True
 
 
@@ -166,5 +164,4 @@ def fetch_user_info_with_username(user_name):
     user_info = mycursor.fetchall()
     if user_info is None:
         raise UserNotFoundException()
-    print(user_info)
     return user_info
