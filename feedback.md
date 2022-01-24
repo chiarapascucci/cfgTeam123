@@ -14,6 +14,7 @@ This feedback goes more into detail what was good and what could be improved.
 - Perfect elaboration of project management and tools used.
 - Great practice working with a dev db to test the implementation.
 - Good and concise conclusion providing a summary and future work.
+- The non-functional requirements are not actual requirements. Example of a non-functional requirement: DB should connect to the app in under 1s.
 
 ## Code
 - Great uses of OOP principles all around the codebase and short routines
